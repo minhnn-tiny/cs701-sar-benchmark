@@ -1,0 +1,17 @@
+1. a square box of side s shifted by d px in x and y has IoU (s-d)^2 / (2 s^2 - (s-d)^2) with itself
+   1 px error fails IoU 0.5: side <   5.4 px at 512 ->  2.4% of boxes
+   1 px error fails IoU 0.75: side <  13.5 px at 512 -> 43.8% of boxes
+   1 px error fails IoU 0.95: side <  77.5 px at 512 -> 89.7% of boxes
+   2 px error fails IoU 0.5: side <  10.9 px at 512 -> 35.7% of boxes
+   2 px error fails IoU 0.75: side <  27.0 px at 512 -> 59.3% of boxes
+   2 px error fails IoU 0.95: side < 155.0 px at 512 -> 96.9% of boxes
+2. per class: images, the 3 commonest original sizes, boxes per image (mean / median / max, share >= 10)
+   aircraft       1182  512x512 95%, 224x224 5%, 256x256 0%     2.1 /  1 / 21,  1.6%
+   airport         650  512x512 100%                            1.4 /  1 /  5,  0.0%
+   bridge         1249  512x512 81%, 256x256 19%                3.2 /  2 / 23,  5.6%
+   car             443  512x512 100%                            9.2 /  8 / 28, 41.1%
+   harbor         1355  512x512 72%, 256x256 28%                2.0 /  1 / 15,  0.3%
+   oil_tank       1233  512x512 55%, 256x256 45%                4.5 /  5 /  8,  0.0%
+   playground     1175  512x512 100%                            2.2 /  1 / 20,  1.9%
+   ship           1187  256x256 97%, 512x512 1%, 504x328 0%     1.3 /  1 /  8,  0.0%
+   wind_turbine    918  512x512 100%                            9.4 /  8 / 41, 45.3%

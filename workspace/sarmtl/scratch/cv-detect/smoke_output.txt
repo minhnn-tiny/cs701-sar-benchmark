@@ -1,0 +1,8 @@
+1. reference == DetectModel(D2 off, alpha = lambda = 0): True | detections per image [100, 100]
+2. D2 train steps: losses {'loss_objectness': 0.676, 'loss_rpn_box_reg': 0.0005, 'loss_classifier': 1.6911, 'loss_box_reg': 0.0002} | |grad| step 1: prior 0, lateral 1.1; step 2: prior 0.0875, lateral 3.97 | fp32 RPN/RoI losses: True
+3. D1 product alpha 0.0 thresh 0.05: predicted image class [4, 4], share of detections with that class [0.0, 0.0], detections per image [100, 100]
+3. D1 product alpha 1.0 thresh 0.001: predicted image class [4, 4], share of detections with that class [1.0, 1.0], detections per image [100, 100]
+3. D1 product alpha inf thresh 0.001: predicted image class [4, 4], share of detections with that class [1.0, 1.0], detections per image [100, 100]
+3. D1 posterior alpha 1.0 thresh 0.001: predicted image class [4, 4], share of detections with that class [1.0, 1.0], detections per image [100, 100]
+4. posterior: uniform prior = reference True, one-hot prior -> image class at the RoI objectness True; product: one-hot prior -> image class only, at its raw score True, no score ever goes up True; D1b lambda 50 -> class of the top box True
+5. same global RNG state after construction: True; every reference parameter identical: True (new: neck.['lateral', 'prior']); identical training losses: True; identical eval outputs: True

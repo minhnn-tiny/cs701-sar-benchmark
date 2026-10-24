@@ -1,0 +1,14 @@
+vit       + lora    reference: total 107,039,257  trainable 20,997,913 = heads 20,113,177 + backbone adaptation 884,736 + new (D2) 0
+    GFLOPs per 512 px image: eval forward 266.1, train forward+backward 579.0  (x1.000 eval, x1.000 train vs reference)
+    eval forward GFLOPs by top-level module: backbone 176.3, cls_head 0.0, neck 35.8, rpn 26.1, roi_heads 27.9
+vit       + lora    D1       : total 107,039,257  trainable 20,997,913 = heads 20,113,177 + backbone adaptation 884,736 + new (D2) 0
+    GFLOPs per 512 px image: eval forward 266.1, train forward+backward 579.0  (x1.000 eval, x1.000 train vs reference)
+    eval forward GFLOPs by top-level module: backbone 176.3, cls_head 0.0, neck 35.8, rpn 26.1, roi_heads 27.9
+vit       + lora    D2       : total 107,404,025  trainable 21,362,681 = heads 20,113,177 + backbone adaptation 884,736 + new (D2) 364,768
+    GFLOPs per 512 px image: eval forward 271.8, train forward+backward 596.0  (x1.021 eval, x1.029 train vs reference)
+    eval forward GFLOPs by top-level module: backbone 176.3, cls_head 0.0, neck 41.5, rpn 26.1, roi_heads 27.9
+vit       + lora    D2-wide  : total 108,357,241  trainable 22,315,897 = heads 20,113,177 + backbone adaptation 884,736 + new (D2) 1,317,984
+    GFLOPs per 512 px image: eval forward 285.9, train forward+backward 638.3  (x1.074 eval, x1.102 train vs reference)
+    eval forward GFLOPs by top-level module: backbone 176.3, cls_head 0.0, neck 55.6, rpn 26.1, roi_heads 27.9
+terramind + moelora reference: total 106,493,209  trainable 21,145,369 = heads 20,113,177 + backbone adaptation 1,032,192 + new (D2) 0
+terramind + moelora D2       : total 106,857,977  trainable 21,510,137 = heads 20,113,177 + backbone adaptation 1,032,192 + new (D2) 364,768

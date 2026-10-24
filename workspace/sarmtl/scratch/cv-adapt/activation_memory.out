@@ -1,0 +1,3 @@
+lora r16 qkv+proj (reference)           396.0 MiB/image  x16 =  6.19 GiB  (+0.00 GiB vs reference)
+WideLoRA r64 + small tensors            515.0 MiB/image  x16 =  8.05 GiB  (+1.86 GiB vs reference)
+full fine-tuning                        491.0 MiB/image  x16 =  7.67 GiB  (+1.48 GiB vs reference)

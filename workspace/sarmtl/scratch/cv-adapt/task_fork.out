@@ -1,0 +1,8 @@
+TaskFork k=4, ranks cls/det 16/64, shared r64: total 116,378,137  trainable 31,443,481
+  heads 20,113,177, shared LoRA 6,291,456, cls-path LoRA 786,432, det-path LoRA 3,145,728, unfrozen pretrained 1,106,688
+TaskFork k=2, ranks cls/det 16/64, shared r64: total 115,984,921  trainable 31,050,265
+  heads 20,113,177, shared LoRA 7,864,320, cls-path LoRA 393,216, det-path LoRA 1,572,864, unfrozen pretrained 1,106,688
+backbone fwd+bwd, k=4: 682.9 GFLOP/image (1.464x the reference LoRA 466.6)
+backbone fwd+bwd, k=2: 603.1 GFLOP/image (1.293x the reference LoRA 466.6)
+params without gradient after one step (A excluded, expected none): [] 0
+saved activations (bf16 autocast, CPU), TaskFork k=4: 679.3 MiB/image x16 = 10.61 GiB (reference 6.19, WideLoRA 8.05)

@@ -1,0 +1,52 @@
+--- references (must match train.py logs: ViT + LoRA 107,039,257 total, 20,997,913 trainable)
+vit + lora (reference)
+  total 107,039,257  trainable 20,997,913  [OK; trainable headroom 19,002,087]
+  trainable split: heads 20,113,177, backbone_lora 884,736, backbone_pretrained_unfrozen 0
+vit + moelora
+  total 107,186,713  trainable 21,145,369  [OK; trainable headroom 18,854,631]
+  trainable split: heads 20,113,177, backbone_lora 1,032,192, backbone_pretrained_unfrozen 0
+--- WideLoRA on ViT: LoRA on qkv, proj, fc1, fc2 of all 12 blocks (+ small tensors unfrozen)
+vit + wide LoRA r16 (rank-stable alpha 32) + small tensors
+  total 108,513,817  trainable 23,579,161  [OK; trainable headroom 16,420,839]
+  trainable split: heads 20,113,177, backbone_lora 2,359,296, backbone_pretrained_unfrozen 1,106,688
+vit + wide LoRA r32 (rank-stable alpha 45.2548) + small tensors
+  total 110,873,113  trainable 25,938,457  [OK; trainable headroom 14,061,543]
+  trainable split: heads 20,113,177, backbone_lora 4,718,592, backbone_pretrained_unfrozen 1,106,688
+vit + wide LoRA r64 (rank-stable alpha 64) + small tensors
+  total 115,591,705  trainable 30,657,049  [OK; trainable headroom 9,342,951]
+  trainable split: heads 20,113,177, backbone_lora 9,437,184, backbone_pretrained_unfrozen 1,106,688
+vit + wide LoRA r128 (rank-stable alpha 90.5097) + small tensors
+  total 125,028,889  trainable 40,094,233  [OVER BUDGET; trainable headroom -94,233]
+  trainable split: heads 20,113,177, backbone_lora 18,874,368, backbone_pretrained_unfrozen 1,106,688
+vit + wide LoRA r64, small tensors frozen (ablation)
+  total 115,591,705  trainable 29,550,361  [OK; trainable headroom 10,449,639]
+  trainable split: heads 20,113,177, backbone_lora 9,437,184, backbone_pretrained_unfrozen 0
+--- WideLoRA on TerraMind: LoRA on qkv, proj, fc1, fc3, fc2 (+ patch projection, norms unfrozen)
+terramind + lora (reference)
+  total 106,345,753  trainable 20,997,913  [OK; trainable headroom 19,002,087]
+  trainable split: heads 20,113,177, backbone_lora 884,736, backbone_pretrained_unfrozen 0
+terramind + moelora (reference)
+  total 106,493,209  trainable 21,145,369  [OK; trainable headroom 18,854,631]
+  trainable split: heads 20,113,177, backbone_lora 1,032,192, backbone_pretrained_unfrozen 0
+terramind + wide LoRA r64 + small tensors
+  total 115,488,025  trainable 30,553,369  [OK; trainable headroom 9,446,631]
+  trainable split: heads 20,113,177, backbone_lora 10,027,008, backbone_pretrained_unfrozen 413,184
+--- WideLoRA r64 on ViT: what exactly is unfrozen, and the optimizer groups
+  cls_token: 768
+  pos_embed: 787,200
+  patch_embed.proj.weight: 196,608
+  patch_embed.proj.bias: 768
+  blocks.*.norm1.weight: 9,216
+  blocks.*.norm1.bias: 9,216
+  blocks.*.attn.qkv.base.bias: 27,648
+  blocks.*.attn.proj.base.bias: 9,216
+  blocks.*.norm2.weight: 9,216
+  blocks.*.norm2.bias: 9,216
+  blocks.*.mlp.fc1.base.bias: 36,864
+  blocks.*.mlp.fc2.base.bias: 9,216
+  norm.weight: 768
+  norm.bias: 768
+  group LoRA A/B @1e-4: 9,437,184 in 96 tensors
+  group unfrozen pretrained @2e-5: 1,106,688 in 102 tensors
+  group heads @1e-4: 20,113,177 in 50 tensors
+--- XFuse (cross-task inference fusion) adds 0 parameters: it only rescales outputs of the same model
