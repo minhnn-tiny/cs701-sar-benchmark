@@ -17,8 +17,13 @@ Codabench leaderboard within the rules below. The briefing slides and video are 
   references only, never a valid submission. `train.py` logs both counts; the report must state them.
 - One model: no ensembles, no test-time augmentation.
 - Input ≤ 512 × 512 px, each image fed once: no upscaling, no tiling.
-- Train only on the train split. No other SAR datasets (or models trained on them); generic pretrained models
-  (ImageNet, CLIP, TerraMind, …) are fine. Never train on or hand-label val/test images.
+- Train only on the train split. No other SAR datasets (or models trained on them, including detectors pretrained
+  on SAR data: risk of leakage); generic pretrained models (ImageNet, CLIP, TerraMind, …) are fine. Never train on
+  or hand-label val/test images.
+- **Distillation** is not recommended. If used, the teacher must be a frozen, generic pretrained model (not trained
+  on SAR data) with ≤ 130 M parameters.
+- **The TA reproduces results** and inspects our open-sourced code for fairness and rule compliance, so every
+  submitted result must be reproducible from the code (seeds, holdout script, exact commands).
 - Efficiency counts in grading: a similar Δm with fewer trainable params / less compute earns credit.
 
 ## Metric
