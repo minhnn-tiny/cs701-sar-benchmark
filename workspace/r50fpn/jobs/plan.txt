@@ -11,9 +11,13 @@ H_s2  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset
 # Deferred until the val zip of F_s0 was built (25 Oct 09:08), so that it got GPU 1 right after H_s2; relaunched after.
 R_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --rot90 --seed 0 --out workspace/r50fpn/runs/R_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/R_s0/r50fpn
 E_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --epochs 36 --seed 0 --out workspace/r50fpn/runs/E_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/E_s0/r50fpn
-# Both screens to 3 seeds (approved 25 Oct, after R_s0): crossfit.py then picks the best of H, R and E by 3-seed holdout
-# Δm, and only that configuration gets an all-train run.
+# Both screens to 3 seeds (approved 25 Oct, after R_s0).
 E_s1  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --epochs 36 --seed 1 --out workspace/r50fpn/runs/E_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/E_s1/r50fpn
+# The user's choice (25 Oct, after E_s0): upload 36 epochs. On 407 of the runs' own training images, rotations cut mAP
+# from 36.1 to 27.8 and 36 epochs raised it to 42.4, and val rewards that fit (README.md, Upload). So R_s1 and R_s2
+# are dropped. The choice came at 19:20, when E_s2 was done and R_s2 was 2/3 through, so R_s2 finishes. E's 3 seeds
+# adopted off_d300_nms0.6 (crossfit.py), so FE_s0 writes its val zip with it on the same GPU.
+FE_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/repro --epochs 36 --seed 0 --out workspace/r50fpn/runs/FE_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/predict.py workspace/r50fpn/runs/FE_s0/r50fpn --split val --decoding off_d300_nms0.6 --out workspace/r50fpn/submissions/r50fpn_FE_s0_val_off_d300_nms0.6.zip
 E_s2  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --epochs 36 --seed 2 --out workspace/r50fpn/runs/E_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/E_s2/r50fpn
-R_s1  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --rot90 --seed 1 --out workspace/r50fpn/runs/R_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/R_s1/r50fpn
-R_s2  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --rot90 --seed 2 --out workspace/r50fpn/runs/R_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/R_s2/r50fpn
+# R_s1  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --rot90 --seed 1 --out workspace/r50fpn/runs/R_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/R_s1/r50fpn
+# R_s2  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --rot90 --seed 2 --out workspace/r50fpn/runs/R_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/R_s2/r50fpn

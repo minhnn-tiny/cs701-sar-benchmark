@@ -55,6 +55,16 @@ pyramid that starts at stride 4.
   holdout Δm, decoded as submitted, is uploaded from its all-train checkpoint (`F_s0` for the base configuration),
   without first comparing it with the TA's baselines. `crossfit.py` still prints the TA's in-budget configurations on
   the same holdout as context: TerraMind + MoE-LoRA +9.9 (JD posterior), ViT + LoRA +0.6.
+  - **The user's exception (25 Oct, after `E_s0`): upload 36 epochs.**
+    - About 2/3 of val behaves like training images: val mAP ≈ 0.65 × fit + 0.35 × leak-free holdout mAP, fitted on
+      4 earlier uploads by another session. Here, fit means mAP on a model's own training images.
+    - On 407 such images (`dataset/repro/val` ∩ `holdout_sarmtl/train`), mAP is 36.2 ± 0.3 for H (3 seeds), 42.8 ± 0.6
+      for E (36 epochs, 3 seeds) and 27.9 for R (rotations, seeds 0–1). On the holdout, seed 0 alone had R +1.5 Δm
+      above H and E 1.1 below.
+    - So `R_s1`/`R_s2` were dropped, and the all-train 36-epoch model `FE_s0` is uploaded. By the time of the
+      choice (19:20), `R_s1` had run and `R_s2` was 2/3 through, so both complete the record.
+    - The rule above agrees: E's 3 seeds score +32.6 ± 1.7 as submitted, against H's +29.3 ± 2.6. `crossfit.py`
+      adopted `off_d300_nms0.6` for E (all 6 out-of-fold gains positive), so `FE_s0` is decoded with it.
 - **Posting:** only a val score above both the posted entry and the TA's best in-budget val baseline (+4.4).
 
 ## Commands (from the repo root; every GPU command through `workspace/gpu_run.sh`)
