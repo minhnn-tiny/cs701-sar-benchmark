@@ -45,11 +45,11 @@ image (9 classes) and **detect** its objects.
 - Each image: one class label, 1 or more boxes, all of that class.
 - 9 classes: aircraft, airport, bridge, car, harbor, oil tank, playground, ship, wind turbine.
 - Data, formats, release dates: [dataset card](https://huggingface.co/datasets/doem1997/cs701-sar-course-data).
-  Rules: [Codabench](https://www.codabench.org/competitions/18271).
+  Rules: [leaderboard Docs](https://web-production-c241e.up.railway.app/docs#rules).
 - Limits: one model; at most 130 M parameters in total (frozen ones count; this code: 106-107 M) and at most 40 M
   trainable (heads included: LoRA 21.0 M; full fine-tuning and from scratch, 106 M, are over); each image in once at
   ≤ 512 × 512 px; no ensembles, no test-time augmentation. Your report states parameters (total, trainable) and
-  compute; full list on Codabench (Terms).
+  compute; full list on the leaderboard site (Docs, Rules).
 
 ### 1.3 Metric
 
@@ -100,7 +100,7 @@ TA Zichen ran this code on fully labelled data in another folder layout. For the
 ### 2.4 Make Submission
 
 `make_submission.py` has `write_submission` (the function in the briefing video): maps your boxes back to
-original image pixels, writes `submission.zip` for Codabench.
+original image pixels, writes `submission.zip` for the leaderboard.
 
 ## 3. Baseline Results (for reference)
 
@@ -160,5 +160,5 @@ More: [docs/DETAILS.md](docs/DETAILS.md).
 ## 5. Links
 
 - Data: https://huggingface.co/datasets/doem1997/cs701-sar-course-data
-- Leaderboard: https://www.codabench.org/competitions/18271
+- Leaderboard: https://web-production-c241e.up.railway.app
 - Questions: TA Zichen, zichen.tian.2023@phdcs.smu.edu.sg
