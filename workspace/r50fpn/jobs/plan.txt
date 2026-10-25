@@ -1,0 +1,19 @@
+# R50-FPN-MT runs in priority order (README.md). Each line: <name> <command>, run from the repo root by
+# workspace/r50fpn/run.sh, each job through workspace/gpu_run.sh. Output: workspace/r50fpn/runs/queue/<name>.out.
+# Holdout runs (local train 8,057 / holdout 940, dataset/holdout_sarmtl) end with the post-processing sweep
+# (evaluate.py) on the same GPU. F_s0 is the submission model: all 9,392 train images (dataset/repro, whose val and
+# test are samples of train, not a holdout).
+H_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --seed 0 --out workspace/r50fpn/runs/H_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/H_s0/r50fpn
+F_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/repro --seed 0 --out workspace/r50fpn/runs/F_s0
+H_s1  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --seed 1 --out workspace/r50fpn/runs/H_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/H_s1/r50fpn
+H_s2  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --seed 2 --out workspace/r50fpn/runs/H_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/H_s2/r50fpn
+# Screening variants (one holdout seed each, paired with H_s0): 90-degree rotations; 36 epochs instead of 24.
+# Deferred until the val zip of F_s0 was built (25 Oct 09:08), so that it got GPU 1 right after H_s2; relaunched after.
+R_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --rot90 --seed 0 --out workspace/r50fpn/runs/R_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/R_s0/r50fpn
+E_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --epochs 36 --seed 0 --out workspace/r50fpn/runs/E_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/E_s0/r50fpn
+# Both screens to 3 seeds (approved 25 Oct, after R_s0): crossfit.py then picks the best of H, R and E by 3-seed holdout
+# Δm, and only that configuration gets an all-train run.
+E_s1  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --epochs 36 --seed 1 --out workspace/r50fpn/runs/E_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/E_s1/r50fpn
+E_s2  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --epochs 36 --seed 2 --out workspace/r50fpn/runs/E_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/E_s2/r50fpn
+R_s1  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --rot90 --seed 1 --out workspace/r50fpn/runs/R_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/R_s1/r50fpn
+R_s2  HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/train.py --data dataset/holdout_sarmtl --rot90 --seed 2 --out workspace/r50fpn/runs/R_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/r50fpn/evaluate.py workspace/r50fpn/runs/R_s2/r50fpn
