@@ -14,6 +14,8 @@ the reply to posting it is in `<zip stem>.post.json`.
 - **How they were sent:** the token went to curl through stdin, so it never appeared in a process's arguments or in
   any output.
 - **Quota after them:** 4 of 24 Oct's 5 used, and both reset cards unused.
+- **Below the TA's bar** (CLAUDE.md, "Submission rule"): `s_VlNljpmqLS` (+3.92) and `s_Oycs9hsMlh` (+0.30) are
+  under TerraMind + MoE-LoRA's val +4.4, so neither may be posted. Neither is posted.
 
 **The team's posted Phase 1 entry is not from this workspace.** `/api/me` at 23:45 shows `s_msr0DiAUXC`:
 - uploaded 24 Oct 2026 22:02 SGT and posted, 5,898,998 bytes;

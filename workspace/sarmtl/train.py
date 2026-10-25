@@ -14,9 +14,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]  # the repo root, for sarbench/ and the root train.py
 sys.path.insert(0, str(ROOT))
 sys.path.insert(1, str(Path(__file__).resolve().parent))
+sys.path.insert(2, str(ROOT / 'workspace'))
 import torch  # noqa: E402
 from torch.utils.data import DataLoader  # noqa: E402
 
+import wandb_log  # noqa: E402
 from sarbench.data import SARMultiTask, collate  # noqa: E402
 from sarmtl_model import (JD_DECODING, REFERENCE_DECODING, build_model, count_parameters, param_groups,  # noqa: E402
                           set_decoding)
@@ -88,6 +90,7 @@ def main():
     log_file = open(run_dir / 'log.txt', 'w')
     log = lambda message: root.log(message, log_file)  # noqa: E731
     log(json.dumps(vars(args), default=str))
+    wandb_log.init('sarmtl', run_dir, vars(args), root)  # off unless WANDB_API_KEY is set (.env)
 
     # Data
     train_loader, val_loader, test_loader = (make_loader(args, split) for split in ('train', 'val', 'test'))
@@ -145,6 +148,7 @@ def main():
     (run_dir / 'predictions_val_jd.json').write_text(json.dumps(val_jd_detections))
     (run_dir / 'predictions_test.json').write_text(json.dumps(test_detections))
     torch.save(model.state_dict(), run_dir / 'model.pt')
+    wandb_log.finish(summary)
 
 
 if __name__ == '__main__':
