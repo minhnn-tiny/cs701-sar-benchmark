@@ -11,7 +11,7 @@ from sarbench.data import SARMultiTask, collate, to_original_xywh
 from sarbench.metrics import detection_metrics
 from sarbench.model import MultiTaskModel
 
-ROOT = Path(__file__).resolve().parents[2] / 'dataset' / 'SARFact-Course-20K'
+ROOT = Path(__file__).resolve().parents[1] / 'dataset'
 
 
 def first_train_images(n):
@@ -85,4 +85,4 @@ def test_pretrained_vit_overfits_16_training_images():
         predictions += [{'image_id': t['image_id'], 'category_id': c, 'bbox': b, 'score': s}
                         for b, c, s in zip(boxes, d['labels'].tolist(), d['scores'].tolist())]
     image_ids = [t['image_id'] for t in targets]
-    assert detection_metrics(ROOT / 'detection' / 'instances_train.json', predictions, image_ids)['AP50'] > 0.9
+    assert detection_metrics(ROOT / 'train' / 'instances.json', predictions, image_ids)['AP50'] > 0.9

@@ -9,7 +9,7 @@ from torchvision import tv_tensors
 from sarbench.data import MEAN, STD, SARMultiTask, collate, to_original_xywh
 from sarbench.metrics import detection_metrics
 
-ROOT = Path(__file__).resolve().parents[2] / 'dataset' / 'SARFact-Course-20K'
+ROOT = Path(__file__).resolve().parents[1] / 'dataset'
 
 
 def batches(split):
@@ -37,7 +37,7 @@ def test_ground_truth_round_trip_scores_map_1(split):
             boxes = to_original_xywh(t['boxes'], t['orig_size']).tolist()
             predictions += [{'image_id': t['image_id'], 'category_id': c, 'bbox': b, 'score': 1.0}
                             for b, c in zip(boxes, t['labels'].tolist())]
-    metrics = detection_metrics(ROOT / 'detection' / f'instances_{split}.json', predictions, image_ids)
+    metrics = detection_metrics(ROOT / split / 'instances.json', predictions, image_ids)
     assert round(metrics['mAP'], 3) == 1.0
     assert [round(ap, 3) for ap in metrics['per_class_AP'].values()] == [1.0] * 9
 
