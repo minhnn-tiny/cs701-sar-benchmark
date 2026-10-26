@@ -1,0 +1,3 @@
+# model weights (downloaded: README "Pretrained models") and leaderboard zips stay out of git
+weights/
+submissions/*.zip

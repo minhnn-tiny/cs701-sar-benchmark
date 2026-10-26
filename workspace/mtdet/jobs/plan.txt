@@ -1,0 +1,54 @@
+# MTDet runs in priority order (README.md). Each line: <name> <command>, run from the repo root by workspace/mtdet/run.sh
+# (GPUS=1 WORKERS=1: GPU 2 is FitDet's), each job through workspace/gpu_run.sh. Output: runs/queue/<name>.out.
+# Holdout runs train on dataset/holdout_fitdet/train (7,252 images), are scored on ND / LF / FIT every 12 epochs, and end
+# with the decoding sweep (evaluate.py) on the same GPU.
+# Screens, seed 0, one per family at its usual fine-tuning length: YOLO26-L 100 epochs (Ultralytics' default), the
+# stride-4 variant (Codex review: the 8-15 px classes), ConvNeXt-B cascade 72 epochs (FitDet's R50 cascade length, see
+# C_s0), RT-DETR-L 72 epochs (RT-DETR's 6x fine-tuning schedule).
+Y_s0    HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 100 --seed 0 --out workspace/mtdet/runs/Y_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/Y_s0
+YP2_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l-p2 --epochs 100 --seed 0 --out workspace/mtdet/runs/YP2_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YP2_s0
+# Y_s0 scored ND +34.57 (+36.48 with o2m_nms0.7): its all-train model now, for an early read of ND -> val transfer and
+# the upload (posted only if it beats +18.45 and +4.4); the zip uses Y_s0's best decoding. Ydec_s0 first rescores Y_s0
+# under the decodings added after it (NMS 0.8, merge NMS); YA_val's decoding is set from it before YA_s0 ends.
+Ydec_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/Y_s0
+YA_s0   HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 100 --seed 0 --data dataset/repro --evals nd --out workspace/mtdet/runs/YA_s0
+YA_val  HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YA_s0 --split val --decoding o2m_nms0.7_a0_k100 --out workspace/mtdet/submissions/YA_s0_val.zip
+# Failure analysis (analyze.py): ND outputs of Y_s0 and YP2_s0 under the submitted decoding, for AP by near-duplicate
+# partner kind and a paired unit bootstrap (CPU, afterwards).
+Aan     HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/analyze.py --dump --decoding o2m_nms0.7_a0_k100 workspace/mtdet/runs/Y_s0 workspace/mtdet/runs/YP2_s0
+# Speed (M0.5): GPU 1 runs at 60-70 % utilisation during YOLO26-L training with the main process CPU-bound; time
+# train.py's step against the same math without the per-step loss check (a host sync), with a foreach EMA, fused AdamW.
+Sbench  HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/runs/smoke/step_bench.py
+# YOLO26 levers, single-seed screens against Y_s0 (ND +34.57; ND still rising at epoch 100 while FIT climbs and LF falls):
+# schedule length (150 epochs), then capacity (YOLO26-X, backbone layers 6-10 frozen for the 40 M budget).
+# 90-degree rotations not screened: 7 of the 535 ND images with a local-train partner need one (holdout_sarmtl's links).
+Y150_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 150 --seed 0 --out workspace/mtdet/runs/Y150_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/Y150_s0
+# No flips (26 Oct, analyze.py): 372 of those 535 have a partner in the same orientation (k = 0), which flips show 1 epoch
+# in 4; about 110 have only a flipped or turned one. The earlier note (491 'only through a flip') misread M0.3's count,
+# which included k = 0. Val rewards fitting the partners, so the trade is measured, not assumed.
+YNF_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 100 --seed 0 --no-flip --out workspace/mtdet/runs/YNF_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YNF_s0
+# Y150_s0 (26 Oct): ND +40.04 at the submitted decoding, +3.56 over Y_s0 (mAP +1.89, F1 -0.07), all from fitting: FIT
+# 66.5 -> 75.9, LF flat (18.2). Ban: ND outputs of YNF_s0 and Y150_s0, for the partner-kind and orientation splits.
+Ban     HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/analyze.py --dump --decoding o2m_nms0.7_a0_k100 workspace/mtdet/runs/YNF_s0 workspace/mtdet/runs/Y150_s0
+# Y150_s0's all-train model: the upload (posted only if it beats +35.81 and +4.4), and val's read of the schedule gain.
+YA150   HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 150 --seed 0 --data dataset/repro --evals nd --out workspace/mtdet/runs/YA150
+# Server reboot (26 Oct): resumes YA150 from runs/YA150/last.pt if the reboot cut it off; if YA150 completed, train.py
+# exits at once ("already complete").
+YA150_r2   HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 150 --seed 0 --data dataset/repro --evals nd --out workspace/mtdet/runs/YA150
+YA150_val HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YA150 --split val --decoding o2m_nms0.7_a0_k100 --out workspace/mtdet/submissions/YA150_val.zip
+# The schedule's third point: ND still rose over Y150_s0's last 30 epochs (+37.4 -> +38.0, o2o) with FIT; 250 epochs
+# shows whether it keeps paying.
+Y250_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 0 --out workspace/mtdet/runs/Y250_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/Y250_s0
+# Classification (26 Oct): YA_s0's val F1 is 2.3 below Y_s0's ND F1 (R50-FPN-MT: 0.5), LF F1 falls from 83.1 at epoch 48
+# to 81.2 at 100 while training CE reaches 0, and ND's errors are confident (median 0.99) bridge <-> playground scenes
+# with no partner: label smoothing 0.1 keeps the classifier's margins finite (and its trunk gradient alive).
+YLS_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 100 --seed 0 --label-smoothing 0.1 --out workspace/mtdet/runs/YLS_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YLS_s0
+# The classifier's input (26 Oct): the mean of one stride-32 map, where a 10 px bridge or a 15 px playground covers a
+# fraction of one cell; ND's 270 images without a partner are 85.9 % accurate. YCP_s0 feeds it the mean and max of
+# each map the detector reads (P3-P5). F1 is the gap left after YA150: about 3 points to the leaders, 1.7 Δm.
+YCP_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 100 --seed 0 --cls-head pyramid --out workspace/mtdet/runs/YCP_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YCP_s0
+YX_s0   MIN_FREE=14000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26x --epochs 100 --seed 0 --out workspace/mtdet/runs/YX_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YX_s0
+D_s0    MIN_FREE=12000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch rtdetr-l --epochs 72 --seed 0 --out workspace/mtdet/runs/D_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/D_s0
+# FitDet (26 Oct): its R50 cascade scores ND +34.80 at 72 epochs against +16.70 at 24 (CAS_s0), almost all from fit, so
+# a 24-epoch ConvNeXt-B screen would measure the schedule, not the backbone: C_s0 runs 72 epochs, like D_s0.
+C_s0    MIN_FREE=23000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch convnext-b --epochs 72 --seed 0 --out workspace/mtdet/runs/C_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/C_s0
