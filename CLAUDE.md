@@ -201,9 +201,10 @@ about 1.9 GB including the archives.
     train standing in for val/test;
   - `run_repro.sh` queues the 3 ViT + LoRA seeds; each starts only on a GPU that is healthy, idle and has
     ≥ 25 GB free, with the same checks and shared locks as `workspace/gpu_run.sh`.
-- `workspace/gpu_run.sh [--min-free MiB] [--gpus "0 1 2"] [--max-wait s] -- <command>` runs one command on one GPU:
-  it waits until a GPU is healthy, has the free memory (default 25,000 MiB; ~8,000 for predict), is idle (< 20 %)
-  and isn't locked by our runs (`workspace/runs/gpu_locks/gpu<N>/`), then runs the command with
+- `workspace/gpu_run.sh [--min-free MiB] [--gpus "0 1 2"] [--slots N] [--max-wait s] -- <command>` runs one command
+  on one GPU: it waits until a GPU is healthy, has the free memory (default 25,000 MiB; ~8,000 for predict), nobody
+  else is computing on it (other users' processes < 20 %; our own runs don't count) and one of its slots for our runs
+  is free (default 2: locks `workspace/runs/gpu_locks/gpu<N>/`, `gpu<N>.2/`), then runs the command with
   `CUDA_VISIBLE_DEVICES=<N>` and releases the lock when it ends. `--status` prints every GPU's state. **Every GPU
   command in `workspace/` (smoke tests, training, predict) goes through it**; a design's queue script calls it per run.
 - `workspace/wandb_log.py`: optional W&B tracking for the design train scripts (detail_lora, r50fpn, sarmtl).
@@ -235,8 +236,11 @@ about 1.9 GB including the archives.
 - The time and memory figures in README/DETAILS are for one RTX PRO 6000 Blackwell. Expect different (likely longer)
   times on an L40S and measure them. Every reference config needs 11–17 GiB, so each fits on one L40S with plenty of
   room, TerraMind + MoE-LoRA included.
-- `train.py` uses one GPU (plain `.cuda()`, no DDP). Use the three GPUs for **three independent runs at once**, one
-  per GPU, e.g. the 3 seeds the report needs. Don't use DDP for comparable runs: it changes the effective batch size.
+- `train.py` uses one GPU (plain `.cuda()`, no DDP). Run independent runs at once, **up to 2 per GPU** when they fit
+  in memory (the user's rule since 26 Oct 2026, replacing one run per GPU). One run leaves an L40S 15–35 % idle; a
+  second run on the same GPU raised its total throughput by 20–27 %, while each run alone slowed to 0.5–0.7×
+  (`workspace/mtdet/EXPERIMENTS.md` M0.6). A shared run's `train_hours` is wall time: count its GPU hours as wall
+  hours ÷ the runs sharing the GPU. Don't use DDP for comparable runs: it changes the effective batch size.
 - **Run directories don't include the seed** (`train.py` writes to `<out>/<backbone>_<init>_<adapt>/`), so
   parallel runs of the same config must get different `--out` values or they overwrite each other:
 
@@ -252,7 +256,7 @@ done
   keeps a small ~2–4 GB app on every GPU. **Check availability before every launch**:
   - see memory, utilisation and processes with `nvidia-smi`, and whose jobs they are with
     `ps -o user,etime,args -p <pid>`;
-  - only use a GPU nobody else is using;
+  - only use a GPU nobody else is using (our own runs may share one, see above);
   - if none is free, wait (a queue that polls `nvidia-smi` is fine) rather than squeezing onto a busy GPU.
 
   Default `--workers 8` per run is fine with 3 runs on 128 cores.
