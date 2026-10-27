@@ -8,6 +8,9 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 |---|---|---|---|---|---|---:|---:|---:|---:|---:|---|
 | 26 Oct 2026 08:59 | 1 (val) | `s_DRkVHQAQAo` | `YA_s0_val.zip` | YOLO26-L multi-task, 100 epochs, all of train, seed 0, EMA weights (`runs/YA_s0`) | `o2m_nms0.7_a0_k100` | +35.81 | 92.06 | 45.19 | 92.29 | 70.08 | yes at 08:59, replacing r50fpn's `s_ngdhzNxVaK` (+18.45) |
 | 26 Oct 2026 15:24 | 1 (val) | `s_6bBQH7vFS2` | `YA150_val.zip` | YOLO26-L multi-task, 150 epochs, all of train, seed 0, EMA weights (`runs/YA150`) | `o2m_nms0.7_a0_k100` | +37.98 | 92.38 | 46.24 | 92.64 | 70.96 | yes at 15:24, replacing `s_DRkVHQAQAo` (+35.81) |
+| 27 Oct 2026 05:58 | 1 (val) | `s_iNmyE4oAin` | `YA250_val.zip` | YOLO26-L multi-task, 250 epochs, all of train, seed 0, EMA weights (`runs/YA250`) | `o2m_nms0.7_a0_k100` | +39.93 | 92.43 | 47.25 | 92.64 | 70.96 | yes at 05:59, replacing `s_6bBQH7vFS2` (+37.98) |
+| 27 Oct 2026 11:33 | 1 (val) | `s_aUZ9SopRu8` | `YA250_n8t0_val.zip` | the same `runs/YA250` model, decoded without the score floor | `o2m_nms0.8_a0_k100_t0` | +41.11 | 92.43 | 47.86 | 92.64 | 71.61 | yes at 11:34, replacing `s_iNmyE4oAin` (+39.93) |
+| 27 Oct 2026 13:49 | 1 (val) | `s_VNaV9r0uDV` | `YASA250_n8t0_val.zip` | YOLO26-L multi-task, 250 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA250`) | `o2m_nms0.8_a0_k100_t0` | +43.50 | 93.40 | 48.84 | 93.55 | 72.56 | yes at 13:49, replacing `s_aUZ9SopRu8` (+41.11) |
 
 ## `s_DRkVHQAQAo` (YOLO26-L, 100 epochs)
 
@@ -72,3 +75,77 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 - **Commands:** the `YA150` and `YA150_val` lines of `jobs/plan.txt`:
   - `train.py --arch yolo26l --epochs 150 --seed 0 --data dataset/repro --evals nd`;
   - then `predict.py runs/YA150 --split val --decoding o2m_nms0.7_a0_k100`.
+
+## `s_iNmyE4oAin` (YOLO26-L, 250 epochs)
+
+- **Why this model:** its configuration, `Y250_s0`, had the best ND Δm when it was queued: +43.23 as decoded here, from
+  one seed, +3.19 over `Y150_s0`. Interim, like the two before it: the 3-seed rule decides the design's final upload.
+- **Projection vs result:** ND +43.23 gave val +39.93, ND − 3.30 (`YA150`: ND − 2.06; `YA_s0`: ND − 0.67).
+  - Against `s_6bBQH7vFS2`: mAP 47.25, up 1.01 (ND projected +1.64); macro-F1 92.43, up 0.05 (ND: +0.08).
+  - Each longer schedule transfers less: val gains 61 % of ND's gain from 150 to 250 epochs, which fits the gain being
+    fitting of training scenes (FIT mAP 75.9 → 85.0).
+- **Checks before upload:**
+  - `predict.py` and the upload helper each ran `check_submission.py`, and both passed.
+  - The zip is 0.19 MB and holds 11,690 detections (`YA150`: 26,189), with a median of 4 per image, a maximum of 93 and
+    every score ≥ 0.001; 18 images have none. The 250-epoch model is more confident, so fewer boxes clear the 0.001
+    floor; ND was scored with the same decoding.
+- **Posting rule:** +39.93 beats both the posted +37.98 and the TA's +4.4, so it was posted.
+- **Quota after it:** 2 of 27 Oct's 5 used (FitDet's `s_3lHu6mo2fp` at 02:12, +36.82, is not MTDet's), and both reset
+  cards unused.
+- **Board at 05:59:** 3rd of 6. Ahead:
+
+  | team | Δm | macro-F1 | mAP |
+  |---|---:|---:|---:|
+  | team09 | +41.66 | 95.29 | 47.35 |
+  | team02 | +40.64 | 94.16 | 47.13 |
+
+  Our mAP is 0.10 below team09's, so the 1.73 Δm to it is almost all macro-F1: 2.86 points, about 1.5 Δm.
+- **Commands:** the `YA250` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 250 --seed 0 --data dataset/repro --evals nd`;
+  - then `predict.py runs/YA250 --split val --decoding o2m_nms0.7_a0_k100 --out submissions/YA250_val.zip`.
+
+## `s_aUZ9SopRu8` (YOLO26-L, 250 epochs, no score floor)
+
+- **Why:** the same model as `s_iNmyE4oAin`, decoded with the best decoding of the sweep by the mean ND Δm of the three
+  finished 250-epoch runs (`Y250_s0`, `Y250_s1`, `YSA250_s0`): `o2m_nms0.8_a0_k100_t0`, +44.12 against +43.27 for the
+  decoding of `s_iNmyE4oAin` (`EXPERIMENTS.md` M1.6). It keeps each image's 100 best boxes, however low their score,
+  with NMS at IoU 0.8; it beat the next best, `o2m_nms0.7_a0_k100_t0`, on all three runs (+0.14 to +0.19). The
+  decoding was chosen on ND only; val decided nothing but the posting.
+- **Projection vs result:** on the two plain 250-epoch runs, the decoding added ND +1.01 and +0.69 Δm (mAP +0.53 and
+  +0.37). On val it added +1.18 (mAP 47.25 → 47.86, +0.61; macro-F1 unchanged, since the classifier is untouched): the
+  full ND gain or more, as expected for a change of decoding rather than of training.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The zip
+  is 1.9 MB with exactly 100 detections per image (142,600) and scores down to 0.0; no image lacks detections.
+- **Posting rule:** +41.11 beats both the posted +39.93 and the TA's +4.4, so it was posted.
+- **Quota after it:** 4 of 27 Oct's 5 used (FitDet's `s_3lHu6mo2fp` at 02:12, `s_iNmyE4oAin` at 05:58, another
+  session's `s_YbqE0XcDYU` at 07:31, +37.90, not MTDet's, and this one); both reset cards unused.
+- **Board at 11:34:** 2nd of 6, behind team09 (+41.66, macro-F1 95.29, mAP 47.35). Our mAP is the board's best; the
+  0.55 Δm gap is macro-F1 (2.86 points).
+- **Commands:** after the `YA250` job (see `s_iNmyE4oAin`),
+  `workspace/gpu_run.sh --gpus 2 --min-free 8000 -- env HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py
+  workspace/mtdet/runs/YA250 --split val --decoding o2m_nms0.8_a0_k100_t0 --out workspace/mtdet/submissions/YA250_n8t0_val.zip`
+  (output: `runs/queue/YA250_n8t0.out`).
+
+## `s_VNaV9r0uDV` (YOLO26-L, 250 epochs, SAR augmentation)
+
+- **Why this model:** SAR speckle and gamma augmentation (`--sar-aug`) won its single-seed comparison at 150 and 250
+  epochs. At the submitted decoding, `YSA250_s0` scores ND +45.03 against `Y250_s0`'s +44.24. Interim, like the uploads
+  before it: seeds 1 and 2 of both configurations are still running, and the 3-seed rule decides the design's final
+  upload.
+  Confirmed at 21:08 on 27 Oct: the 3-seed means are +45.63 ± 0.71 (SAR) against +43.42 ± 0.72 (plain), with SAR
+  ahead on every seed, so this is the design's best configuration until round 3 (350 epochs) reports.
+- **Projection vs result:** ND gave SAR +0.79 on one seed; val gave +2.39 over `s_aUZ9SopRu8`, the same decoding
+  without SAR augmentation (macro-F1 92.43 → 93.40, mAP 47.86 → 48.84). The val gain is three times the ND gain, so
+  the seeds have to confirm it.
+- **Training:** epochs 1–138 ran before the 27 Oct reboot, and epochs 139–250 resumed from `last.pt` (same args; the
+  data order depends only on seed and epoch). 6.01 h wall, about 4.0 GPU h, since it shared its GPU for most of it.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.9 MB, with exactly 100 detections per image and scores down to 0.0.
+- **Posting rule:** +43.50 beats both the posted +41.11 and the TA's +4.4, so it was posted.
+- **Quota after it:** 5 of 27 Oct's 5 used; both reset cards unused.
+- **Board at 13:49:** **1st of 6**, ahead of team09 (+41.66, macro-F1 95.29, mAP 47.35). Our mAP leads by 1.49; our
+  macro-F1 trails theirs by 1.89.
+- **Commands:**
+  - Training: the `YASA250` line of `jobs/plan.txt`, resumed after the reboot by its `YASA250_r2` line:
+    `train.py --arch yolo26l --epochs 250 --seed 0 --sar-aug --data dataset/repro --evals nd`.
+  - The zip: the `YASA250_n8` line: `predict.py runs/YASA250 --split val --decoding o2m_nms0.8_a0_k100_t0`.

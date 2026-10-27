@@ -56,6 +56,11 @@ def parse_args(argv=None):
                         "map the detection head reads (Ultralytics models)")
     p.add_argument('--ema', type=float, default=0.9998, help='EMA decay (0: score the last weights)')
     p.add_argument('--no-flip', action='store_true', help='no random flips')
+    p.add_argument('--sar-aug', action='store_true', help='SAR photometric augmentation: speckle and gamma (common.SARAugment)')
+    p.add_argument('--sar-p', type=float, default=0.5, help="probability of each of --sar-aug's two parts")
+    p.add_argument('--zoom', type=float, default=0.0,
+                   help='scale jitter half the time: resized by 1 +- ZOOM, then cropped or padded to 512 (common.Zoom)')
+    p.add_argument('--mosaic', action='store_true', help='half the time a 2 x 2 same-class mosaic cut to 512 (common.Mosaic)')
     p.add_argument('--channels-last', action=argparse.BooleanOptionalAction, help='weights and input channels_last')
     p.add_argument('--eval-every', type=int, default=12, help='score every N epochs, and after the last one')
     p.add_argument('--workers', type=int, default=8)
@@ -122,7 +127,7 @@ def git_commit():
 
 
 NOT_TRAINING = ('workers', 'eval_every', 'evals')  # args that change what is scored, not what is trained
-LATER = {'label_smoothing': 0.0, 'cls_head': 'p5'}  # args added after runs had started: left out at their default, so those runs still match
+LATER = {'label_smoothing': 0.0, 'cls_head': 'p5', 'sar_aug': False, 'zoom': 0.0, 'mosaic': False, 'sar_p': 0.5}  # args added after runs had started: left out at their default, so those runs still match
 
 
 def training_args(args):
@@ -223,7 +228,8 @@ def main(argv=None):
     log(f'evaluation sets {dict((k, str(v)) for k, v in dirs.items())}: images shared with train {overlap}; '
         f'{"held-out run" if held_out else "NOT a held-out run: its ND/LF scores are in-train"}', log_file)
     loader = make_loader(args.data, 'train', train=True, flips=not args.no_flip, batch_size=args.batch_size,
-                         workers=args.workers, limit=args.limit, seed=args.seed)
+                         workers=args.workers, limit=args.limit, seed=args.seed, sar_aug=args.sar_aug,
+                         zoom=args.zoom, mosaic=args.mosaic, sar_p=args.sar_p)
     steps = min(len(loader), args.max_steps or len(loader))
     optimizer = torch.optim.AdamW(param_groups(model, args), lr=args.lr)
     warmup, total_steps = round(args.warmup_epochs * steps), args.epochs * steps

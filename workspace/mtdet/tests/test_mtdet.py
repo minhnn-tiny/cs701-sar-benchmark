@@ -4,7 +4,8 @@ import json
 import pytest
 import torch
 
-from common import HOLDOUT, ROOT, SARMultiTask, check_budget, collate, dense_decode, make_loader
+from common import (HOLDOUT, MEAN, ROOT, STD, Mosaic, SARAugment, SARMultiTask, Zoom, check_budget, collate,
+                    dense_decode, make_loader)
 
 
 @pytest.fixture(scope='module')
@@ -70,6 +71,53 @@ def test_epoch_order_and_flips_are_reproducible():
     assert epoch(resumed, 2) == second and first != second and len(second) == 24
 
 
+
+def test_sar_augment_is_photometric_and_seeded():
+    """The same seed gives the same pixels; boxes and labels are untouched; intensities stay in [0, 1]."""
+    plain = SARMultiTask(HOLDOUT, 'train', limit=4)
+    runs = []
+    for _ in range(2):
+        torch.manual_seed(5)
+        runs.append([SARAugment(plain)[i] for i in range(4)])
+    for (a, label, target), (b, _, _), (c, label_c, target_c) in zip(*runs, [plain[i] for i in range(4)]):
+        assert torch.equal(a, b) and a.shape == c.shape and label == label_c
+        assert torch.equal(target['boxes'], target_c['boxes'])
+        assert -1e-5 <= float((a * STD + MEAN).min()) and float((a * STD + MEAN).max()) <= 1 + 1e-5
+    assert any(not torch.allclose(a, plain[i][0]) for i, (a, _, _) in enumerate(runs[0]))
+
+
+
+class Squares(torch.utils.data.Dataset):
+    """One bright square per image, with its box, on a dark background (normalised units)."""
+    rows = [{'label': str(i % 9)} for i in range(18)]
+
+    def __len__(self):
+        return 18
+
+    def __getitem__(self, i):
+        x, y = torch.randint(0, 480, (2,), generator=torch.Generator().manual_seed(i)).tolist()
+        image = torch.full((1, 512, 512), -1.0)
+        image[:, y:y + 8 + i, x:x + 8 + i] = 3.0
+        return image, i % 9, {'boxes': torch.tensor([[x, y, x + 8.0 + i, y + 8.0 + i]]), 'labels': torch.tensor([i % 9 + 1])}
+
+
+@pytest.mark.parametrize('wrap', [lambda d: Zoom(d, 0.5), Mosaic], ids=['zoom', 'mosaic'])
+def test_geometric_augment_moves_boxes_with_pixels(wrap):
+    """Every box Zoom and Mosaic return covers the square's pixels; labels stay the image's class; seeded."""
+    aug, changed = wrap(Squares()), 0
+    for i in range(18):
+        torch.manual_seed(i)
+        image, label, target = aug[i]
+        torch.manual_seed(i)
+        again = aug[i]
+        assert torch.equal(image, again[0]) and torch.equal(target['boxes'], again[2]['boxes'])
+        assert image.shape == (1, 512, 512) and len(target['boxes']) >= 1 and (target['labels'] == label + 1).all()
+        for x1, y1, x2, y2 in target['boxes'].round().int().tolist():
+            assert image[0, y1:y2, x1:x2].mean() > 0.5
+        changed += not torch.equal(image, Squares()[i][0])
+    assert changed >= 3
+
+
 def test_compact_zip_passes_check(tmp_path):
     from check_submission import check
     from make_submission import write_submission
@@ -89,3 +137,15 @@ def test_holdout_disjoint():
     train = split_images(HOLDOUT, 'train')
     assert not train & split_images(HOLDOUT, 'val') and not train & split_images(EVAL_SETS['lf'].parent, 'val')
     assert split_images(EVAL_SETS['fit'].parent, 'fit') <= train  # FIT: training images
+
+
+def test_probe_head_swap():
+    """probe.py: a head fit on cached features drops into a model built with that cls_head (strict load)."""
+    from probe import fit, with_head
+    from train import build_model, parse_args
+    p5 = build_model(parse_args(['--arch', 'yolo26l', '--out', '/tmp/unused']), coco=False)
+    pyramid = build_model(parse_args(['--arch', 'yolo26l', '--cls-head', 'pyramid', '--out', '/tmp/unused']), coco=False)
+    x, y = torch.randn(64, pyramid.cls_head[0].normalized_shape[0]), torch.arange(64) % 9
+    head = fit(x, y, epochs=30)
+    assert (head(x).argmax(1) == y).float().mean() > 0.9  # random features in 2,560 dimensions are separable
+    pyramid.load_state_dict(with_head(p5.state_dict(), head))

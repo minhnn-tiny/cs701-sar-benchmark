@@ -51,10 +51,12 @@ is trained on natural images (COCO, ImageNet): none on SAR data.
   at 1e-5, weight decay 1e-4, clip 0.1 (RT-DETR's recipe); ConvNeXt-B lr 1e-4, weight decay 0.05, one warmup epoch (the
   R50-FPN-MT protocol).
 - Flags the screens vary (`train.py --help`): `--epochs` (24 by default; the YOLO26 screens use 100–250), `--no-flip`,
-  `--label-smoothing`, `--cls-weight`, `--cls-head`. ND, LF and FIT are scored every 12 epochs (`--eval-every`) and after the last.
+  `--zoom` (scale jitter: `common.Zoom`), `--mosaic` (same-class 2 × 2 mosaic: `common.Mosaic`), `--sar-aug` (extra
+  speckle and a random gamma: `common.SARAugment`), `--label-smoothing`, `--cls-weight`, `--cls-head`. ND, LF and FIT are scored every 12 epochs (`--eval-every`) and after the last.
 - A checkpoint is written atomically after every epoch, and a run directory holding one resumes; the data order depends
   only on (seed, epoch).
-- One run per GPU, no DDP: comparable runs keep batch 16 (CLAUDE.md), and the GPUs are shared.
+- Up to 2 runs per GPU (the user's rule since 26 Oct, `EXPERIMENTS.md` M0.6), no DDP: comparable runs keep batch 16
+  (CLAUDE.md).
 
 ## Holdout and selection
 
@@ -85,10 +87,11 @@ is trained on natural images (COCO, ImageNet): none on SAR data.
 channels_last is the default for the Ultralytics models (same math, another memory layout). ConvNeXt-B inherits FitDet's
 fast mode (1.63× per step in FitDet's measurement).
 
-## Results and run plan (26 Oct, 13:00 SGT)
+## Results and run plan (27 Oct, 11:40 SGT)
 
 The full log, with each hypothesis and the per-class numbers, is `EXPERIMENTS.md`; the uploads are in
-`submissions/SUBMISSIONS.md`. Seed 0 throughout; ND Δm as submitted (`o2m_nms0.7_a0_k100`).
+`submissions/SUBMISSIONS.md`. Seed 0 throughout; ND Δm with the decoding submitted until 27 Oct 11:30
+(`o2m_nms0.7_a0_k100`; the current one adds +0.55 to +1.01, M1.6). A run that shared its GPU counts half its wall hours.
 
 | run | change vs `Y_s0` | GPU h | ND Δm | LF mAP | FIT mAP | decision |
 |---|---|---:|---:|---:|---:|---|
@@ -96,29 +99,63 @@ The full log, with each hypothesis and the per-class numbers, is `EXPERIMENTS.md
 | `YP2_s0` | stride-4 level (`yolo26l-p2`) | 1.72 | +37.26 | 18.2 | 69.7 | not resolved: paired unit bootstrap +0.76, 95 % interval [−1.54, +2.60] |
 | `Y150_s0` | 150 epochs | 2.08 | **+40.04** | 18.2 | 75.9 | keep: bootstrap +3.54, [+1.38, +5.39] |
 | `YNF_s0` | no flips | 1.39 | +33.11 | 14.2 | 94.0 | discard: bootstrap −3.41, [−7.06, −0.23] |
+| `Y250_s0` | 250 epochs | 2.42 | **+43.23** | 16.8 | 85.0 | keep: +3.19 over `Y150_s0`; round 2 trains 250 epochs |
+| `YLS_s0` | label smoothing 0.1 | 1.06 | +35.49 | 17.9 | 68.3 | discard: −0.99 (F1 −0.98) |
+| `YCP_s0` | pyramid classification head | 1.06 | +33.03 | 17.4 | 60.5 | discard: −3.45 (F1 +1.09, mAP −2.10) |
+| `YZ150_s0` | zoom 0.5–1.5, 150 epochs | 1.59 | +35.29 | 20.9 | 58.9 | discard: −4.75 against `Y150_s0` (F1 +1.15, mAP −2.81) |
+| `YM150_s0` | same-class mosaic, 150 epochs | 1.58 | +36.62 | 19.9 | 62.1 | −3.42 against `Y150_s0`; retested at 250 epochs |
+| `YSA150_s0` | SAR speckle and gamma, 150 epochs | 1.53 | +41.18 | 17.3 | 73.1 | +1.14 against `Y150_s0` (F1 +0.27, mAP +0.52), one seed; retested at 250 epochs |
+| `YX_s0` | YOLO26-X, layers 6–10 frozen (58.8 M / 38.7 M) | 1.38 | +36.34 | 18.2 | 65.3 | discard: −0.14 (F1 +1.37, mAP −0.45) at 2.2× the parameters |
+| `D_s0` | RT-DETR-L, 72 epochs | 2.07 | +31.72 (its best decoding) | 20.4 | 66.6 | discard: −4.76; stalls after epoch 48, ~3× slower per image |
+| `C_s0` | ConvNeXt-B + Cascade R-CNN, 72 epochs (117.0 M / 37.9 M) | ≈ 5.0 | +38.73 (its best decoding) | 17.8 | 84.1 | discard: the best classifier (F1 95.0) but mAP 45.9; YOLO26-L with SAR reaches +45.63 (3 seeds) in half the GPU hours |
+| `YSA250_s0` | SAR speckle and gamma, 250 epochs | 2.61 | **+44.18** | 17.3 | 82.2 | keep, pending its seeds: +0.95 over `Y250_s0` (F1 +0.21, mAP +0.44), its second single-seed win |
 
 - **Decoding**: YOLO26's one-to-many head with per-class NMS 0.7 and 100 boxes per image beats its native one-to-one
-  head by 1.9–2.7 Δm. JD, 300 boxes, NMS 0.8 and merge NMS add nothing or lose (M1.1–M1.3). Correcting the image class
-  with detection evidence: rejected (M1.4).
+  head by 1.9–2.7 Δm. With the 0.001 score floor, JD, 300 boxes, NMS 0.8 and merge NMS add nothing or lose
+  (M1.1–M1.3). Correcting the image class with detection evidence: rejected (M1.4); so is refitting the classification
+  head on the frozen trunk (M1.5). Dropping the floor (every image keeps its top 100 boxes) adds +0.55 to +0.83 Δm on
+  ND, and NMS 0.8 then beats 0.7 on all three 250-epoch runs: `o2m_nms0.8_a0_k100_t0` is the submitted decoding since
+  27 Oct 11:30 (3-run ND mean +44.12 against +43.27; M1.6).
 - **Speed**: channels_last kept. `torch.compile`, fused AdamW, a foreach EMA and dropping the per-step sync gain nothing
   (M0.1, M0.5).
 - **Val**: `YA_s0`, `Y_s0`'s configuration trained on all of train, scored +35.81 (F1 92.06, mAP 45.19), ND − 0.67.
   `YA150`, `Y150_s0`'s on all of train, scored **+37.98** (F1 92.38, mAP 46.24), ND − 2.06, and replaced it as the
-  posted entry: 5th of 6 on 26 Oct, with the third-best mAP and the lowest macro-F1 of the top five.
+  posted entry: 5th of 6 on 26 Oct, with the third-best mAP and the lowest macro-F1 of the top five. The leader on
+  27 Oct: +41.66 (F1 95.29, mAP 47.35).
+  `YA250`, `Y250_s0`'s on all of train, scored **+39.93** (F1 92.43, mAP 47.25), ND − 3.30, and replaced it: 3rd of
+  6, its mAP 0.10 below the leader's, so the gap is macro-F1 (2.86 points, ~1.5 Δm). The same model without the score
+  floor scored **+41.11** (mAP 47.86, the board's best): 2nd of 6, 0.55 behind team09, all of it F1.
+  `YASA250`, `YSA250_s0`'s configuration (SAR augmentation) on all of train, scored **+43.50** (F1 93.40, mAP 48.84)
+  at the same decoding and is posted: **1st of 6**, 1.84 ahead of team09. Its +2.39 over `YA250` is three times what
+  ND showed (+0.79, one seed), so the seeds still decide.
 - **Where the score comes from** (`analyze.py`):
   - ND images with a near-duplicate partner in local train score 28–60 mAP; the 270 without one score 16.
   - The 150-epoch gain is all on partnered images.
   - Bridge and playground stay near 4 AP. They are missed, not mislocated, in scenes where look-alike structures carry no
     box.
 
-**Next** (`jobs/plan.txt`): from 26 Oct ~15:30, two jobs at once on GPU 1 and one job of at most 12 GB on GPU 2 next to
-FitDet's queue (the user's rule of up to 2 runs per GPU, `EXPERIMENTS.md` M0.6):
-1. Screens: `Y250_s0` (the schedule's third point), `YLS_s0` (label smoothing 0.1), `YCP_s0` (the pyramid classification
-   head), `YX_s0` (YOLO26-X), `D_s0` (RT-DETR-L, 72 epochs), `C_s0` (ConvNeXt-B + Cascade R-CNN, 72 epochs).
-2. The combined winner with seeds 1 and 2, its all-train model and the Phase 1 upload, before 31 Oct 12:00 SGT.
+**Next** (`jobs/plan.txt`): the server rebooted at 09:43 on 27 Oct (`REBOOT.md`); the cut-off runs resumed as `_r2` jobs
+from their last checkpoints. Since 27 Oct 13:40 the user's rule is to use the GPUs fully: up to 4 of our jobs per GPU as
+memory allows (`gpu_run.sh --slots 4`). GPU 2 runs 3–4 of our jobs (FitDet's queue is down after the reboot); GPUs 0
+and 1 held tom's jobs until ~17:10; since then every queued job runs, three per GPU:
+1. Done: `YASA250` (SAR, all of train) scored val +43.50 and is posted (1st of 6).
+2. Done: round 2's 3-seed means at the submitted decoding: SAR augmentation **+45.63 ± 0.71** against plain
+   +43.42 ± 0.72, with SAR ahead on every seed (+0.79, +3.34, +2.50). SAR at 250 epochs is the design's best
+   configuration so far, and `YASA250` (posted) is its all-train model.
+3. Round 3: 350 epochs with SAR augmentation (`YASA350` on all of train, then `YSA350_s0`–`s2`): val took 61 % of
+   ND's gain at each longer schedule so far. `YASA350` runs on GPU 0 next to tom's job since 27 Oct 16:07 (the user's
+   go-ahead for this one job); its val zip is due ~06:00 on 28 Oct. `YSA350_s0` runs on GPU 1 next to tom's
+   job since 16:18, also with the user's go-ahead, leaving ~2.7 GB free beside his job (`--margin 0`). `YM250_s0` (mosaic at 250 epochs) runs last.
+4. Done: `C_s0` (ConvNeXt-B + Cascade R-CNN, 72 epochs) scored ND +38.73 (F1 95.03, mAP 45.89): the best classifier,
+   but far behind YOLO26-L on mAP. YOLO26-L stays the design's architecture.
+5. Round 4 (GPU 2 since 21:10): SAR augmentation on more images (`--sar-p 0.8`), `YSP250_s0`/`s1`, paired against
+   `YSA250_s0`/`s1`; ~04:00–05:00 on 28 Oct.
+6. Round 5 (since 28 Oct 01:37): 450 epochs with SAR, `YASA450` on all of train and `YSA450_s0`–`s2`, paired
+   against the 350-epoch seeds; stopped if 350 doesn't beat 250 on the 3-seed mean. Due ~14:00–19:00 on 28 Oct.
+7. The Phase 1 upload of the best configuration's all-train model by its 3-seed mean, before 31 Oct 12:00 SGT.
 
 **Submission checkpoint**: the EMA weights of the chosen configuration's all-train run, `runs/YA<config>/model.pt`, decoded
-with `o2m_nms0.7_a0_k100`. Posted now: `runs/YA150` (`s_6bBQH7vFS2`, +37.98).
+with `o2m_nms0.8_a0_k100_t0`. Posted now: `runs/YASA250` (`s_VNaV9r0uDV`, +43.50, 1st of 6).
 
 ## Commands (from the repo root; every GPU command through `workspace/gpu_run.sh`)
 

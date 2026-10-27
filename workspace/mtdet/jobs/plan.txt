@@ -47,8 +47,84 @@ YLS_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26
 # fraction of one cell; ND's 270 images without a partner are 85.9 % accurate. YCP_s0 feeds it the mean and max of
 # each map the detector reads (P3-P5). F1 is the gap left after YA150: about 3 points to the leaders, 1.7 Δm.
 YCP_s0  HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 100 --seed 0 --cls-head pyramid --out workspace/mtdet/runs/YCP_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YCP_s0
+# Augmentation (26 Oct, the user: plausible augmentations, on the current best model only, YOLO26-L at 150 epochs;
+# zoom allowed, CLAUDE.md). Until now the only augmentation was sarbench's flips (YNF_s0: −3.4 without them). Each
+# screen against Y150_s0 (ND +40.04); every one applies half the time, so half the steps still see scenes as they are.
+# Zoom: scale jitter 0.5-1.5 (Ultralytics' scale=0.5) for the small objects and the 270 ND images without a partner.
+YZ150_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 150 --seed 0 --zoom 0.5 --out workspace/mtdet/runs/YZ150_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YZ150_s0
+# Mosaic: 2 x 2 tiles of one class (the image label holds) cut to 512: more scenes and boxes per step.
+YM150_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 150 --seed 0 --mosaic --out workspace/mtdet/runs/YM150_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YM150_s0
+# SAR photometric: extra speckle and a gamma, for the 52 revisit images (mAP 28.2) and the 270 without a partner.
+YSA150_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 150 --seed 0 --sar-aug --out workspace/mtdet/runs/YSA150_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA150_s0
 YX_s0   MIN_FREE=14000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26x --epochs 100 --seed 0 --out workspace/mtdet/runs/YX_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YX_s0
 D_s0    MIN_FREE=12000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch rtdetr-l --epochs 72 --seed 0 --out workspace/mtdet/runs/D_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/D_s0
+# Y250_s0 (26 Oct): ND +43.23, +3.19 over Y150_s0 (mAP +1.64), again from fitting (FIT 75.9 -> 85.0, LF 18.2 -> 16.8),
+# so round 2 trains 250 epochs. Zoom and mosaic lost at 150 epochs (ND +35.29 / +36.62 against +40.04): better on unseen
+# scenes (LF +2.7 / +1.7 mAP, F1 +1.1) but fitting much less (FIT -17.0 / -13.8), the gap closing as training goes on.
+# Round 2: Y250_s0's all-train model with its val zip (the upload; posted only if it beats +37.98 and +4.4), seeds 1 and
+# 2, and mosaic (the better augmentation) at 250 epochs against Y250_s0. All before C_s0, which needs GPU 1 to itself.
+YA250   HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 0 --data dataset/repro --evals nd --out workspace/mtdet/runs/YA250 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YA250 --split val --decoding o2m_nms0.7_a0_k100 --out workspace/mtdet/submissions/YA250_val.zip
+# YSA150_s0 (26 Oct): ND +41.18, +1.14 over Y150_s0 (F1 +0.27, mAP +0.52), the only augmentation that didn't lose,
+# though LF (17.3) and FIT (73.1) both came out lower. Retested at 250 epochs against Y250_s0 before the seeds, since
+# it decides whether seeds 1 and 2 go to plain or SAR-augmented training.
+YSA250_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 0 --sar-aug --out workspace/mtdet/runs/YSA250_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA250_s0
+Y250_s1 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 1 --out workspace/mtdet/runs/Y250_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/Y250_s1
+# 27 Oct 01:15: YOLO26-X (+36.34) and RT-DETR-L (+31.72) don't beat YOLO26-L (+36.48), and hanliu's 17.7 GB app has
+# left GPU 1, so C_s0 (23 GB) now fits next to one of our runs there: it goes before the mosaic retest and seed 2.
 # FitDet (26 Oct): its R50 cascade scores ND +34.80 at 72 epochs against +16.70 at 24 (CAS_s0), almost all from fit, so
 # a 24-epoch ConvNeXt-B screen would measure the schedule, not the backbone: C_s0 runs 72 epochs, like D_s0.
 C_s0    MIN_FREE=23000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch convnext-b --epochs 72 --seed 0 --out workspace/mtdet/runs/C_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/C_s0
+# Reboot (27 Oct, 09:43 SGT): it stopped C_s0, YASA250 and YSA250_s1 (exit 143); each <name>_r2 resumes its run from
+# runs/<name>/last.pt (epochs 33/72, 138/250, 130/250). YASA250_r2 also writes the no-floor val zips that YASA250_t0
+# was going to wait for, so that job is dropped.
+C_s0_r2 MIN_FREE=23000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch convnext-b --epochs 72 --seed 0 --out workspace/mtdet/runs/C_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/C_s0
+# C_s0_r2 ran out of GPU memory at epoch 49 (27 Oct 17:30) beside three YOLO jobs on GPU 2: its evaluation peaks above the
+# 23 GB it was admitted with. C_s0_r3 resumes from epoch 48 with 26 GB and the allocator's expandable segments.
+C_s0_r3 MIN_FREE=26000 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch convnext-b --epochs 72 --seed 0 --out workspace/mtdet/runs/C_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/C_s0
+# YSA250_s0 (27 Oct 05:14): ND +44.18, +0.95 over Y250_s0 (F1 +0.21, mAP +0.44), its second single-seed win (+1.14 at
+# 150 epochs); FIT 82.2 (-2.8), LF 17.3 (+0.5). So SAR augmentation gets its all-train model and val zip (the upload after
+# YA250) and seeds 1 and 2, then plain seed 2 (the 3-seed means decide), then the mosaic retest. No 350-epoch screen: ND
+# (o2o) stays flat from epoch 168 to 250 in both Y250_s0 (40.7 -> 40.3) and YSA250_s0 (42.1 -> 42.3) while FIT keeps rising.
+YASA250 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 0 --sar-aug --data dataset/repro --evals nd --out workspace/mtdet/runs/YASA250 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YASA250 --split val --decoding o2m_nms0.7_a0_k100 --out workspace/mtdet/submissions/YASA250_val.zip
+YASA250_r2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 0 --sar-aug --data dataset/repro --evals nd --out workspace/mtdet/runs/YASA250 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YASA250 --split val --decoding o2m_nms0.7_a0_k100_t0 --out workspace/mtdet/submissions/YASA250_t0_val.zip && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YASA250 --split val --decoding o2m_nms0.7_a0_k300_t0 --out workspace/mtdet/submissions/YASA250_t0k300_val.zip
+# YASA250's upload zip with the decoding chosen at 11:32 (M1.6); it waits for YASA250_r2 to complete (minutes).
+YASA250_n8 MIN_FREE=8000 timeout 1800 bash -c 'until [ -f workspace/mtdet/runs/YASA250/model.pt ] && [ ! -f workspace/mtdet/runs/YASA250/last.pt ]; do sleep 20; done' && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YASA250 --split val --decoding o2m_nms0.8_a0_k100_t0 --out workspace/mtdet/submissions/YASA250_n8t0_val.zip
+# The val F1 gap (27 Oct 06:00): YA250 scored val F1 92.43 against the leaders' 95.3-95.9 (its mAP 47.25 is 0.1 off the
+# best), and on ND YOLO's classifier misses crops of training scenes that FitDet's gets right (images with a copy or crop
+# partner: 96.5-99.1 % against 98.8-100 %, mostly oil tanks called playground). probe.py refits only the classification
+# head on each run's frozen trunk (zoomed views, the P3-P5 pyramid) and scores ND and LF in a few minutes; a head that
+# wins on both runs gets an all-train version: a val A/B with the detections unchanged.
+YPROBE  MIN_FREE=8000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/probe.py workspace/mtdet/runs/Y250_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/probe.py workspace/mtdet/runs/YSA250_s0
+YSA250_s1 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 1 --sar-aug --out workspace/mtdet/runs/YSA250_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA250_s1
+YSA250_s1_r2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 1 --sar-aug --out workspace/mtdet/runs/YSA250_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA250_s1
+# No score floor (27 Oct 07:45, EXPERIMENTS.md M1.6): on CPU, keeping every image's top 100 boxes instead of those above
+# 0.001 raised ND mAP by +0.47 (Y250_s0) and +0.35 (YSA250_s0), Δm +0.91 / +0.67; boxes ranked below all others can only
+# add AP. The '_t0' decodings are now in evaluate.py's sweep: this job re-scores the finished 250-epoch runs with it, then
+# writes YA250's val zips at 100 and 300 boxes (the upload follows the sweep's better one; posted if it beats +39.93).
+YT0     MIN_FREE=8000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/Y250_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/Y250_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA250_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YA250 --split val --decoding o2m_nms0.7_a0_k100_t0 --out workspace/mtdet/submissions/YA250_t0_val.zip && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YA250 --split val --decoding o2m_nms0.7_a0_k300_t0 --out workspace/mtdet/submissions/YA250_t0k300_val.zip
+YSA250_s2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 2 --sar-aug --out workspace/mtdet/runs/YSA250_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA250_s2
+Y250_s2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 2 --out workspace/mtdet/runs/Y250_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/Y250_s2
+# Round 3 (27 Oct 07:30): a longer schedule. Val took 61 % of ND's gain both times (100 -> 150 epochs: +2.17 of +3.56;
+# 150 -> 250: +1.95 of +3.19), and each schedule's ND plateau (o2o, from ~70 % of its epochs) rises with its length
+# (34.6 / 38.0 / 40.5 at 100 / 150 / 250), so 350 epochs should add ~+1-1.5 on ND, ~+0.7-0.9 on val. SAR-augmented
+# (it won at 150 and 250 epochs); the all-train run goes first so its val zip lands with its seeds, which decide.
+# The head-refit probe (YPROBE) found nothing (EXPERIMENTS.md M1.5).
+# Its zip uses the decoding with the best 3-run ND mean since YT0 (27 Oct 11:32, M1.6): o2m_nms0.8_a0_k100_t0.
+YASA350 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 350 --seed 0 --sar-aug --data dataset/repro --evals nd --out workspace/mtdet/runs/YASA350 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YASA350 --split val --decoding o2m_nms0.8_a0_k100_t0 --out workspace/mtdet/submissions/YASA350_val.zip
+YSA350_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 350 --seed 0 --sar-aug --out workspace/mtdet/runs/YSA350_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA350_s0
+YSA350_s1 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 350 --seed 1 --sar-aug --out workspace/mtdet/runs/YSA350_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA350_s1
+YSA350_s2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 350 --seed 2 --sar-aug --out workspace/mtdet/runs/YSA350_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA350_s2
+YM250_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 0 --mosaic --out workspace/mtdet/runs/YM250_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YM250_s0
+# Round 4 (27 Oct 21:20): SAR augmentation won all three 250-epoch seeds (+2.21 paired) and is our biggest single gain.
+# Does applying it to more images help further? Each part with probability 0.8 instead of 0.5 (--sar-p), two seeds
+# paired against YSA250_s0/s1 (+45.03/+46.42 at the submitted decoding). GPU 2 was idle after round 2.
+YSP250_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 0 --sar-aug --sar-p 0.8 --out workspace/mtdet/runs/YSP250_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSP250_s0
+YSP250_s1 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 250 --seed 1 --sar-aug --sar-p 0.8 --out workspace/mtdet/runs/YSP250_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSP250_s1
+# Round 5 (28 Oct 01:45): a longer schedule again. ND rose at every step so far (100 -> 150 -> 250 epochs: +3.56, +3.19;
+# 250 -> 350 with SAR: +1.88 on seed 0), and val took 61 % of ND's gain. 450 epochs with SAR: the all-train model runs
+# alongside its three seeds (paired against YSA350_s0-s2), so its zip is ready when the seeds decide. Started before
+# YSA350_s1/s2 report because GPUs 0 and 1 had room; stopped if 350 doesn't beat 250 on the 3-seed mean.
+YASA450 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 450 --seed 0 --sar-aug --data dataset/repro --evals nd --out workspace/mtdet/runs/YASA450 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YASA450 --split val --decoding o2m_nms0.8_a0_k100_t0 --out workspace/mtdet/submissions/YASA450_val.zip
+YSA450_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 450 --seed 0 --sar-aug --out workspace/mtdet/runs/YSA450_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA450_s0
+YSA450_s1 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 450 --seed 1 --sar-aug --out workspace/mtdet/runs/YSA450_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA450_s1
+YSA450_s2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 450 --seed 2 --sar-aug --out workspace/mtdet/runs/YSA450_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSA450_s2

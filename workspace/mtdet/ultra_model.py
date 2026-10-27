@@ -74,15 +74,16 @@ def load_coco(det, path, shift=None):
     return len(copied), len(target)
 
 
-def set_decoding(model, head='o2o', jd_alpha=0.0, nms=None, topk=300, merge=False):
-    model.decoding = dict(head=head, jd_alpha=jd_alpha, nms=nms, topk=topk, merge=merge)
+def set_decoding(model, head='o2o', jd_alpha=0.0, nms=None, topk=300, merge=False, score_thresh=0.001):
+    model.decoding = dict(head=head, jd_alpha=jd_alpha, nms=nms, topk=topk, merge=merge, score_thresh=score_thresh)
 
 
 def decoding_grid(arch):
     """The decodings evaluate.py sweeps. YOLO26: the one-to-one head (NMS-free, its native inference) or the
     one-to-many head with per-class NMS; RT-DETR: its queries, with or without NMS. Each with JD alpha 0 or 1 and 100 or
     300 boxes per image (the scorer keeps 100 per image and class). Added after Y_s0 (where 300 boxes changed nothing),
-    with 100 boxes only: NMS 0.8, and merge NMS ('m' after the IoU) at every NMS IoU."""
+    with 100 boxes only: NMS 0.8, and merge NMS ('m' after the IoU) at every NMS IoU. Added 27 Oct ('_t0', M1.6): no
+    score floor, so every image keeps its top k boxes; boxes ranked below all others can only add AP."""
     heads = [('q', None), ('q', 0.7)] if arch.startswith('rtdetr') else [('o2o', None), ('o2m', 0.6), ('o2m', 0.7)]
     grid = {f'{h}{"" if nms is None else f"_nms{nms}"}_a{a:g}_k{k}': dict(head=h, jd_alpha=a, nms=nms, topk=k)
             for h, nms in heads for a in (0.0, 1.0) for k in (100, 300)}
@@ -90,6 +91,8 @@ def decoding_grid(arch):
         [('o2m', 0.8, False)] + [('o2m', nms, True) for nms in (0.6, 0.7, 0.8)]
     grid.update({f'{h}_nms{nms}{"m" if merge else ""}_a{a:g}_k100': dict(head=h, jd_alpha=a, nms=nms, topk=100, merge=merge)
                  for h, nms, merge in more for a in (0.0, 1.0)})
+    no_floor = [('q', 0.7, 100)] if arch.startswith('rtdetr') else [('o2m', 0.7, 100), ('o2m', 0.7, 300), ('o2m', 0.8, 100)]
+    grid.update({f'{h}_nms{nms}_a0_k{k}_t0': dict(head=h, nms=nms, topk=k, score_thresh=0.0) for h, nms, k in no_floor})
     return grid
 
 
@@ -177,7 +180,7 @@ class UltraMultiTask(nn.Module):
         boxes, scores = self._boxes_scores(raw, images.shape[-1])
         d = self.decoding
         return logits, dense_decode(boxes, scores, logits.float().softmax(1), d['jd_alpha'], d['nms'], d['topk'],
-                                    merge=d['merge']), None
+                                    d['score_thresh'], merge=d['merge']), None
 
     @staticmethod
     def _batch(targets, x):
