@@ -111,7 +111,11 @@ val and test images.
   20.1 M; ViT + LoRA is 21.0 M trainable. `--adapt full` and `--init scratch` (106 M trainable) are **over budget**:
   references only, never a valid submission. `train.py` logs both counts; the report must state them.
 - One model: no ensembles, no test-time augmentation.
-- Input ≤ 512 × 512 px, each image fed once: no upscaling, no tiling.
+- Input ≤ 512 × 512 px. At inference, each val/test image is fed once at the baseline's geometry
+  (`sarbench/data.py`): no upscaling, no tiling.
+- **Augmenting train images during training is allowed** (the user's clarification, 26 Oct 2026): flips, zoom (scale
+  jitter, zooming in included), crops, mosaics, photometric changes, as long as each training input stays
+  ≤ 512 × 512 px. What the rules forbid is more data from other sources (see Not allowed), not augmentation.
 - **Not allowed**: other SAR datasets, or models trained on them (including detectors pretrained on SAR data: risk
   of leakage); training on or hand-labelling val/test images; sharing work outside the team; submitting with any
   token other than our own team token.
@@ -201,10 +205,11 @@ about 1.9 GB including the archives.
     train standing in for val/test;
   - `run_repro.sh` queues the 3 ViT + LoRA seeds; each starts only on a GPU that is healthy, idle and has
     ≥ 25 GB free, with the same checks and shared locks as `workspace/gpu_run.sh`.
-- `workspace/gpu_run.sh [--min-free MiB] [--gpus "0 1 2"] [--slots N] [--max-wait s] -- <command>` runs one command
-  on one GPU: it waits until a GPU is healthy, has the free memory (default 25,000 MiB; ~8,000 for predict), nobody
-  else is computing on it (other users' processes < 20 %; our own runs don't count) and one of its slots for our runs
-  is free (default 2: locks `workspace/runs/gpu_locks/gpu<N>/`, `gpu<N>.2/`), then runs the command with
+- `workspace/gpu_run.sh [--min-free MiB] [--gpus "0 1 2"] [--slots N] [--max-util %] [--margin MiB] [--max-wait s] --
+  <command>` runs one command on one GPU: it waits until a GPU is healthy, has the free memory (default 25,000 MiB;
+  ~8,000 for predict; `--margin`, default 4,000 MiB, more where other users have processes), nobody else is computing
+  on it (other users' processes < `--max-util`, default 20 %; our own runs don't count) and one of its slots for our
+  runs is free (default 4: locks `workspace/runs/gpu_locks/gpu<N>/`, `gpu<N>.2/`, …), then runs the command with
   `CUDA_VISIBLE_DEVICES=<N>` and releases the lock when it ends. `--status` prints every GPU's state. **Every GPU
   command in `workspace/` (smoke tests, training, predict) goes through it**; a design's queue script calls it per run.
 - `workspace/wandb_log.py`: optional W&B tracking for the design train scripts (detail_lora, r50fpn, sarmtl).
@@ -236,11 +241,12 @@ about 1.9 GB including the archives.
 - The time and memory figures in README/DETAILS are for one RTX PRO 6000 Blackwell. Expect different (likely longer)
   times on an L40S and measure them. Every reference config needs 11–17 GiB, so each fits on one L40S with plenty of
   room, TerraMind + MoE-LoRA included.
-- `train.py` uses one GPU (plain `.cuda()`, no DDP). Run independent runs at once, **up to 2 per GPU** when they fit
-  in memory (the user's rule since 26 Oct 2026, replacing one run per GPU). One run leaves an L40S 15–35 % idle; a
-  second run on the same GPU raised its total throughput by 20–27 %, while each run alone slowed to 0.5–0.7×
-  (`workspace/mtdet/EXPERIMENTS.md` M0.6). A shared run's `train_hours` is wall time: count its GPU hours as wall
-  hours ÷ the runs sharing the GPU. Don't use DDP for comparable runs: it changes the effective batch size.
+- `train.py` uses one GPU (plain `.cuda()`, no DDP). Run independent runs at once, **as many per GPU as fit in memory
+  and speed the work up, up to 4** (the user's rule since 27 Oct 2026: use the GPUs fully; it replaced "up to 2" from
+  26 Oct). One run leaves an L40S 15–35 % idle; a second run on the same GPU raised its total throughput by 20–27 %,
+  while each run alone slowed to 0.5–0.7× (`workspace/mtdet/EXPERIMENTS.md` M0.6). A shared run's `train_hours` is
+  wall time: count its GPU hours as wall hours ÷ the runs sharing the GPU. Don't use DDP for comparable runs: it
+  changes the effective batch size.
 - **Run directories don't include the seed** (`train.py` writes to `<out>/<backbone>_<init>_<adapt>/`), so
   parallel runs of the same config must get different `--out` values or they overwrite each other:
 
@@ -260,10 +266,8 @@ done
   - if none is free, wait (a queue that polls `nvidia-smi` is fine) rather than squeezing onto a busy GPU.
 
   Default `--workers 8` per run is fine with 3 runs on 128 cores.
-- **GPU 0 has a hardware memory fault**: uncorrectable ECC errors and a failed row remap, seen 23 Oct 2026. A run
-  on it crashed at epoch 18. Don't use GPU 0 until it's repaired.
 - **Check GPU health before every launch**, on all GPUs: skip a GPU if `nvidia-smi -i N -q -d ROW_REMAPPER,ECC`
-  shows `Remapping Failure Occurred: Yes`, a pending remap, or a volatile `DRAM Uncorrectable` count above 0
+  shows a pending remap or a volatile `DRAM Uncorrectable` count above 0, i.e. an uncorrectable error since the boot
   (`gpu_ok` in `workspace/gpu_run.sh`, which does this for you). Free memory and utilisation don't reveal a faulty GPU.
 - For the report: GPU type/count = 3× L40S 46 GB. Keep track of GPU hours for every run, tuning included
   (`train_hours` in each `metrics.json`), for the whole-project total.
