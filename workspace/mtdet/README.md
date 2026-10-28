@@ -126,8 +126,10 @@ The full log, with each hypothesis and the per-class numbers, is `EXPERIMENTS.md
   6, its mAP 0.10 below the leader's, so the gap is macro-F1 (2.86 points, ~1.5 Δm). The same model without the score
   floor scored **+41.11** (mAP 47.86, the board's best): 2nd of 6, 0.55 behind team09, all of it F1.
   `YASA250`, `YSA250_s0`'s configuration (SAR augmentation) on all of train, scored **+43.50** (F1 93.40, mAP 48.84)
-  at the same decoding and is posted: **1st of 6**, 1.84 ahead of team09. Its +2.39 over `YA250` is three times what
+  at the same decoding: 1st of 6, 1.84 ahead of team09. Its +2.39 over `YA250` is three times what
   ND showed (+0.79, one seed), so the seeds still decide.
+  `YASA350` (SAR, 350 epochs, the 3-seed rule's pick) scored **+43.56** (F1 92.46, mAP 49.14) and is posted: **1st
+  of 6**, 1.27 ahead of team09 (+42.29). It kept only ~4 % of its holdout gain on val (+0.06 over `YASA250`).
 - **Where the score comes from** (`analyze.py`):
   - ND images with a near-duplicate partner in local train score 28–60 mAP; the 270 without one score 16.
   - The 150-epoch gain is all on partnered images.
@@ -142,20 +144,32 @@ and 1 held tom's jobs until ~17:10; since then every queued job runs, three per 
 2. Done: round 2's 3-seed means at the submitted decoding: SAR augmentation **+45.63 ± 0.71** against plain
    +43.42 ± 0.72, with SAR ahead on every seed (+0.79, +3.34, +2.50). SAR at 250 epochs is the design's best
    configuration so far, and `YASA250` (posted) is its all-train model.
-3. Round 3: 350 epochs with SAR augmentation (`YASA350` on all of train, then `YSA350_s0`–`s2`): val took 61 % of
-   ND's gain at each longer schedule so far. `YASA350` runs on GPU 0 next to tom's job since 27 Oct 16:07 (the user's
-   go-ahead for this one job); its val zip is due ~06:00 on 28 Oct. `YSA350_s0` runs on GPU 1 next to tom's
-   job since 16:18, also with the user's go-ahead, leaving ~2.7 GB free beside his job (`--margin 0`). `YM250_s0` (mosaic at 250 epochs) runs last.
+3. Done: round 3's 3-seed means at the submitted decoding: 350 epochs **+47.23 ± 0.79** against 250 epochs
+   +45.63 ± 0.71, with 350 ahead on every seed (+1.88, +0.22, +2.70). `YASA350` (SAR, 350 epochs, all of train) is
+   the next upload (~05:30 on 28 Oct). Mosaic at 250 epochs (`YM250_s0`, +42.10 against +44.24): discarded.
 4. Done: `C_s0` (ConvNeXt-B + Cascade R-CNN, 72 epochs) scored ND +38.73 (F1 95.03, mAP 45.89): the best classifier,
    but far behind YOLO26-L on mAP. YOLO26-L stays the design's architecture.
-5. Round 4 (GPU 2 since 21:10): SAR augmentation on more images (`--sar-p 0.8`), `YSP250_s0`/`s1`, paired against
-   `YSA250_s0`/`s1`; ~04:00–05:00 on 28 Oct.
-6. Round 5 (since 28 Oct 01:37): 450 epochs with SAR, `YASA450` on all of train and `YSA450_s0`–`s2`, paired
-   against the 350-epoch seeds; stopped if 350 doesn't beat 250 on the 3-seed mean. Due ~14:00–19:00 on 28 Oct.
-7. The Phase 1 upload of the best configuration's all-train model by its 3-seed mean, before 31 Oct 12:00 SGT.
+5. Done: round 4, SAR augmentation on more images (`--sar-p 0.8`) at 250 epochs: +46.19 ± 0.34 against +45.63 ± 0.71,
+   ahead on every seed (+0.56 on average). Round 6 retests it at 350 epochs: `YASP350` on all of train and
+   `YSP350_s0`–`s2`, paired against the 350-epoch seeds, since 28 Oct 08:27; due ~21:00–23:00.
+6. Done: round 5's 3-seed means at the submitted decoding: 450 epochs **+48.19 ± 0.95** against 350 epochs
+   +47.23 ± 0.79, with 450 ahead on every seed (+0.99, +0.78, +1.11). `YASA450` (SAR, 450 epochs, all of train) is
+   the next upload (~16:00 on 28 Oct), posted if it beats +43.56 on val.
+7. Round 7 (since 28 Oct 13:06): SAR at 0.8 with 450 epochs at batch 32 (the first run under the max-batch rule):
+   `YASPB450` on all of train, then `YSPB450_s0`–`s2` as memory frees; compared with `YSA450`'s 3-seed mean.
+8. The Phase 1 upload of the best configuration's all-train model by its 3-seed mean, before 31 Oct 12:00 SGT.
+
+**Batch size for the next runs (the user's rule, 28 Oct 11:00):** each new run uses the largest batch, a multiple of 16,
+whose memory fits what its GPU has free, keeping ~3 GB spare. YOLO26-L needs ~0.39 GB per image plus ~0.8 GB: batch
+16 = 7.0 GB and 32 = 13.3 GB (measured, M0.8); 48 ≈ 19.5 GB, 64 ≈ 26 GB and 96 ≈ 38.5 GB (extrapolated, checked
+at the first launch). The run's `MIN_FREE=` prefix is set to that need, so the queue starts it only on a GPU with the
+room. The recipe scales with the batch B: `--lr` and `--backbone-lr` 5e-4 × √(B/16) (the square-root rule for AdamW)
+and `--ema` 0.9998^(B/16), the same averaging window in epochs; warmup is already counted in epochs. A run at a new
+batch is a new configuration: it is compared only with runs at the same batch. An all-train model of an existing
+batch-16 configuration stays at batch 16, so that it matches the seeds that selected it.
 
 **Submission checkpoint**: the EMA weights of the chosen configuration's all-train run, `runs/YA<config>/model.pt`, decoded
-with `o2m_nms0.8_a0_k100_t0`. Posted now: `runs/YASA250` (`s_VNaV9r0uDV`, +43.50, 1st of 6).
+with `o2m_nms0.8_a0_k100_t0`. Posted now: `runs/YASA350` (`s_dlz80pdFun`, +43.56, 1st of 6).
 
 ## Commands (from the repo root; every GPU command through `workspace/gpu_run.sh`)
 

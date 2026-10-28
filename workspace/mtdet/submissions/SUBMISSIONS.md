@@ -11,6 +11,7 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 | 27 Oct 2026 05:58 | 1 (val) | `s_iNmyE4oAin` | `YA250_val.zip` | YOLO26-L multi-task, 250 epochs, all of train, seed 0, EMA weights (`runs/YA250`) | `o2m_nms0.7_a0_k100` | +39.93 | 92.43 | 47.25 | 92.64 | 70.96 | yes at 05:59, replacing `s_6bBQH7vFS2` (+37.98) |
 | 27 Oct 2026 11:33 | 1 (val) | `s_aUZ9SopRu8` | `YA250_n8t0_val.zip` | the same `runs/YA250` model, decoded without the score floor | `o2m_nms0.8_a0_k100_t0` | +41.11 | 92.43 | 47.86 | 92.64 | 71.61 | yes at 11:34, replacing `s_iNmyE4oAin` (+39.93) |
 | 27 Oct 2026 13:49 | 1 (val) | `s_VNaV9r0uDV` | `YASA250_n8t0_val.zip` | YOLO26-L multi-task, 250 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA250`) | `o2m_nms0.8_a0_k100_t0` | +43.50 | 93.40 | 48.84 | 93.55 | 72.56 | yes at 13:49, replacing `s_aUZ9SopRu8` (+41.11) |
+| 28 Oct 2026 04:58 | 1 (val) | `s_dlz80pdFun` | `YASA350_val.zip` | YOLO26-L multi-task, 350 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA350`) | `o2m_nms0.8_a0_k100_t0` | +43.56 | 92.46 | 49.14 | 92.64 | 72.96 | yes at 04:58, replacing `s_VNaV9r0uDV` (+43.50) |
 
 ## `s_DRkVHQAQAo` (YOLO26-L, 100 epochs)
 
@@ -149,3 +150,23 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
   - Training: the `YASA250` line of `jobs/plan.txt`, resumed after the reboot by its `YASA250_r2` line:
     `train.py --arch yolo26l --epochs 250 --seed 0 --sar-aug --data dataset/repro --evals nd`.
   - The zip: the `YASA250_n8` line: `predict.py runs/YASA250 --split val --decoding o2m_nms0.8_a0_k100_t0`.
+
+## `s_dlz80pdFun` (YOLO26-L, 350 epochs, SAR augmentation)
+
+- **Why this model:** the design's best configuration by the 3-seed rule since 28 Oct 03:55. SAR augmentation at 350
+  epochs scored holdout +47.23 ± 0.79 against +45.63 ± 0.71 at 250 epochs, ahead on every seed.
+- **Projection vs result:** on val it added only +0.06 over `s_VNaV9r0uDV` (mAP 48.84 → 49.14, +0.30; macro-F1
+  93.40 → 92.46, −0.94), where the holdout gave +1.60 (mAP +0.79, F1 +0.17). Earlier schedules kept ~61 % of the
+  holdout gain on val; this one kept ~4 %.
+  - The F1 drop is the classifier of one all-train seed against another.
+  - The mAP gain shrinking says val rewards a longer schedule less from 350 epochs on.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.8 MB, with exactly 100 detections per image and scores down to 0.0. The job's decoding was confirmed from
+  `runs/queue/YASA350/cmd`.
+- **Posting rule:** +43.56 beats both the posted +43.50 and the TA's +4.4, so it was posted.
+- **Quota after it:** 1 of 28 Oct's 5 used; both reset cards unused.
+- **Board at 04:58:** **1st of 6**, ahead of team09 (+42.29, macro-F1 95.32, mAP 47.67, up from +41.66).
+- **Commands:** the `YASA350` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 350 --seed 0 --sar-aug --data dataset/repro --evals nd`;
+  - then `predict.py runs/YASA350 --split val --decoding o2m_nms0.8_a0_k100_t0`. It ran on GPU 0 beside tom's
+    job for its first hour, with the user's go-ahead.
