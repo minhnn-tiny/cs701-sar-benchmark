@@ -1,0 +1,1 @@
+{"submission":{"id":"s_oK1S2mxVie","phase":1,"created_at":"2026-10-28T13:17:25.500200Z","ok":true,"scores":{"delta_m":44.947640453721334,"macro_f1":93.59236610553691,"mAP":49.54252556056725,"accuracy":93.8288920056101,"AP50":72.29019838105559},"error":null,"size":1851128,"posted":true},"posted":{"1":"s_oK1S2mxVie","2":null}}

@@ -129,7 +129,12 @@ The full log, with each hypothesis and the per-class numbers, is `EXPERIMENTS.md
   at the same decoding: 1st of 6, 1.84 ahead of team09. Its +2.39 over `YA250` is three times what
   ND showed (+0.79, one seed), so the seeds still decide.
   `YASA350` (SAR, 350 epochs, the 3-seed rule's pick) scored **+43.56** (F1 92.46, mAP 49.14) and is posted: **1st
-  of 6**, 1.27 ahead of team09 (+42.29). It kept only ~4 % of its holdout gain on val (+0.06 over `YASA250`).
+  of 6, 1.27 ahead of team09 (+42.29) at the time. It kept only ~4 % of its holdout gain on val (+0.06 over `YASA250`).
+  `YASA450` (450 epochs, the 3-seed rule's pick since 28 Oct 13:04) scored **+44.11** (F1 92.97, mAP 49.28) and is
+  posted: **2nd of 6**, 0.33 behind team09 (+44.44, F1 95.81, mAP 48.65). Our mAP is the board's best; the gap is
+  macro-F1 (2.84 points, ~1.5 Δm).
+  `YASP350` (SAR at probability 0.8, 350 epochs; uploaded at the user's request although the holdout saw no gain from
+  0.8) scored **+44.95** (F1 93.59, mAP 49.54): +1.39 over `YASA350` on val. Posted at the user's call: **1st of 6**.
 - **Where the score comes from** (`analyze.py`):
   - ND images with a near-duplicate partner in local train score 28–60 mAP; the 270 without one score 16.
   - The 150-epoch gain is all on partnered images.
@@ -150,14 +155,28 @@ and 1 held tom's jobs until ~17:10; since then every queued job runs, three per 
 4. Done: `C_s0` (ConvNeXt-B + Cascade R-CNN, 72 epochs) scored ND +38.73 (F1 95.03, mAP 45.89): the best classifier,
    but far behind YOLO26-L on mAP. YOLO26-L stays the design's architecture.
 5. Done: round 4, SAR augmentation on more images (`--sar-p 0.8`) at 250 epochs: +46.19 ± 0.34 against +45.63 ± 0.71,
-   ahead on every seed (+0.56 on average). Round 6 retests it at 350 epochs: `YASP350` on all of train and
-   `YSP350_s0`–`s2`, paired against the 350-epoch seeds, since 28 Oct 08:27; due ~21:00–23:00.
+   ahead on every seed (+0.56 on average). Round 6 retested it at 350 epochs: +47.44 ± 0.07 against +47.23 ± 0.79,
+   paired +0.56, +0.72, −0.64 (mean +0.21): no gain at the longer schedule, so not adopted, and `YASP350` (all of
+   train) is not uploaded.
 6. Done: round 5's 3-seed means at the submitted decoding: 450 epochs **+48.19 ± 0.95** against 350 epochs
    +47.23 ± 0.79, with 450 ahead on every seed (+0.99, +0.78, +1.11). `YASA450` (SAR, 450 epochs, all of train) is
    the next upload (~16:00 on 28 Oct), posted if it beats +43.56 on val.
-7. Round 7 (since 28 Oct 13:06): SAR at 0.8 with 450 epochs at batch 32 (the first run under the max-batch rule):
-   `YASPB450` on all of train, then `YSPB450_s0`–`s2` as memory frees; compared with `YSA450`'s 3-seed mean.
-8. The Phase 1 upload of the best configuration's all-train model by its 3-seed mean, before 31 Oct 12:00 SGT.
+7. Round 7 (since 28 Oct 13:06): SAR at 0.8 with 450 epochs at batch 32: `YASPB450` (all of train) runs; its seeds are
+   held at the user's request (`YSPB450_s0` ran out of memory at epoch 21 as a 4th job on GPU 1). Round 6 removed its
+   premise (0.8 adds nothing at 350 epochs).
+8. Round 8 (since 28 Oct 19:33, GPU 2 alone): `YSA450B96_s0`, the best configuration at batch 96, the largest batch a free L40S fits
+   (38.8 GB, 188 images/s, ~1.5× one batch-16 run), seed 0; due ~00:45 on 29 Oct.
+   `YSA450B80_s1` (since 19:40, GPU 0 beside `YASP350`): seed 1 at batch 80, the largest that fitted there (32.4 GB);
+   due ~02:15 on 29 Oct.
+   `YSA450B96_s2` (since 23:58, GPU 1 alone): seed 2 at batch 96; with the two above, a 3-seed check of large batches
+   against the batch-16 seeds; due ~05:00 on 29 Oct.
+   `YSP450B64_s1` (since 29 Oct 01:30, GPU 2 beside another student's job): SAR at 0.8, 450 epochs, seed 1, at batch 64,
+   the largest that leaves their job a 4 GB margin; paired with `YSA450B80_s1`; due ~09:00–10:00 on 29 Oct.
+   `YSP450B96_s0` (since 29 Oct 01:40, GPU 0 alone): SAR at 0.8, 450 epochs, seed 0, at batch 96; paired with
+   `YSA450B96_s0` (0.5, same batch and seed): **+0.69** (+47.93 against +47.24), all from F1.
+   `YSP450B96_s1` (GPU 0) and `YSP450B96_s2` (GPU 1), since 29 Oct 08:12 at the user's choice of batch 96: seeds 1 and 2
+   of 0.8 at large batch; due ~13:30 on 29 Oct.
+9. The Phase 1 upload of the best configuration's all-train model by its 3-seed mean, before 31 Oct 12:00 SGT.
 
 **Batch size for the next runs (the user's rule, 28 Oct 11:00):** each new run uses the largest batch, a multiple of 16,
 whose memory fits what its GPU has free, keeping ~3 GB spare. YOLO26-L needs ~0.39 GB per image plus ~0.8 GB: batch
@@ -166,10 +185,15 @@ at the first launch). The run's `MIN_FREE=` prefix is set to that need, so the q
 room. The recipe scales with the batch B: `--lr` and `--backbone-lr` 5e-4 × √(B/16) (the square-root rule for AdamW)
 and `--ema` 0.9998^(B/16), the same averaging window in epochs; warmup is already counted in epochs. A run at a new
 batch is a new configuration: it is compared only with runs at the same batch. An all-train model of an existing
-batch-16 configuration stays at batch 16, so that it matches the seeds that selected it.
+batch-16 configuration stays at batch 16, so that it matches the seeds that selected it. Measured since (EXPERIMENTS.md round 8, 29 Oct):
+the best configuration at batch 80–96 scored −1.10 Δm on the holdout against batch 16, mean of three paired seeds
+(−0.66, +0.33, −2.95). One run alone at batch 96 trains ~1.5× faster than one batch-16 run, but three batch-16 runs
+sharing a GPU do more work per GPU hour. So a large batch buys a sooner single result at the cost of accuracy.
 
 **Submission checkpoint**: the EMA weights of the chosen configuration's all-train run, `runs/YA<config>/model.pt`, decoded
-with `o2m_nms0.8_a0_k100_t0`. Posted now: `runs/YASA350` (`s_dlz80pdFun`, +43.56, 1st of 6).
+with `o2m_nms0.8_a0_k100_t0`. Posted now (the user's call, 28 Oct 21:18; re-posted 29 Oct 08:13 after the entry was
+changed outside this session, `submissions/SUBMISSIONS.md`): `runs/YASP350` (`s_oK1S2mxVie`, SAR at
+probability 0.8, 350 epochs, +44.95, 1st of 6). The holdout's pick, `runs/YASA450` (+44.11), stays uploaded.
 
 ## Commands (from the repo root; every GPU command through `workspace/gpu_run.sh`)
 

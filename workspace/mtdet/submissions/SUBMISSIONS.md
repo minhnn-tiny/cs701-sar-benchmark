@@ -12,6 +12,10 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 | 27 Oct 2026 11:33 | 1 (val) | `s_aUZ9SopRu8` | `YA250_n8t0_val.zip` | the same `runs/YA250` model, decoded without the score floor | `o2m_nms0.8_a0_k100_t0` | +41.11 | 92.43 | 47.86 | 92.64 | 71.61 | yes at 11:34, replacing `s_iNmyE4oAin` (+39.93) |
 | 27 Oct 2026 13:49 | 1 (val) | `s_VNaV9r0uDV` | `YASA250_n8t0_val.zip` | YOLO26-L multi-task, 250 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA250`) | `o2m_nms0.8_a0_k100_t0` | +43.50 | 93.40 | 48.84 | 93.55 | 72.56 | yes at 13:49, replacing `s_aUZ9SopRu8` (+41.11) |
 | 28 Oct 2026 04:58 | 1 (val) | `s_dlz80pdFun` | `YASA350_val.zip` | YOLO26-L multi-task, 350 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA350`) | `o2m_nms0.8_a0_k100_t0` | +43.56 | 92.46 | 49.14 | 92.64 | 72.96 | yes at 04:58, replacing `s_VNaV9r0uDV` (+43.50) |
+| 28 Oct 2026 16:59 | 1 (val) | `s_KvBWV9Psqo` | `YASA450_val.zip` | YOLO26-L multi-task, 450 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA450`) | `o2m_nms0.8_a0_k100_t0` | +44.11 | 92.97 | 49.28 | 93.20 | 72.85 | yes at 16:59, replacing `s_dlz80pdFun` (+43.56) |
+| 28 Oct 2026 21:17 | 1 (val) | `s_oK1S2mxVie` | `YASP350_val.zip` | YOLO26-L multi-task, 350 epochs, SAR augmentation at probability 0.8, all of train, seed 0, EMA weights (`runs/YASP350`) | `o2m_nms0.8_a0_k100_t0` | +44.95 | 93.59 | 49.54 | 93.83 | 72.29 | yes at 21:18 (the user's call), replacing `s_KvBWV9Psqo` (+44.11) |
+| 28 Oct 2026 21:27 | 1 (val) | `s_MktFiV49GZ` | `C_s0_val.zip` | ConvNeXt-B + Cascade R-CNN multi-task, 72 epochs, local train only (7,252 images), seed 0, final weights (`runs/C_s0`) | `posterior_d100_nms0.7` | +27.80 | 93.86 | 40.50 | 94.11 | 66.76 | no: below the posted +44.95 |
+| 29 Oct 2026 01:30 | 1 (val) | `s_mRMAxp4YUV` | `YASPB450_val.zip` | YOLO26-L multi-task, 450 epochs, SAR augmentation at probability 0.8, batch 32, all of train, seed 0, EMA weights (`runs/YASPB450`) | `o2m_nms0.8_a0_k100_t0` | +44.51 | 93.33 | 49.39 | 93.62 | 72.21 | no: below the posted +44.95 |
 
 ## `s_DRkVHQAQAo` (YOLO26-L, 100 epochs)
 
@@ -170,3 +174,81 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
   - `train.py --arch yolo26l --epochs 350 --seed 0 --sar-aug --data dataset/repro --evals nd`;
   - then `predict.py runs/YASA350 --split val --decoding o2m_nms0.8_a0_k100_t0`. It ran on GPU 0 beside tom's
     job for its first hour, with the user's go-ahead.
+
+## `s_KvBWV9Psqo` (YOLO26-L, 450 epochs, SAR augmentation)
+
+- **Why this model:** the design's best configuration by the 3-seed rule since 28 Oct 13:04. SAR augmentation at 450
+  epochs scored holdout +48.19 ± 0.95 against +47.23 ± 0.79 at 350 epochs, ahead on every seed.
+- **Projection vs result:** val +0.55 over `s_dlz80pdFun` (mAP 49.14 → 49.28, +0.14; macro-F1 92.46 → 92.97, +0.51),
+  where the holdout gave +0.96 (mAP +0.57, F1 −0.28). Across the two longer schedules, val kept little of the
+  holdout's mAP gain. The F1 changes between all-train models are mostly seed noise in the classifier.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.8 MB, with exactly 100 detections per image and scores down to 0.0. The job's decoding was confirmed from
+  `runs/queue/YASA450/cmd`.
+- **Posting rule:** +44.11 beats both the posted +43.56 and the TA's +4.4, so it was posted.
+- **Quota after it:** 2 of 28 Oct's 5 used; both reset cards unused.
+- **Board at 16:59:** **2nd of 6**. team09 rose to +44.44 (macro-F1 95.81, mAP 48.65), 0.33 ahead. Our mAP is the
+  board's best; their macro-F1 leads by 2.84, about 1.5 Δm.
+- **Commands:** the `YASA450` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 450 --seed 0 --sar-aug --data dataset/repro --evals nd`;
+  - then `predict.py runs/YASA450 --split val --decoding o2m_nms0.8_a0_k100_t0`.
+
+## `s_oK1S2mxVie` (YOLO26-L, 350 epochs, SAR augmentation at probability 0.8)
+
+- **Why uploaded:** at the user's request, out of curiosity. Under the 3-seed rule this configuration was not a
+  candidate: SAR at 0.8 scored holdout +47.44 ± 0.07 at 350 epochs against +47.23 ± 0.79 at 0.5 (within noise), and
+  450 epochs at 0.5 (+48.19) is the holdout's best.
+- **Result:** val +44.95 (macro-F1 93.59, mAP 49.54). That is +1.39 over `s_dlz80pdFun`, the same schedule at 0.5
+  (F1 +1.13, mAP +0.40), and +0.84 over `s_KvBWV9Psqo` (450 epochs at 0.5). On val, stronger SAR augmentation helped
+  where the holdout saw nothing. Earlier, SAR at 0.5 also added slightly more on val (+2.39) than on the holdout
+  (+2.2). One model per configuration, so the gap mixes the effect with model-to-model noise.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.8 MB, with exactly 100 detections per image.
+- **Posting:** +44.95 beats both the posted +44.11 and the TA's +4.4. The posting rule was in tension with the
+  holdout selection rule, so I asked first; the user chose to post (21:18).
+- **Quota after it:** 3 of 28 Oct's 5 used; both reset cards unused.
+- **Board at 21:18:** **1st of 6**, ahead of team09 (+44.44, macro-F1 95.81, mAP 48.65) and team04 (+42.04).
+- **Commands:** the `YASP350` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 350 --seed 0 --sar-aug --sar-p 0.8 --data dataset/repro --evals nd`;
+  - then `predict.py runs/YASP350 --split val --decoding o2m_nms0.8_a0_k100_t0`.
+
+## `s_MktFiV49GZ` (ConvNeXt-B + Cascade R-CNN, 72 epochs, local train)
+
+- **Why uploaded:** at the user's request, to see the ConvNeXt-B architecture screen on val. It is the architecture
+  comparison's run, not a candidate. It was trained on the holdout's local train only (7,252 of 9,392 images); no
+  all-train ConvNeXt-B model exists. Its best holdout decoding (`posterior_d100_nms0.7`, holdout +38.73) was used.
+- **Result:** val +27.80. Macro-F1 93.86 is our best val F1 so far (YOLO26-L models: 92.46–93.59), but mAP is 40.50
+  against ~49.5. Holdout to val it lost 10.9 Δm, where the all-train YOLO models lost ~3–4. It never saw the 2,140
+  training images held out for ND, and val rewards fitting training scenes.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. 23,837
+  detections (median 7 per image, 28 images without any; this decoding keeps a 0.001 floor). Predicted on GPU 1 at
+  the user's request (`runs/queue/C_s0_val.out`).
+- **Posting:** not posted, since +27.80 is below the posted +44.95.
+- **Quota after it:** 4 of 28 Oct's 5 used; both reset cards unused.
+- **Command:** `predict.py runs/C_s0 --split val --decoding posterior_d100_nms0.7 --out submissions/C_s0_val.zip`.
+
+## `s_mRMAxp4YUV` (YOLO26-L, 450 epochs, SAR at probability 0.8, batch 32)
+
+- **Why uploaded:** at the user's request ("Please submit", 29 Oct 01:30). It follows up `s_oK1S2mxVie`: does the 0.8
+  setting gain more with 450 epochs? Its holdout seeds are held, so the 3-seed rule can't pick it.
+- **Result:** val +44.51 (macro-F1 93.33, mAP 49.39). That is −0.44 against `s_oK1S2mxVie` (0.8 at 350 epochs, batch 16)
+  and +0.40 against `s_KvBWV9Psqo` (0.5 at 450 epochs, batch 16). It mixes two changes, 450 epochs and batch 32, and
+  each configuration has one model.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.8 MB, with exactly 100 detections per image.
+- **Posting:** not posted, since +44.51 is below the posted +44.95.
+- **Quota after it:** 1 of 29 Oct's 5 used; both reset cards unused.
+- **Commands:** the `YASPB450` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 450 --sar-aug --sar-p 0.8 --batch-size 32 --lr 7.07e-4 --backbone-lr 7.07e-4
+    --ema 0.9996 --seed 0 --data dataset/repro --evals nd`;
+  - then `predict.py runs/YASPB450 --split val --decoding o2m_nms0.8_a0_k100_t0`.
+
+## Posted entry changed outside this session (found 29 Oct 08:12)
+
+- At 21:18 on 28 Oct, `s_oK1S2mxVie` (YASP350, +44.95) was posted, and the API confirmed `posted: true`.
+- On 29 Oct at 08:12, `/api/me` showed `s_dlz80pdFun` (YASA350, +43.56) as the posted entry instead, putting the team
+  2nd behind team09 (+44.44). No post was made from this session after 21:18; the local `*.post.json` records end
+  there. The re-post came from the website or another holder of the team token.
+- At the user's request ("Submit the best model till now"), `s_oK1S2mxVie` was re-posted at 08:13 (no new upload, no
+  quota used): 1st of 6 again.
+- Since then, a watcher in this session checks `/api/me` every 10 minutes and reports any change of the posted entry.
