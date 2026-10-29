@@ -251,4 +251,7 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
   there. The re-post came from the website or another holder of the team token.
 - At the user's request ("Submit the best model till now"), `s_oK1S2mxVie` was re-posted at 08:13 (no new upload, no
   quota used): 1st of 6 again.
-- Since then, a watcher in this session checks `/api/me` every 10 minutes and reports any change of the posted entry.
+- The watcher found `s_dlz80pdFun` posted again by 08:23, about 10 minutes after the re-post. Nothing on this server
+  touched the API: no process, no crontab, no new post record. The change came from the website or another holder
+  of the team token. At the user's choice, nothing more is posted until the user has checked with the team which
+  entry to keep (29 Oct 08:25).
