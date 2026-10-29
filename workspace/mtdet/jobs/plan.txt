@@ -189,3 +189,11 @@ YASP450B96 MIN_FREE=43000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/trai
 # (SAR at 0.8, 450 epochs, batch 96), seed 1: how much val moves between seeds of one configuration, and a second
 # candidate for Phase 2's two uploads.
 YASP450B96_s1 MIN_FREE=43000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 450 --seed 1 --sar-aug --sar-p 0.8 --batch-size 96 --lr 1.22e-3 --backbone-lr 1.22e-3 --ema 0.9988 --data dataset/repro --evals nd --out workspace/mtdet/runs/YASP450B96_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py workspace/mtdet/runs/YASP450B96_s1 --split val --decoding o2m_nms0.8_a0_k100_t0 --out workspace/mtdet/submissions/YASP450B96_s1_val.zip
+# 29 Oct 22:20, the user's choice (2 tasks on GPUs 0 and 1 at maximum memory): SAR on every image (probability 1.0), 450 epochs,
+# batch 96, seeds 0 and 1, paired with YSP450B96_s0/s1 (0.8: +47.93, +49.40). Does stronger SAR help beyond 0.8, which beat
+# 0.5 by +1.65 on three exact pairs?
+YSF450B96_s0 MIN_FREE=43000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 450 --seed 0 --sar-aug --sar-p 1.0 --batch-size 96 --lr 1.22e-3 --backbone-lr 1.22e-3 --ema 0.9988 --out workspace/mtdet/runs/YSF450B96_s0 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSF450B96_s0
+YSF450B96_s1 MIN_FREE=43000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 450 --seed 1 --sar-aug --sar-p 1.0 --batch-size 96 --lr 1.22e-3 --backbone-lr 1.22e-3 --ema 0.9988 --out workspace/mtdet/runs/YSF450B96_s1 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSF450B96_s1
+# 30 Oct, the user's request: GPU 2 at maximum memory: the third seed of SAR on every image (1.0), 450 epochs, batch 96,
+# paired with YSP450B96_s2 (0.8: +48.34).
+YSF450B96_s2 MIN_FREE=43000 HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/train.py --arch yolo26l --epochs 450 --seed 2 --sar-aug --sar-p 1.0 --batch-size 96 --lr 1.22e-3 --backbone-lr 1.22e-3 --ema 0.9988 --out workspace/mtdet/runs/YSF450B96_s2 && HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/evaluate.py workspace/mtdet/runs/YSF450B96_s2

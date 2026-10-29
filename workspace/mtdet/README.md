@@ -176,11 +176,14 @@ and 1 held tom's jobs until ~17:10; since then every queued job runs, three per 
    `YSA450B96_s0` (0.5, same batch and seed): **+0.69** (+47.93 against +47.24), all from F1.
    `YSP450B96_s1` (GPU 0) and `YSP450B96_s2` (GPU 1), since 29 Oct 08:12 at the user's choice of batch 96: seeds 1 and 2
    of 0.8 at large batch; due ~14:00 on 29 Oct. `YSA450B96_s1` (GPU 2, since 13:05): 0.5 at seed 1 and batch 96, the exact
-   pair of `YSP450B96_s1`; due ~18:30.
+   pair of `YSP450B96_s1`: +47.20. With exact batch-96 pairs on all three seeds, SAR at 0.8 beats 0.5 by **+1.65**
+   (+0.69, +2.20, +2.05).
    **Best configuration since 29 Oct 13:46:** SAR at 0.8, 450 epochs, batch 96, 3-seed holdout **+48.55 ± 0.76** (F1 94.98,
    mAP 51.04), ahead of 0.5 at batch 16 (+48.19) on F1. Its all-train model `YASP450B96` trains on GPU 0 since 13:50,
    due ~21:00; its val zip is the next upload. `YASP450B96_s1` (GPU 1, since 13:54): the same on seed 1, a second
-   candidate for Phase 2; due ~21:00.
+   candidate for Phase 2. Both done: val +44.60 (seed 0) and +43.99 (seed 1), not posted (posting paused).
+   `YSF450B96_s0`/`s1` (GPUs 0 and 1, since 29 Oct 22:26): SAR on every image (probability 1.0), 450 epochs, batch 96,
+   paired with the 0.8 seeds; due ~04:00 on 30 Oct. `YSF450B96_s2` (GPU 2, since 30 Oct 00:15): the third seed; due ~05:45.
 9. The Phase 1 upload of the best configuration's all-train model by its 3-seed mean, before 31 Oct 12:00 SGT.
 
 **Batch size for the next runs (the user's rule, 28 Oct 11:00):** each new run uses the largest batch, a multiple of 16,

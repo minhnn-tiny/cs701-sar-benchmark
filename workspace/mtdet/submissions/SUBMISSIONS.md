@@ -16,6 +16,8 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 | 28 Oct 2026 21:17 | 1 (val) | `s_oK1S2mxVie` | `YASP350_val.zip` | YOLO26-L multi-task, 350 epochs, SAR augmentation at probability 0.8, all of train, seed 0, EMA weights (`runs/YASP350`) | `o2m_nms0.8_a0_k100_t0` | +44.95 | 93.59 | 49.54 | 93.83 | 72.29 | yes at 21:18 (the user's call), replacing `s_KvBWV9Psqo` (+44.11) |
 | 28 Oct 2026 21:27 | 1 (val) | `s_MktFiV49GZ` | `C_s0_val.zip` | ConvNeXt-B + Cascade R-CNN multi-task, 72 epochs, local train only (7,252 images), seed 0, final weights (`runs/C_s0`) | `posterior_d100_nms0.7` | +27.80 | 93.86 | 40.50 | 94.11 | 66.76 | no: below the posted +44.95 |
 | 29 Oct 2026 01:30 | 1 (val) | `s_mRMAxp4YUV` | `YASPB450_val.zip` | YOLO26-L multi-task, 450 epochs, SAR augmentation at probability 0.8, batch 32, all of train, seed 0, EMA weights (`runs/YASPB450`) | `o2m_nms0.8_a0_k100_t0` | +44.51 | 93.33 | 49.39 | 93.62 | 72.21 | no: below the posted +44.95 |
+| 29 Oct 2026 20:38 | 1 (val) | `s_2rzqVoMcnQ` | `YASP450B96_s1_val.zip` | YOLO26-L multi-task, 450 epochs, SAR at probability 0.8, batch 96, all of train, seed 1, EMA weights (`runs/YASP450B96_s1`) | `o2m_nms0.8_a0_k100_t0` | +43.99 | 93.69 | 49.02 | 93.90 | 71.94 | no: posting paused until the user's team decides the entry |
+| 29 Oct 2026 20:40 | 1 (val) | `s_x4BELnDxpX` | `YASP450B96_val.zip` | YOLO26-L multi-task, 450 epochs, SAR at probability 0.8, batch 96, all of train, seed 0, EMA weights (`runs/YASP450B96`) | `o2m_nms0.8_a0_k100_t0` | +44.60 | 92.90 | 49.55 | 93.13 | 72.41 | no: posting paused until the user's team decides the entry |
 
 ## `s_DRkVHQAQAo` (YOLO26-L, 100 epochs)
 
@@ -255,3 +257,30 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
   touched the API: no process, no crontab, no new post record. The change came from the website or another holder
   of the team token. At the user's choice, nothing more is posted until the user has checked with the team which
   entry to keep (29 Oct 08:25).
+- 29 Oct 20:39: `/api/submissions` lists one more upload that this session didn't make: `s_GQXZNO3hhP` at 10:58 SGT
+  (val +31.68, macro-F1 90.47, mAP 43.48, 1.8 MB, not posted). Another holder of the team token is uploading as well
+  as posting; it used one of 29 Oct's 5 uploads. The posted entry was still `s_dlz80pdFun` at 20:39.
+
+## `s_2rzqVoMcnQ` (YOLO26-L, 450 epochs, SAR at 0.8, batch 96, seed 1)
+
+- **Why:** the second all-train model of the 3-seed rule's best configuration since 29 Oct 13:46 (SAR at 0.8, 450
+  epochs, batch 96: holdout +48.55 ± 0.76). It was trained with the user's go-ahead to measure seed-to-seed variation
+  on val and as a Phase 2 candidate. Seed 0 (`YASP450B96`) finishes ~21:25.
+- **Result:** val +43.99 (macro-F1 93.69, mAP 49.02): below `s_oK1S2mxVie` (+44.95) and `s_mRMAxp4YUV` (+44.51).
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.7 MB, with exactly 100 detections per image.
+- **Posting:** paused at the user's choice (29 Oct 08:25) until the team agrees on the entry; not posted.
+- **Quota after it:** 3 of 29 Oct's 5 used (two by this session, one by another token holder); both reset cards unused.
+
+## `s_x4BELnDxpX` (YOLO26-L, 450 epochs, SAR at 0.8, batch 96, seed 0)
+
+- **Why:** the all-train model of the 3-seed rule's best configuration since 29 Oct 13:46 (SAR at 0.8, 450 epochs,
+  batch 96: holdout +48.55 ± 0.76), trained at the user's go-ahead.
+- **Result:** val +44.60 (macro-F1 92.90, mAP 49.55, our best val mAP), the rule's pick and our second-best val
+  score after `s_oK1S2mxVie` (+44.95). Seed 1 of the same configuration (`s_2rzqVoMcnQ`) scored +43.99: two seeds of
+  one configuration differ by 0.61 on val.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.7 MB, with exactly 100 detections per image.
+- **Posting:** paused at the user's choice until the team agrees on the entry; not posted.
+- **Quota after it:** 4 of 29 Oct's 5 used (three by this session, one by another token holder); both reset cards
+  unused.
