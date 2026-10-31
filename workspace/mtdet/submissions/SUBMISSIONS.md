@@ -18,6 +18,13 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 | 29 Oct 2026 01:30 | 1 (val) | `s_mRMAxp4YUV` | `YASPB450_val.zip` | YOLO26-L multi-task, 450 epochs, SAR augmentation at probability 0.8, batch 32, all of train, seed 0, EMA weights (`runs/YASPB450`) | `o2m_nms0.8_a0_k100_t0` | +44.51 | 93.33 | 49.39 | 93.62 | 72.21 | no: below the posted +44.95 |
 | 29 Oct 2026 20:38 | 1 (val) | `s_2rzqVoMcnQ` | `YASP450B96_s1_val.zip` | YOLO26-L multi-task, 450 epochs, SAR at probability 0.8, batch 96, all of train, seed 1, EMA weights (`runs/YASP450B96_s1`) | `o2m_nms0.8_a0_k100_t0` | +43.99 | 93.69 | 49.02 | 93.90 | 71.94 | no: posting paused until the user's team decides the entry |
 | 29 Oct 2026 20:40 | 1 (val) | `s_x4BELnDxpX` | `YASP450B96_val.zip` | YOLO26-L multi-task, 450 epochs, SAR at probability 0.8, batch 96, all of train, seed 0, EMA weights (`runs/YASP450B96`) | `o2m_nms0.8_a0_k100_t0` | +44.60 | 92.90 | 49.55 | 93.13 | 72.41 | no: posting paused until the user's team decides the entry |
+| 30 Oct 2026 12:45 | 1 (val) | `s_mAWeqhctvq` | `YSP450B96_s1_val.zip` | YOLO26-L, SAR 0.8, 450 epochs, batch 96, seed 1, **local train only** (holdout split, 7,252 images; `runs/YSP450B96_s1`, holdout +49.40) | `o2m_nms0.8_a0_k100_t0` | +34.25 | 91.22 | 44.62 | 91.51 | 67.58 | no |
+| 30 Oct 2026 12:45 | 1 (val) | `s_5Eyj17RxID` | `YSA450_s2_val.zip` | YOLO26-L, SAR 0.5, 450 epochs, batch 16, seed 2, **local train only** (`runs/YSA450_s2`, holdout +49.25) | `o2m_nms0.8_a0_k100_t0` | +33.50 | 91.28 | 44.21 | 91.51 | 68.11 | no |
+| 31 Oct 2026 00:00 | 1 (val) | `s_8pmBB8jzom` | `YASP700B96_val.zip` | YOLO26-L, YASP350's recipe at batch 96, **700 epochs** (overfit), all of train, seed 0 (`runs/YASP700B96`) | `o2m_nms0.8_a0_k100_t0` | +42.90 | 93.11 | 48.61 | 93.20 | 71.00 | no: below the posted +44.95 |
+| 31 Oct 2026 03:43 | 1 (val) | `s_mtVKoVsEnn` | `YASP1000B96_val.zip` | YOLO26-L, YASP350's recipe at batch 96, **1000 epochs** (overfit), all of train, seed 0 (`runs/YASP1000B96`) | `o2m_nms0.8_a0_k100_t0` | +41.69 | 92.05 | 48.27 | 92.29 | 70.05 | no: below the posted +44.95 |
+| 31 Oct 2026 08:22 | 1 (val) | `s_re4Ay2NHUq` | `YASP450_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 0 (`runs/YASP450`) | `o2m_nms0.8_a0_k100_t0` | +43.89 | 93.18 | 49.10 | 93.34 | 71.95 | no: below the posted +44.95 |
+| 31 Oct 2026 08:22 | 1 (val) | `s_IMVEvJhDtc` | `YASP450_s1_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 1 (`runs/YASP450_s1`) | `o2m_nms0.8_a0_k100_t0` | +44.76 | 93.26 | 49.54 | 93.55 | 73.08 | no: below the posted +44.95 |
+| 31 Oct 2026 08:22 | 1 (val) | `s_g5lTEftD9X` | `YASP450_s2_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 2 (`runs/YASP450_s2`) | `o2m_nms0.8_a0_k100_t0` | +43.74 | 93.23 | 49.02 | 93.41 | 71.79 | no: below the posted +44.95 |
 
 ## `s_DRkVHQAQAo` (YOLO26-L, 100 epochs)
 
@@ -284,3 +291,56 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 - **Posting:** paused at the user's choice until the team agrees on the entry; not posted.
 - **Quota after it:** 4 of 29 Oct's 5 used (three by this session, one by another token holder); both reset cards
   unused.
+
+## `s_mAWeqhctvq` and `s_5Eyj17RxID` (the two best holdout runs, trained on the holdout split)
+
+- **Why:** at the user's request, "the top 2 of the best models which haven't been submitted yet". By holdout Δm these
+  are `YSP450B96_s1` (+49.40) and `YSA450_s2` (+49.25). Both were trained on the holdout split's local train (7,252 of
+  the 9,392 train images), so neither is a candidate for the entry. Val zips were predicted on GPUs 0 and 2
+  (`runs/queue/<run>_val.out`).
+- **Result:** val +34.25 and +33.50, about 10 Δm below the all-train models of comparable configurations (+44.11 to
+  +44.95). Val strongly rewards having trained on the scenes the holdout held out, consistent with the near-duplicate
+  analysis and with ConvNeXt's local-train upload (`s_MktFiV49GZ`, −11 Δm from holdout to val).
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed.
+- **Posting:** not posted (posting paused; neither would beat the entries in question).
+- **Quota after them:** 3 of 30 Oct's 5 used (two by this session, one by another token holder).
+
+## 30 Oct: quota used by others; the team re-posted s_oK1S2mxVie (checked 23:10)
+
+- `/api/submissions` lists three more uploads this session didn't make: `s_fnr9moPw3e` (09:22 SGT, +43.54),
+  `s_gsjThIrwWo` (21:45, +44.14) and `s_o9qDTwlBVR` (21:46, +43.63). With this session's two (`s_mAWeqhctvq`,
+  `s_5Eyj17RxID`), 30 Oct's 5 uploads were used up.
+- The `YASP700B96` upload at 23:09 was refused (HTTP 429, "Daily limit reached"). It counted nothing. It is retried
+  just after 00:00 SGT with a fresh Idempotency-Key, not a reset card: reset cards only on the user's request.
+- The posted entry is `s_oK1S2mxVie` (+44.95) again, re-posted by the team. Board at 23:10: team09 +52.39, team02
+  +47.91, team08 +46.80, team07 +45.83, **cs701-team05 +44.95 (5th of 7)**, team04 +42.04, team03 +41.01.
+
+## `s_8pmBB8jzom` (YASP350's recipe at batch 96, 700 epochs: the overfit run)
+
+- **Why:** the user's request to overfit the best leaderboard model on the full training set at maximum memory
+  (batch 96). It fits its training images far more tightly: in-train check-set mAP 94.3 against ~88 for 350 epochs.
+- **Result:** val +42.90 (macro-F1 93.11, mAP 48.61). Against `s_x4BELnDxpX` (same recipe and batch, 450 epochs) it
+  is −1.70 (mAP −0.94); against `s_oK1S2mxVie` (batch 16, 350 epochs) −2.05. Fitting the training set harder,
+  from 450 to 700 epochs, lost on val: val's near-duplicates differ from their training partners by crops, revisits
+  and look-alikes, so memorising the exact images stops paying.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. First
+  refused at 23:09 (quota used up by other token holders), then uploaded at 00:00:39 with a fresh Idempotency-Key.
+- **Posting:** not posted (below the posted +44.95).
+- **Quota after it:** 1 of 31 Oct's 5 used; both reset cards unused.
+- **1000 epochs, `s_mtVKoVsEnn`:** val +41.69 (macro-F1 92.05, mAP 48.27; in-train mAP 95.6), lower again. At batch 96:
+  450 epochs +44.60 → 700 +42.90 → 1000 +41.69. Val falls steadily once the model is overfit past ~450 epochs. Quota
+  after it: 2 of 31 Oct's 5.
+
+## `s_re4Ay2NHUq`, `s_IMVEvJhDtc`, `s_g5lTEftD9X` (s_oK1S2mxVie's recipe, 450 epochs, seeds 0-2)
+
+- **Why:** the user's request (30 Oct 14:26): three models of the recommended configuration on GPU 1. That is
+  `s_oK1S2mxVie`'s exact recipe (SAR 0.8, batch 16, all of train), trained a step longer (450 epochs, ~264k updates
+  against its ~205k), on seeds 0-2.
+- **Result:** val +43.89, +44.76 and +43.74 (mean +44.13 ± 0.55). None beats `s_oK1S2mxVie` (+44.95). Seed 0 lost
+  1.06 against the same seed at 350 epochs. On val, the 0.8 recipe peaks around 350 epochs, though the holdout
+  still favoured 450 for SAR at 0.5. The three seeds spread over 1.0 on val, so +44.95 may itself be a lucky draw.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and all three passed.
+- **Posting:** not posted (all below the posted +44.95).
+- **Quota after them:** 5 of 31 Oct's 5 used (all by this session); both reset cards unused.
+- **Board at 08:22:** team09 +52.39, team02 +47.91, team08 +46.80, team07 +45.83, **cs701-team05 +44.95 (5th of 7)**,
+  team04 +42.04.

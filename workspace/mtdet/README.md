@@ -185,6 +185,12 @@ and 1 held tom's jobs until ~17:10; since then every queued job runs, three per 
    `YSF450B96_s0`/`s1` (GPUs 0 and 1, since 29 Oct 22:26): SAR on every image (probability 1.0), 450 epochs, batch 96,
    paired with the 0.8 seeds, and `YSF450B96_s2`: SAR on every image loses to 0.8 on every seed (−0.43, −2.69, −0.61;
    mean −1.24; +47.31 ± 0.54). The strength peaks near 0.8, which stays the best configuration.
+   **Overfit round (30 Oct 12:45, the user's request):** `YASP350`'s recipe (SAR 0.8, flips, all 9,392 train images), trained
+   much longer at batch 96 so it fits the training set harder: `YASP700B96` (GPU 2, due ~23:00) and `YASP1000B96` (GPU 0,
+   due ~03:00 on 31 Oct); both val zips are uploaded when done. Local-train models scored ~10 Δm lower on val than
+   all-train ones, so fitting the training scenes is what val rewards.
+   `YASP450`, `YASP450_s1`, `YASP450_s2` (GPU 1, since 30 Oct 14:26, the user's request): `s_oK1S2mxVie`'s exact recipe (batch 16),
+   450 epochs, seeds 0-2, three to the GPU; due ~08:00-09:00 on 31 Oct; each val zip is uploaded when done.
 9. The Phase 1 upload of the best configuration's all-train model by its 3-seed mean, before 31 Oct 12:00 SGT.
 
 **Batch size for the next runs (the user's rule, 28 Oct 11:00):** each new run uses the largest batch, a multiple of 16,
