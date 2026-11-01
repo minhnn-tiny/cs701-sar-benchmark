@@ -203,6 +203,42 @@ class Zoom(torch.utils.data.Dataset):
         return image, label, target
 
 
+class CopyPaste(torch.utils.data.Dataset):
+    """For the classes the detector fits on training images but misses elsewhere (bridge 2, playground 6: holdout AP ~5
+    and ~14 against 77-84 on training images, 31 Oct): with probability p, up to 3 boxes cut from another training image
+    of the image's class are pasted at random spots that overlap no box already there, with their boxes. The same
+    objects appear in new contexts. Draws come from torch's RNG (EpochSeeded)."""
+
+    def __init__(self, dataset, p, classes=(2, 6)):
+        self.dataset, self.p, self.rows = dataset, p, dataset.rows
+        labels = torch.tensor([int(row['label']) for row in dataset.rows])
+        self.by_class = {c: torch.nonzero(labels == c).flatten() for c in classes}
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, i):
+        image, label, target = self.dataset[i]
+        if label not in self.by_class or torch.rand(()) >= self.p:
+            return image, label, target
+        same = self.by_class[label]
+        source, _, src = self.dataset[int(same[torch.randint(len(same), ())])]
+        image, taken, labels = image.clone(), target['boxes'].as_subclass(torch.Tensor), [target['labels']]
+        for k in torch.randperm(len(src['boxes']))[:3].tolist():
+            x0, y0, x1, y1 = src['boxes'][k].round().int().tolist()
+            w, h = x1 - x0, y1 - y0
+            if w < 1 or h < 1:
+                continue
+            for _ in range(10):  # a free spot
+                x, y = int(torch.randint(513 - w, ())), int(torch.randint(513 - h, ()))
+                new = taken.new_tensor([[x, y, x + w, y + h]])
+                if not len(taken) or (box_iou(new, taken) == 0).all():
+                    image[:, y:y + h, x:x + w] = source[:, y0:y1, x0:x1]
+                    taken, labels = torch.cat([taken, new]), labels + [src['labels'][k:k + 1]]
+                    break
+        return image, label, {**target, 'boxes': taken, 'labels': torch.cat(labels)}
+
+
 class Mosaic(torch.utils.data.Dataset):
     """Half the time, a 2 x 2 mosaic of the image and three others of its class (so the image's label still holds), cut
     to a random 512 window: parts of up to four scenes at their own scale, with their boxes (_view). Redrawn until a box
@@ -236,11 +272,13 @@ class Mosaic(torch.utils.data.Dataset):
 
 
 def make_loader(root, split, train=False, flips=True, batch_size=16, workers=8, limit=None, seed=0, sar_aug=False,
-                zoom=0.0, mosaic=False, sar_p=0.5):
+                zoom=0.0, mosaic=False, sar_p=0.5, copy_paste=0.0):
     """sarbench's data at its 512 px geometry. Training: the order and flips of an epoch depend only on (seed, epoch)
     (set loader.sampler.epoch before each epoch), flips unless flips=False, then Mosaic, Zoom (spread `zoom`) and
     SARAugment if asked, the last partial batch dropped (BatchNorm)."""
     dataset = SARMultiTask(root, split, train=train and flips, limit=limit)
+    if train and copy_paste:
+        dataset = CopyPaste(dataset, copy_paste)
     if train and mosaic:
         dataset = Mosaic(dataset)
     if train and zoom:

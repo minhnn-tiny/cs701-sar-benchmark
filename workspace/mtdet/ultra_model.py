@@ -74,8 +74,9 @@ def load_coco(det, path, shift=None):
     return len(copied), len(target)
 
 
-def set_decoding(model, head='o2o', jd_alpha=0.0, nms=None, topk=300, merge=False, score_thresh=0.001):
-    model.decoding = dict(head=head, jd_alpha=jd_alpha, nms=nms, topk=topk, merge=merge, score_thresh=score_thresh)
+def set_decoding(model, head='o2o', jd_alpha=0.0, nms=None, topk=300, merge=False, score_thresh=0.001, fuse=0.0):
+    model.decoding = dict(head=head, jd_alpha=jd_alpha, nms=nms, topk=topk, merge=merge, score_thresh=score_thresh,
+                          fuse=fuse)
 
 
 def decoding_grid(arch):
@@ -93,6 +94,12 @@ def decoding_grid(arch):
                  for h, nms, merge in more for a in (0.0, 1.0)})
     no_floor = [('q', 0.7, 100)] if arch.startswith('rtdetr') else [('o2m', 0.7, 100), ('o2m', 0.7, 300), ('o2m', 0.8, 100)]
     grid.update({f'{h}_nms{nms}_a0_k{k}_t0': dict(head=h, nms=nms, topk=k, score_thresh=0.0) for h, nms, k in no_floor})
+    if not arch.startswith('rtdetr'):  # 31 Oct: softer joint decoding on the submitted decoding (a1 lost with the floor)
+        grid.update({f'o2m_nms0.8_a{a:g}_k100_t0': dict(head='o2m', jd_alpha=a, nms=0.8, topk=100, score_thresh=0.0)
+                     for a in (0.25, 0.5)})
+        # 31 Oct: the image class also from the detector ('_f' = fuse weight; decode_lab.py), JD on the fused probs
+        grid.update({f'o2m_nms0.8_a0.5_k100_t0_f{f:g}': dict(head='o2m', jd_alpha=0.5, nms=0.8, topk=100,
+                                                             score_thresh=0.0, fuse=f) for f in (1.0, 2.0)})
     return grid
 
 
@@ -179,6 +186,8 @@ class UltraMultiTask(nn.Module):
         logits = self.cls_head(self.features())
         boxes, scores = self._boxes_scores(raw, images.shape[-1])
         d = self.decoding
+        if d['fuse']:  # the image class also from the detector's strongest box per class (decode_lab.py, 31 Oct)
+            logits = logits.float().log_softmax(1) + d['fuse'] * scores.amax(1).clamp_min(1e-6).log()
         return logits, dense_decode(boxes, scores, logits.float().softmax(1), d['jd_alpha'], d['nms'], d['topk'],
                                     d['score_thresh'], merge=d['merge']), None
 

@@ -1,0 +1,1 @@
+{"submission":{"id":"s_49grnfrk1i","phase":1,"created_at":"2026-11-01T02:41:35.063745Z","ok":true,"scores":{"delta_m":45.88748369846506,"macro_f1":93.97538974312712,"mAP":49.926446363978265,"accuracy":94.109396914446,"AP50":73.28903594315807},"error":null,"size":1873842,"posted":true},"posted":{"1":"s_49grnfrk1i","2":null}}

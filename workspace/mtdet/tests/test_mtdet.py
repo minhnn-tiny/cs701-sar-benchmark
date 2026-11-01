@@ -4,8 +4,8 @@ import json
 import pytest
 import torch
 
-from common import (HOLDOUT, MEAN, ROOT, STD, Mosaic, SARAugment, SARMultiTask, Zoom, check_budget, collate,
-                    dense_decode, make_loader)
+from common import (HOLDOUT, MEAN, ROOT, STD, CopyPaste, Mosaic, SARAugment, SARMultiTask, Zoom, check_budget,
+                    collate, dense_decode, make_loader)
 
 
 @pytest.fixture(scope='module')
@@ -101,9 +101,10 @@ class Squares(torch.utils.data.Dataset):
         return image, i % 9, {'boxes': torch.tensor([[x, y, x + 8.0 + i, y + 8.0 + i]]), 'labels': torch.tensor([i % 9 + 1])}
 
 
-@pytest.mark.parametrize('wrap', [lambda d: Zoom(d, 0.5), Mosaic], ids=['zoom', 'mosaic'])
+@pytest.mark.parametrize('wrap', [lambda d: Zoom(d, 0.5), Mosaic, lambda d: CopyPaste(d, 1.0)],
+                         ids=['zoom', 'mosaic', 'copy_paste'])
 def test_geometric_augment_moves_boxes_with_pixels(wrap):
-    """Every box Zoom and Mosaic return covers the square's pixels; labels stay the image's class; seeded."""
+    """Every box Zoom, Mosaic and CopyPaste return covers the square's pixels; labels stay the image's class; seeded."""
     aug, changed = wrap(Squares()), 0
     for i in range(18):
         torch.manual_seed(i)

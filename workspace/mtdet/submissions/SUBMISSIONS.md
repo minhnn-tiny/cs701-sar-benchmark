@@ -25,6 +25,18 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 | 31 Oct 2026 08:22 | 1 (val) | `s_re4Ay2NHUq` | `YASP450_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 0 (`runs/YASP450`) | `o2m_nms0.8_a0_k100_t0` | +43.89 | 93.18 | 49.10 | 93.34 | 71.95 | no: below the posted +44.95 |
 | 31 Oct 2026 08:22 | 1 (val) | `s_IMVEvJhDtc` | `YASP450_s1_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 1 (`runs/YASP450_s1`) | `o2m_nms0.8_a0_k100_t0` | +44.76 | 93.26 | 49.54 | 93.55 | 73.08 | no: below the posted +44.95 |
 | 31 Oct 2026 08:22 | 1 (val) | `s_g5lTEftD9X` | `YASP450_s2_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 2 (`runs/YASP450_s2`) | `o2m_nms0.8_a0_k100_t0` | +43.74 | 93.23 | 49.02 | 93.41 | 71.79 | no: below the posted +44.95 |
+| 31 Oct 2026 22:14 | 1 (val) | `s_b1EUslCFJP` | `YAP2SP350_val.zip` | YOLO26-L-**P2** (stride-4 level), SAR 0.8, 350 epochs, batch 16, all of train (`runs/YAP2SP350`) | `o2m_nms0.8_a0_k100_t0` | +43.37 | 92.71 | 48.97 | 93.06 | 71.40 | no: below the posted +44.95 |
+| 31 Oct 2026 22:14 | 1 (val) | `s_5CJ7elXK9N` | `YAXSP350_val.zip` | YOLO26-**X** (58.8 M / 38.7 M trainable), SAR 0.8, 350 epochs, batch 16, all of train (`runs/YAXSP350`) | `o2m_nms0.8_a0_k100_t0` | +43.57 | 94.33 | 48.61 | 94.53 | 71.97 | no: below the posted +44.95 |
+| 1 Nov 2026 00:00 | 1 (val) | `s_3uTXQzyZlv` | `YASP350_f1_val.zip` | `runs/YASP350` (s_oK1S2mxVie's model), **new decoding**: the image class also from the detector's best box per class (β 1), box scores × fused p(class)^0.5 (EXPERIMENTS.md M1.8) | `o2m_nms0.8_a0.5_k100_t0_f1` | +45.23 | 93.55 | 49.70 | 93.69 | 72.52 | no: the next row beats it |
+| 1 Nov 2026 00:00 | 1 (val) | `s_MpUnPGVrtE` | `YASP350_swa_f1_val.zip` | `runs/YASP350` + **SWA**: 12 more epochs at lr 5e-5, the 12 epoch-end weights averaged (`runs/YASP350_swa_avgbn`, M1.10) | `o2m_nms0.8_a0.5_k100_t0_f1` | **+45.37** | 93.83 | 49.69 | 93.97 | 72.67 | yes at 10:40 (the user: "Post it"), replacing `s_oK1S2mxVie` (+44.95); replaced at 10:42 by `s_49grnfrk1i` |
+| 1 Nov 2026 00:01 | 1 (val) | `s_JB6MnITEDg` | `YACPSP350_f1_val.zip` | copy-paste model (`runs/YACPSP350`), new decoding | `o2m_nms0.8_a0.5_k100_t0_f1` | +44.38 | 93.21 | 49.35 | 93.34 | 73.01 | no: below the posted entry |
+| 1 Nov 2026 00:01 | 1 (val) | `s_Bj3J8doiLa` | `YASP350_s1_f1_val.zip` | seed 1 of s_oK1S2mxVie's recipe (`runs/YASP350_s1`), new decoding | `o2m_nms0.8_a0.5_k100_t0_f1` | +44.24 | 93.10 | 49.31 | 93.27 | 72.31 | no: below the posted entry |
+| 1 Nov 2026 08:51 | 1 (val) | `s_j2q49bgF7U` | `YASP350_s4_swa_f1_val.zip` | seed 4 of s_oK1S2mxVie's recipe + SWA (`runs/YASP350_s4_swa_avgbn`), the first of seeds 2–4 to finish | `o2m_nms0.8_a0.5_k100_t0_f1` | +44.62 | 93.52 | 49.39 | 93.62 | 72.62 | no: below `s_MpUnPGVrtE` |
+| 1 Nov 2026 10:41 | 1 (val) | `s_boRNFDKYf2` | `YASP350_s2_swa_f1_val.zip` | seed 2 + SWA (`runs/YASP350_s2_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +44.72 | 93.12 | 49.55 | 93.27 | 73.12 | no: below `s_49grnfrk1i` |
+| 1 Nov 2026 10:41 | 1 (val) | `s_SkBg8gaMR1` | `YASP350_s3_swa_f1_val.zip` | seed 3 + SWA (`runs/YASP350_s3_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +45.12 | 93.71 | 49.60 | 93.90 | 72.91 | no: below `s_49grnfrk1i` |
+| 1 Nov 2026 10:41 | 1 (val) | `s_iJVTFdcr0q` | `YASP350_s5_swa_f1_val.zip` | seed 5 + SWA (`runs/YASP350_s5_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +45.12 | 93.60 | 49.63 | 93.76 | 73.30 | no: below `s_49grnfrk1i` |
+| 1 Nov 2026 10:41 | 1 (val) | `s_49grnfrk1i` | `YASP350_s6_swa_f1_val.zip` | seed 6 + SWA (`runs/YASP350_s6_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | **+45.89** | 93.98 | 49.93 | 94.11 | 73.29 | **yes at 10:42** (the user's go-ahead to post our best), replacing `s_MpUnPGVrtE` (+45.37); 5th of 7 |
+| 1 Nov 2026 10:41 | 1 (val) | `s_nKkhWhJGoi` | `YASP350_s7_swa_f1_val.zip` | seed 7 + SWA (`runs/YASP350_s7_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +43.75 | 93.16 | 49.04 | 93.27 | 72.35 | no: below `s_49grnfrk1i` |
 
 ## `s_DRkVHQAQAo` (YOLO26-L, 100 epochs)
 
@@ -344,3 +356,34 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 - **Quota after them:** 5 of 31 Oct's 5 used (all by this session); both reset cards unused.
 - **Board at 08:22:** team09 +52.39, team02 +47.91, team08 +46.80, team07 +45.83, **cs701-team05 +44.95 (5th of 7)**,
   team04 +42.04.
+
+## Round 9 (31 Oct): `s_b1EUslCFJP` (P2), `s_5CJ7elXK9N` (YOLO26-X)
+
+- **Why:** the user's request for 3 settings that could raise Δm, judged on val directly. All use the best recipe
+  (SAR 0.8, 350 epochs, batch 16, all of train). The mAP gap is in thin and tiny objects (holdout AP: bridge ~5,
+  playground ~14).
+- **Result:** P2 +43.37 (mAP 48.97), X +43.57 (macro-F1 94.33, our best val F1; mAP 48.61). Neither beats
+  `s_oK1S2mxVie` (+44.95, mAP 49.54): the stride-4 level did not lift mAP, and X classifies better but detects worse.
+- **Quota:** after the user's reset card, 31 Oct's count stood at 3 of 5. These two used the last 2. The seed-1 model
+  (`YASP350_s1`) and the copy-paste model (`YACPSP350`) upload just after 00:00 SGT on 1 Nov.
+
+### 1 Nov 00:00: the new decoding and SWA (M1.8, M1.10)
+
+- **Why:** the user asked to think more comprehensively. On 9 holdout runs, the detector-informed class plus joint
+  decoding gained +0.61 ± 0.15 Δm (9/9); SWA added +0.22 on 2 holdout seeds.
+- **Result on val:** the decoding gave +0.28 on the same model (+44.95 → +45.23; mAP +0.16, F1 −0.04) and SWA +0.14 more
+  (**+45.37**, the team's best). Both smaller than on the holdout. Seed 1 (+44.24) and copy-paste (+44.38) with the new
+  decoding stay below seed 0, so seed 0 was a lucky draw (~1 Δm between seeds).
+- **Quota:** 4 of 1 Nov's 5 used. The two scheduled base-decoding uploads (seed 1, copy-paste) were replaced by these.
+- **Next:** seeds 2–7 of the recipe, each with SWA and the new decoding (`jobs/plan.txt` rounds 10–11), from ~08:30.
+- **08:51:** seed 4 (+SWA) scored +44.62 and used 1 Nov's last upload (5 of 5). Seeds 2 and 3 (zips ready) and 5–7
+  (~10:30) need the last reset card (`r_b5j2z4a6x2t43_05`), which only the user may decide to use.
+- **10:40–10:42 (the user: "Post it, and use the reset card for the seeds"):** posted `s_MpUnPGVrtE`, used the last
+  reset card (`r_b5j2z4a6x2t43_05`), uploaded seeds 2, 3, 5, 6, 7 (all with SWA and the new decoding). Seed 6 scored
+  **+45.89** and was posted in place of `s_MpUnPGVrtE` (CLAUDE.md: it beats the team's entry and the TA bar), 5th of 7.
+- **Seeds of the recipe on val, with SWA and the new decoding:** s0 +45.37, s2 +44.72, s3 +45.12, s4 +44.62, s5 +45.12,
+  s6 +45.89, s7 +43.75: mean +44.94 ± 0.68 (s1 +44.24 without SWA). The pick is the best of 7 on val, so expect it to
+  score lower on test.
+- **Quota:** 1 Nov 5 of 5 after the reset, no reset card left; Phase 1 closes 1 Nov 23:59 SGT.
+- **Phase 2 pair (the 2 best by val Δm, to confirm with the user):** `runs/YASP350_s6_swa_avgbn` (+45.89) and
+  `runs/YASP350_swa_avgbn` (+45.37), both with `o2m_nms0.8_a0.5_k100_t0_f1`.

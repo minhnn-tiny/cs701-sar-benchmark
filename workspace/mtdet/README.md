@@ -205,10 +205,14 @@ the best configuration at batch 80–96 scored −1.10 Δm on the holdout agains
 (−0.66, +0.33, −2.95). One run alone at batch 96 trains ~1.5× faster than one batch-16 run, but three batch-16 runs
 sharing a GPU do more work per GPU hour. So a large batch buys a sooner single result at the cost of accuracy.
 
-**Submission checkpoint**: the EMA weights of the chosen configuration's all-train run, `runs/YA<config>/model.pt`, decoded
-with `o2m_nms0.8_a0_k100_t0`. Posted now (the user's call, 28 Oct 21:18; re-posted 29 Oct 08:13 after the entry was
-changed outside this session, `submissions/SUBMISSIONS.md`): `runs/YASP350` (`s_oK1S2mxVie`, SAR at
-probability 0.8, 350 epochs, +44.95, 1st of 6). The holdout's pick, `runs/YASA450` (+44.11), stays uploaded.
+**Submission checkpoint** (from 1 Nov): the chosen configuration's all-train run with SWA, `runs/YA<config>_swa_avgbn/model.pt`
+(12 more epochs at lr 5e-5 from its EMA weights, the 12 epoch-end weights averaged, EXPERIMENTS.md M1.10), decoded with
+`o2m_nms0.8_a0.5_k100_t0_f1`: the image class also from the detector's strongest box per class (β 1), box scores × the
+fused class probability^0.5 (M1.8). One model, one forward pass per image. Holdout: the decoding +0.61 ± 0.15 Δm over 9
+runs (9/9), SWA +0.22 over 2 seeds; val: +0.28 and +0.14 on `YASP350`. The configuration is `YASP350` (SAR at probability
+0.8, 350 epochs, batch 16, all 9,392 train images). Its 8 seeds with SWA scored val +43.75 to **+45.89** (mean +44.9);
+the user chose to upload them all. Posted (the user's go-ahead, 1 Nov 10:42): seed 6, `runs/YASP350_s6_swa_avgbn`
+(`s_49grnfrk1i`, +45.89, 5th of 7), replacing `s_oK1S2mxVie` (`runs/YASP350`, +44.95, the old decoding).
 
 ## Commands (from the repo root; every GPU command through `workspace/gpu_run.sh`)
 
@@ -223,8 +227,16 @@ HF_HUB_OFFLINE=1 workspace/gpu_run.sh --min-free 8000 -- uv run python workspace
     workspace/mtdet/runs/<run>                               # a run's ND outputs (GPU, ~1 min)
 uv run python workspace/mtdet/analyze.py workspace/mtdet/runs/Y_s0 workspace/mtdet/runs/<run> --bootstrap 200
                                                              # partner splits and the paired bootstrap (CPU, ~12 min)
+HF_HUB_OFFLINE=1 workspace/gpu_run.sh --min-free 8000 -- uv run python workspace/mtdet/decode_lab.py \
+    workspace/mtdet/runs/<holdout run> --betas 1 2 --alphas 0.5    # decoding variants from one forward pass (GPU, ~2 min)
+# SWA of a finished run R (the exact command: jobs/plan.txt, 'SWA follow-ups'), then its zip:
+HF_HUB_OFFLINE=1 workspace/gpu_run.sh --min-free 10000 -- uv run python workspace/mtdet/train.py --arch yolo26l \
+    --init-from workspace/mtdet/runs/R/model.pt --epochs 12 --swa 12 --lr 5e-5 --backbone-lr 5e-5 --warmup-epochs 0 \
+    --ema 0 --sar-aug --sar-p 0.8 --seed 10 --data dataset/repro --evals nd --eval-every 12 --out workspace/mtdet/runs/R_swa
+HF_HUB_OFFLINE=1 workspace/gpu_run.sh --min-free 8000 -- uv run python workspace/mtdet/soup.py \
+    workspace/mtdet/runs/R_swa/swa_*.pt --out workspace/mtdet/runs/R_swa_avgbn --bn-batches 0
 HF_HUB_OFFLINE=1 workspace/gpu_run.sh --min-free 8000 -- uv run python workspace/mtdet/predict.py \
-    workspace/mtdet/runs/<all-train run> --split val --decoding <chosen> --out workspace/mtdet/submissions/<name>.zip
+    workspace/mtdet/runs/R_swa_avgbn --split val --decoding o2m_nms0.8_a0.5_k100_t0_f1 --out workspace/mtdet/submissions/<name>.zip
 ```
 
 Weights (not in git, `weights/`): `yolo26l.pt`, `yolo26x.pt`, `rtdetr-l.pt` from
@@ -244,6 +256,8 @@ plus `ultralytics-thop 2.2.3`, `polars 2.1.0`, `polars-runtime-32 2.1.0`, `psuti
 | `predict.py` | the leaderboard zip, compacted and checked with `workspace/sarmtl/check_submission.py` |
 | `compare.py` | the results table, per run and per configuration |
 | `analyze.py` | failure analysis on ND: per class, by near-duplicate partner and orientation; paired unit bootstrap |
+| `decode_lab.py` | decoding variants (detector-informed class, JD) scored on ND from one forward pass |
+| `soup.py` | weight averaging into one model: SWA snapshots of one run (seeds trained apart don't average) |
 | `EXPERIMENTS.md`, `submissions/SUBMISSIONS.md` | the experiment log; the uploads, their ids and scores |
 | `run.sh`, `jobs/` | the queue and its plan |
 | `tests/` | budgets, joint forward/backward, every decoding, data order, the zip, the holdout |

@@ -58,6 +58,12 @@ def parse_args(argv=None):
     p.add_argument('--no-flip', action='store_true', help='no random flips')
     p.add_argument('--sar-aug', action='store_true', help='SAR photometric augmentation: speckle and gamma (common.SARAugment)')
     p.add_argument('--sar-p', type=float, default=0.5, help="probability of each of --sar-aug's two parts")
+    p.add_argument('--copy-paste', type=float, default=0.0,
+                   help='probability of pasting up to 3 same-class boxes into a bridge or playground image (common.CopyPaste)')
+    p.add_argument('--init-from', help="start from a finished run's weights (its model.pt) instead of COCO's")
+    p.add_argument('--swa', type=int, default=0,
+                   help='SWA: a constant lr after warmup, and the raw weights saved after each of the last N epochs '
+                        '(swa_<epoch>.pt) for soup.py')
     p.add_argument('--zoom', type=float, default=0.0,
                    help='scale jitter half the time: resized by 1 +- ZOOM, then cropped or padded to 512 (common.Zoom)')
     p.add_argument('--mosaic', action='store_true', help='half the time a 2 x 2 same-class mosaic cut to 512 (common.Mosaic)')
@@ -127,7 +133,8 @@ def git_commit():
 
 
 NOT_TRAINING = ('workers', 'eval_every', 'evals')  # args that change what is scored, not what is trained
-LATER = {'label_smoothing': 0.0, 'cls_head': 'p5', 'sar_aug': False, 'zoom': 0.0, 'mosaic': False, 'sar_p': 0.5}  # args added after runs had started: left out at their default, so those runs still match
+LATER = {'label_smoothing': 0.0, 'cls_head': 'p5', 'sar_aug': False, 'zoom': 0.0, 'mosaic': False, 'sar_p': 0.5,
+         'copy_paste': 0.0, 'init_from': None, 'swa': 0}  # args added after runs had started: left out at their default, so those runs still match
 
 
 def training_args(args):
@@ -213,12 +220,16 @@ def main(argv=None):
                    sys.modules[__name__])
 
     model = build_model(args)
+    if args.init_from:
+        model.load_state_dict(torch.load(args.init_from, map_location='cpu'))
     total, trainable = check_budget(model)
     log(f'parameters: {total:,} total, {trainable:,} trainable', log_file)
     model.cuda()
     if args.channels_last:
         model.to(memory_format=torch.channels_last)
         model.channels_last = True
+    if args.init_from and hasattr(model, 'replay_epochs'):
+        model.replay_epochs(args.epochs)  # a continuation keeps the trained model's loss state (YOLO26: o2m weight at its end)
     dirs = eval_dirs(args.data, args.evals.split(','))
     train_images = split_images(args.data, 'train')
     overlap = {name: len(split_images(d.parent, d.name) & train_images) for name, d in dirs.items()}
@@ -229,11 +240,12 @@ def main(argv=None):
         f'{"held-out run" if held_out else "NOT a held-out run: its ND/LF scores are in-train"}', log_file)
     loader = make_loader(args.data, 'train', train=True, flips=not args.no_flip, batch_size=args.batch_size,
                          workers=args.workers, limit=args.limit, seed=args.seed, sar_aug=args.sar_aug,
-                         zoom=args.zoom, mosaic=args.mosaic, sar_p=args.sar_p)
+                         zoom=args.zoom, mosaic=args.mosaic, sar_p=args.sar_p, copy_paste=args.copy_paste)
     steps = min(len(loader), args.max_steps or len(loader))
     optimizer = torch.optim.AdamW(param_groups(model, args), lr=args.lr)
     warmup, total_steps = round(args.warmup_epochs * steps), args.epochs * steps
-    schedule = torch.optim.lr_scheduler.LambdaLR(optimizer, lambda s: lr_factor(s, warmup, total_steps))
+    schedule = torch.optim.lr_scheduler.LambdaLR(
+        optimizer, lambda s: min(1.0, (s + 1) / max(warmup, 1)) if args.swa else lr_factor(s, warmup, total_steps))
     ema = None
     if args.ema:
         from ultralytics.utils.torch_utils import ModelEMA
@@ -256,7 +268,7 @@ def main(argv=None):
             ema.ema.load_state_dict(state['ema'])
             ema.updates = state['ema_updates']
         first, history, hours, step_times = state['epoch'] + 1, state['history'], state['hours'], state['step_times']
-        model.replay_epochs(state['epoch'])
+        model.replay_epochs(args.epochs if args.init_from else state['epoch'])
         log(f'resumed after epoch {state["epoch"]}', log_file)
 
     for epoch in range(first, args.epochs + 1):
@@ -274,6 +286,8 @@ def main(argv=None):
                     'args': training_args(args), 'source': source_hash(), 'rng_cpu': torch.get_rng_state(),
                     'rng_cuda': torch.cuda.get_rng_state()}, f'{resume}.tmp')
         os.replace(f'{resume}.tmp', resume)  # atomic: a crash mid-save keeps the previous checkpoint
+        if args.swa and epoch > args.epochs - args.swa:
+            torch.save(model.state_dict(), args.out / f'swa_{epoch:03d}.pt')
 
     final = history[-1]
     peak_gb = torch.cuda.max_memory_allocated() / 2**30
