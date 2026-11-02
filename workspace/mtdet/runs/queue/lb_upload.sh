@@ -3,7 +3,7 @@
 # (`-H @-`, fed by the printf builtin), so it is never in a process's argv, a command line or the output.
 #   lb_upload.sh me          GET /api/me (quota, reset cards)
 #   lb_upload.sh post <id> <zip>   POST /api/submissions/<id>/post (make it the team's entry)
-#   lb_upload.sh <zip>       check the zip, then POST it to /api/submissions; the reply goes to <zip stem>.response.json
+#   lb_upload.sh <zip>       check the zip (split from its name: *_test.zip = test, phase 2 open), then POST it; the reply goes to <zip stem>.response.json
 #                            and the Idempotency-Key to <zip stem>.idempotency_key (a retry reuses it: never counted twice)
 set -uo pipefail
 LB=https://web-production-c241e.up.railway.app
@@ -28,8 +28,12 @@ if [ "$1" = post ]; then  # lb_upload.sh post <submission id> <zip>: the reply g
 fi
 
 ZIP=$1; STEM=${ZIP%.zip}
-uv run python workspace/sarmtl/check_submission.py "$ZIP" --split val | tail -n 1
-[ "${PIPESTATUS[0]}" = 0 ] || { echo "check_submission.py failed: not uploading $ZIP"; exit 1; }
+SPLIT=val; PHASE=1; [[ "$ZIP" == *_test.zip ]] && { SPLIT=test; PHASE=2; }  # the split from the zip name
+open=$(curl -sS "$LB/api/status" | .venv/bin/python -c "import json, sys; d = json.load(sys.stdin); print(d['phase'] == $PHASE and d['state'] == 'open')")
+[ "$open" = True ] || { echo "phase $PHASE is not open: not uploading $ZIP"; exit 1; }
+uv run python workspace/sarmtl/check_submission.py "$ZIP" --split $SPLIT | tail -n 1
+[ "${PIPESTATUS[0]}" = 0 ] || { echo "check_submission.py --split $SPLIT failed: not uploading $ZIP"; exit 1; }
+[ "$(stat -c %s "$ZIP")" -le 25000000 ] || { echo "$ZIP is over 25 MB: not uploading"; exit 1; }
 [ -s "$STEM.idempotency_key" ] || uuidgen > "$STEM.idempotency_key"
 code=$(auth | curl -sS -o "$STEM.response.json" -w '%{http_code}' -X POST "$LB/api/submissions" -H @- \
     -H "Idempotency-Key: $(cat "$STEM.idempotency_key")" -F "file=@$ZIP")

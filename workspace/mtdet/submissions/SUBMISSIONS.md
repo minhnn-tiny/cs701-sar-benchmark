@@ -385,5 +385,8 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
   s6 +45.89, s7 +43.75: mean +44.94 ± 0.68 (s1 +44.24 without SWA). The pick is the best of 7 on val, so expect it to
   score lower on test.
 - **Quota:** 1 Nov 5 of 5 after the reset, no reset card left; Phase 1 closes 1 Nov 23:59 SGT.
-- **Phase 2 pair (the 2 best by val Δm, to confirm with the user):** `runs/YASP350_s6_swa_avgbn` (+45.89) and
-  `runs/YASP350_swa_avgbn` (+45.37), both with `o2m_nms0.8_a0.5_k100_t0_f1`.
+- **Phase 2 pair, confirmed by the user (1 Nov 11:00: "use seed 6 and seed 0"):** `runs/YASP350_s6_swa_avgbn` (+45.89)
+  and `runs/YASP350_swa_avgbn` (+45.37), the 2 best by val Δm, both with `o2m_nms0.8_a0.5_k100_t0_f1`. Their test zips
+  (`YASP350_s6_swa_f1_test.zip`, `YASP350_swa_f1_test.zip`) are built by `predict.py … --split test` once Phase 2 opens
+  (2 Nov 00:01) and `dataset/test/` is complete; the test path was rehearsed on the val images (zip identical to the
+  uploaded val zip). The better of the two test scores gets posted (CLAUDE.md: it must beat the TA's +3.8).
