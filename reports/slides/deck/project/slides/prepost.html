@@ -1,0 +1,41 @@
+<section id="prepost" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Pre- and post-processing</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#EEF1F5;padding:32px 40px;border-radius:12px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#14213D">Before the network</h3>
+<ol style="font-size:32px;line-height:1.4;color:#14213D">
+<li>read as 8-bit gray</li>
+<li>resize to 512 × 512 (course geometry)</li>
+<li>normalise with SAR mean and std</li>
+<li>back to [0, 1], gray as R, G, B</li>
+<li>training only: flips, speckle, gamma</li>
+</ol>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FDEBE2;padding:32px 40px;border-radius:12px;border:3px solid #D95926">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#14213D">After the network</h3>
+<ol style="font-size:32px;line-height:1.4;color:#14213D">
+<li>5,376 boxes × 9 class scores</li>
+<li>cross-task decoding (slide 11)</li>
+<li>per-class NMS, IoU 0.8; top 100</li>
+<li>no score floor: only adds recall</li>
+<li>boxes to original pixels; zip checked</li>
+</ol>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:4px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#1F5FAE">+1.9</p>
+<p style="font-size:24px;line-height:1.4">dense head + NMS vs YOLO26’s NMS-free head</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#1F5FAE">+0.9</p>
+<p style="font-size:24px;line-height:1.4">no score floor vs a 0.001 floor</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#1F5FAE">+0.61</p>
+<p style="font-size:24px;line-height:1.4">cross-task decoding, 9 holdout runs</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 8 / 17</p>
+<aside>(~55 s) Pre-processing follows the course’s geometry, because the rules fix it: each image is read as 8-bit gray, resized to 512 by 512, and normalised with the SAR mean and standard deviation, not ImageNet’s. Our weights were trained on COCO photos, so we map the values back to zero-one and repeat the gray channel as red, green and blue. Only during training we add flips, speckle and gamma. After the network, YOLO26’s dense head gives 5,376 candidate boxes with nine class scores each. We apply cross-task decoding, then per-class non-maximum suppression at a high overlap of 0.8, so neighbouring tiny objects survive, keep the top 100 per image, which is what COCO scores, and set no score threshold, because low-scored boxes can only add recall. Each choice was measured on the holdout: the dense head with NMS beat YOLO26’s own NMS-free head by 1.9, and dropping the score floor added 0.9. Finally, boxes are scaled back to each image’s original size, and the zip is format-checked before upload.</aside>
+</section>

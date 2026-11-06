@@ -1,17 +1,25 @@
 <section id="failures" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
-<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Where it fails: bridges and playgrounds</h2>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Open challenge: bridges and playgrounds</h2>
 <div style="display:grid;grid-template-columns:844px 1fr;gap:64px;align-items:start">
 <div style="display:flex;flex-direction:column;gap:12px">
 <img src="/_blob/44fb605e5dc349a4d7664b87f0d6fad7" alt="Six random holdout images with ground truth in green and predictions in orange: aircraft, car, oil tank and wind turbine objects are found; bridges and playgrounds are mostly missed" style="width:844px;height:600px;object-fit:contain">
 <p style="font-size:24px;color:#6B7686">Random holdout images, not hand-picked. Green: ground truth; orange: predictions ≥ 0.25.</p>
 </div>
+<div style="display:flex;flex-direction:column;gap:24px">
 <ul style="font-size:32px;line-height:1.4;color:#14213D">
 <li>Missed, not mislocated: under half are found even at IoU 0.5</li>
 <li>Tiny boxes in cluttered scenes, where similar structures carry no box</li>
 <li>Few repeats: 13 % and 36 % of their holdout images have a partner</li>
 <li>Tried: a stride-4 level and copy-paste; neither fixed it</li>
 </ul>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FDEBE2;padding:24px 32px;border-radius:12px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#14213D">How we would solve it</h3>
+<p style="font-size:24px;line-height:1.4;color:#14213D">condition the detector on the scene class</p>
+<p style="font-size:24px;line-height:1.4;color:#14213D">add context to stride-8 features (attention)</p>
+<p style="font-size:24px;line-height:1.4;color:#14213D">mine look-alike structures as hard negatives</p>
 </div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 13 / 15</p>
-<aside>(~45 s) Here are six random holdout images. Aircraft, cars, oil tanks and wind turbines are found, even the tiny turbines. Bridges and playgrounds are mostly missed, not mislocated: fewer than half are found even at a loose overlap threshold. Their boxes are as small as wind turbines’, but they sit in cluttered scenes where similar structures carry no box, and few of them repeat training scenes. A finer feature level and pasting their boxes into other images did not fix this. It is the clearest direction for future work.</aside>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 15 / 17</p>
+<aside>(~45 s) Here are six random holdout images. Aircraft, cars, oil tanks and wind turbines are found, even the tiny turbines. Bridges and playgrounds are mostly missed, not mislocated: fewer than half are found even at a loose overlap threshold. Their boxes are as small as wind turbines’, but they sit in cluttered scenes where similar structures carry no box, and few of them repeat training scenes. A finer feature level and pasting their boxes into other images did not fix this. It is the clearest direction for future work. How we would solve it: condition the detection head on the scene class the classifier predicts, so it expects bridges in bridge scenes; give the stride-8 features more context, for example with attention; and mine look-alike structures, such as river crossings without a box, as hard negatives.</aside>
 </section>

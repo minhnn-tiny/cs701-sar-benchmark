@@ -1,14 +1,23 @@
-<section id="fitgen" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
-<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Fitting versus generalising, class by class</h2>
-<div style="display:grid;grid-template-columns:1000px 1fr;gap:64px;align-items:center">
-<img src="/_blob/0d23ee62c7d836d75da0e0c7e4d8732d" alt="Dot plot of per-class AP on training images, the val-like holdout and leak-free scenes: near 100 on training images for most classes, 5 to 84 on the holdout, 1 to 57 on leak-free scenes; bridge and playground lowest" style="width:1000px;height:611px;object-fit:contain">
-<div style="display:flex;flex-direction:column;gap:24px">
-<div style="display:flex;gap:20px;align-items:baseline"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#1F5FAE">89.0</p><p style="font-size:24px">mAP on training images</p></div>
-<div style="display:flex;gap:20px;align-items:baseline"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4441A">50.9</p><p style="font-size:24px">on the val-like holdout</p></div>
-<div style="display:flex;gap:20px;align-items:baseline"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#14213D">18.6</p><p style="font-size:24px">on unseen scenes</p></div>
-<p style="font-size:24px;line-height:1.4">Car and ship generalise. Airport, oil tank and harbor inherit their fit from repeated scenes. Bridge and playground fail both ways.</p>
-</div>
-</div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 12 / 15</p>
-<aside>(~50 s) This chart splits the score by class and by where the scene comes from. Blue is training images: the model fits almost everything, 89 mAP. Green is completely unseen scenes: 18.6. Orange, the val-like holdout, sits in between: 51. Classes whose test images mostly repeat training scenes, like airports, oil tanks and harbors, inherit their fit. Cars and ships generalise genuinely. Bridges and playgrounds fail both ways, which is where our remaining gap lies.</aside>
+<section id="fitgen" data-transition="fade" style="display:flex; flex-direction:column; gap:40px; padding:128px 128px 160px; background:#fbfbf8">
+  <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.15; color:#14213d">Fitting versus generalising, class by class</h2>
+  <div style="display:grid; gap:64px; align-items:center; grid-template-columns:1000px 1fr">
+    <img src="/_blob/0d23ee62c7d836d75da0e0c7e4d8732d" alt="Dot plot of per-class AP on training images, the val-like holdout and leak-free scenes: near 100 on training images for most classes, 5 to 84 on the holdout, 1 to 57 on leak-free scenes; bridge and playground lowest" style="width:1000px; height:611px; object-fit:contain">
+    <div style="display:flex; flex-direction:column; gap:24px">
+      <div style="display:flex; flex-direction:row; gap:20px; align-items:baseline">
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#1f5fae">89.0</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; color:#3d4a5c">mAP on training images</p>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:20px; align-items:baseline">
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#b4441a">50.9</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; color:#3d4a5c">on the val-like holdout</p>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:20px; align-items:baseline">
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#14213d">18.6</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; color:#3d4a5c">on unseen scenes</p>
+      </div>
+      <p style="font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#3d4a5c">Car and ship generalise. Airport, oil tank and harbor inherit their fit from repeated scenes. Bridge and playground fail both ways.</p>
+    </div>
+  </div>
+  <p style="position:absolute; bottom:64px; left:128px; width:1664px; font-family:Inter, Arial, sans-serif; font-size:24px; color:#6b7686">CS701 Team 5 · SAR multi-task learning · 14 / 17</p>
+  <aside>(~50 s) This chart splits the score by class and by where the scene comes from. Blue is training images: the model fits almost everything, 89 mAP. Green is completely unseen scenes: 18.6. Orange, the val-like holdout, sits in between: 51. Classes whose test images mostly repeat training scenes, like airports, oil tanks and harbors, inherit their fit. Cars and ships generalise genuinely. Bridges and playgrounds fail both ways, which is where our remaining gap lies.</aside>
 </section>

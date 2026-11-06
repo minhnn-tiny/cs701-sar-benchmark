@@ -1,34 +1,34 @@
-<section id="augment" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
-<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Augment with SAR physics, not generic geometry</h2>
-<div style="display:grid;grid-template-columns:1040px 1fr;gap:64px">
-<div style="display:flex;flex-direction:column;gap:12px">
-<img src="/_blob/b9b1be0e0aa4d9c819de2ab052d00b49" alt="One holdout image three times: original, with extra 4-look speckle, and with gamma 1.5" style="width:1040px;height:341px;object-fit:contain">
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-<p style="font-size:24px;text-align:center">original</p>
-<p style="font-size:24px;text-align:center">+ speckle, L = 4</p>
-<p style="font-size:24px;text-align:center">+ gamma 1.5</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:8px;background:#EEF1F5;padding:24px 32px;border-radius:12px">
-<p style="font-size:32px;line-height:1.4;color:#14213D">speckle: x ← x · √G, &#160;G ~ Γ(L, 1/L), &#160;L ~ U[4, 16]</p>
-<p style="font-size:32px;line-height:1.4;color:#14213D">gamma: x ← x^γ, &#160;γ ∈ [2/3, 3/2] (log-uniform)</p>
-<p style="font-size:24px;line-height:1.4">each with p = 0.8; pixels never move, so boxes and repeated scenes stay exact</p>
-</div>
-</div>
-<div style="display:flex;flex-direction:column;gap:28px;justify-content:center">
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#1F5FAE">+2.3 to +2.9</p>
-<p style="font-size:24px;line-height:1.4">Δm from SAR noise, 3 seeds, 250 epochs</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4441A">−5.4</p>
-<p style="font-size:24px;line-height:1.4">Δm from zoom (scale jitter), 150 epochs</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4441A">−4.6</p>
-<p style="font-size:24px;line-height:1.4">Δm from mosaic, 150 epochs</p>
-</div>
-</div>
-</div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 8 / 15</p>
-<aside>(~55 s) Our first addition is augmentation that follows radar physics. Speckle is multiplicative: an L-look image is the scene times Gamma noise of mean one. So we multiply each training image by fresh speckle with between 4 and 16 looks, as if the satellite had revisited the scene, and apply a random gamma, as if the image came from another source dataset’s intensity mapping. Neither moves a pixel. Over three seeds this gained 2.3 to 2.9 delta-m. The generic geometric augmentations did the opposite: zoom and mosaic lost about five points, because they teach invariance while the leaderboard rewards recognising repeated scenes as they are.</aside>
+<section id="augment" data-transition="fade" style="display:flex; flex-direction:column; gap:40px; padding:128px 128px 160px; background:#fbfbf8">
+  <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.15; color:#14213d">Augment with SAR physics, not generic geometry</h2>
+  <div style="display:grid; gap:64px; grid-template-columns:1040px 1fr">
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <img src="/_blob/b9b1be0e0aa4d9c819de2ab052d00b49" alt="One holdout image three times: original, with extra 4-look speckle, and with gamma 1.5" style="width:1040px; height:341px; object-fit:contain">
+      <div style="display:grid; gap:8px; grid-template-columns:1fr 1fr 1fr">
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; text-align:center; color:#3d4a5c">original</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; text-align:center; color:#3d4a5c">+ speckle, L = 4</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; text-align:center; color:#3d4a5c">+ gamma 1.5</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; padding:24px 32px; background:#eef1f5; border-radius:12px">
+        <p style="font-family:Inter, Arial, sans-serif; font-size:32px; line-height:1.4; color:#14213d">speckle: x ← x · √G, &nbsp;G ~ Γ(L, 1/L), &nbsp;L ~ U[4, 16]</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:32px; line-height:1.4; color:#14213d">gamma: x ← x^γ, &nbsp;γ ∈ [2/3, 3/2] (log-uniform)</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#3d4a5c">each with p = 0.8; pixels never move, so boxes and repeated scenes stay exact</p>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:28px; justify-content:center">
+      <div style="display:flex; flex-direction:column; gap:4px">
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#1f5fae">+2.3 to +2.9</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#3d4a5c">Δm from SAR noise, 3 seeds, 250 epochs</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px">
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#b4441a">−5.4</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#3d4a5c">Δm from zoom (scale jitter), 150 epochs</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px">
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#b4441a">−4.6</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#3d4a5c">Δm from mosaic, 150 epochs</p>
+      </div>
+    </div>
+  </div>
+  <p style="position:absolute; bottom:64px; left:128px; width:1664px; font-family:Inter, Arial, sans-serif; font-size:24px; color:#6b7686">CS701 Team 5 · SAR multi-task learning · 10 / 17</p>
+  <aside>(~55 s) Our first addition is augmentation that follows radar physics. Speckle is multiplicative: an L-look image is the scene times Gamma noise of mean one. So we multiply each training image by fresh speckle with between 4 and 16 looks, as if the satellite had revisited the scene, and apply a random gamma, as if the image came from another source dataset’s intensity mapping. Neither moves a pixel. Over three seeds this gained 2.3 to 2.9 delta-m. The generic geometric augmentations did the opposite: zoom and mosaic lost about five points, because they teach invariance while the leaderboard rewards recognising repeated scenes as they are.</aside>
 </section>

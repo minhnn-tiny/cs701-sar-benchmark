@@ -1,32 +1,32 @@
-<section id="decoding" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
-<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Let the two heads correct each other</h2>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
-<div style="display:flex;flex-direction:column;gap:12px;background:#FDEBE2;padding:32px 40px;border-radius:12px">
-<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#14213D">Detector → class</h3>
-<p style="font-size:32px;line-height:1.4;color:#14213D">class score = log p(c) + β · log (best box score of class c)</p>
-<p style="font-size:24px;line-height:1.4">The strongest detection of a class is evidence for that class (β = 1).</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:12px;background:#FDEBE2;padding:32px 40px;border-radius:12px">
-<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#14213D">Class → detector</h3>
-<p style="font-size:32px;line-height:1.4;color:#14213D">box score × p(c)^α, with p from the fused class scores</p>
-<p style="font-size:24px;line-height:1.4">AP ranks a class’s boxes across all images: boxes in unlikely images drop (α = 0.5).</p>
-</div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#1F5FAE">+0.61 ± 0.15</p>
-<p style="font-size:24px">holdout Δm, wins on 9 of 9 runs</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#1F5FAE">+0.28</p>
-<p style="font-size:24px">val Δm, same model</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#1F5FAE">0</p>
-<p style="font-size:24px">new parameters; still one pass</p>
-</div>
-</div>
-<p style="font-size:24px;line-height:1.4;background:#EEF1F5;padding:20px 28px;border-radius:12px"><b>Then SWA:</b> 12 more epochs at lr 5×10⁻⁵, the weights averaged: +0.22 on the holdout, +0.14 on val. Averaging different seeds instead collapses (−35 to −47): they end in different basins.</p>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 9 / 15</p>
-<aside>(~60 s) Our second addition uses the coupling of the tasks, at inference and for free. First, detector to class: if the detector finds a very confident oil tank, the image is probably an oil-tank scene, so we add the log of the best box score per class to the classifier’s log-probability. Second, class to detector: COCO AP ranks all boxes of a class across all images, so a box in an image that is unlikely to be of that class should rank lower; we multiply box scores by the class probability to the power one half. Together this gained 0.61 on the holdout, winning on all nine runs, and 0.28 on val, with no new parameters. Finally, stochastic weight averaging added a little more. Interestingly, averaging separately trained seeds destroys the model: they sit in different basins.</aside>
+<section id="decoding" data-transition="fade" style="display:flex; flex-direction:column; gap:32px; padding:128px 128px 160px; background:#fbfbf8">
+  <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.15; color:#14213d">Let the two heads correct each other</h2>
+  <div style="display:grid; gap:32px; grid-template-columns:1fr 1fr">
+    <div style="display:flex; flex-direction:column; gap:12px; padding:32px 40px; background:#fdebe2; border-radius:12px">
+      <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:40px; font-weight:600; color:#14213d">Detector → class</h3>
+      <p style="font-family:Inter, Arial, sans-serif; font-size:32px; line-height:1.4; color:#14213d">class score = log p(c) + β · log (best box score of class c)</p>
+      <p style="font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#3d4a5c">The strongest detection of a class is evidence for that class (β = 1).</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px; padding:32px 40px; background:#fdebe2; border-radius:12px">
+      <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:40px; font-weight:600; color:#14213d">Class → detector</h3>
+      <p style="font-family:Inter, Arial, sans-serif; font-size:32px; line-height:1.4; color:#14213d">box score × p(c)^α, with p from the fused class scores</p>
+      <p style="font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#3d4a5c">AP ranks a class’s boxes across all images: boxes in unlikely images drop (α = 0.5).</p>
+    </div>
+  </div>
+  <div style="display:grid; gap:32px; grid-template-columns:1fr 1fr 1fr">
+    <div style="display:flex; flex-direction:column; gap:4px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#1f5fae">+0.61 ± 0.15</p>
+      <p style="font-family:Inter, Arial, sans-serif; font-size:24px; color:#3d4a5c">holdout Δm, wins on 9 of 9 runs</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:4px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#1f5fae">+0.28</p>
+      <p style="font-family:Inter, Arial, sans-serif; font-size:24px; color:#3d4a5c">val Δm, same model</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:4px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#1f5fae">0</p>
+      <p style="font-family:Inter, Arial, sans-serif; font-size:24px; color:#3d4a5c">new parameters; still one pass</p>
+    </div>
+  </div>
+  <p style="padding:20px 28px; font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#3d4a5c; background:#eef1f5; border-radius:12px"><b>Then SWA:</b> 12 more epochs at lr 5×10⁻⁵, the weights averaged: +0.22 on the holdout, +0.14 on val. Averaging different seeds instead collapses (−35 to −47): they end in different basins.</p>
+  <p style="position:absolute; bottom:64px; left:128px; width:1664px; font-family:Inter, Arial, sans-serif; font-size:24px; color:#6b7686">CS701 Team 5 · SAR multi-task learning · 11 / 17</p>
+  <aside>(~60 s) Our second addition uses the coupling of the tasks, at inference and for free. First, detector to class: if the detector finds a very confident oil tank, the image is probably an oil-tank scene, so we add the log of the best box score per class to the classifier’s log-probability. Second, class to detector: COCO AP ranks all boxes of a class across all images, so a box in an image that is unlikely to be of that class should rank lower; we multiply box scores by the class probability to the power one half. Together this gained 0.61 on the holdout, winning on all nine runs, and 0.28 on val, with no new parameters. Finally, stochastic weight averaging added a little more. Interestingly, averaging separately trained seeds destroys the model: they sit in different basins.</aside>
 </section>

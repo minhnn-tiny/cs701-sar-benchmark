@@ -1,0 +1,15 @@
+<section id="challenges" data-transition="fade" style="background:#EEF1F5;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Challenges and how we met them</h2>
+<table style="font-size:24px;color:#14213D">
+<tr><th style="width:30%;text-align:left">Challenge</th><th style="width:40%;text-align:left">What we did</th><th style="width:30%;text-align:left">Result</th></tr>
+<tr><td>Tiny objects: half below 16 px</td><td>stride-8 COCO detector, fully trained</td><td>val +7.1 → +35.8</td></tr>
+<tr><td>Hidden labels, repeated scenes</td><td>val-like holdout + diagnostics; 3 seeds</td><td>gains keep their sign on val</td></tr>
+<tr><td>SAR is not a photo</td><td>SAR normalisation; speckle and gamma</td><td>+2.3 to +2.9 Δm</td></tr>
+<tr><td>Two coupled tasks</td><td>one trunk; cross-task decoding</td><td>+0.61 holdout, +0.28 val</td></tr>
+<tr><td>Budget and seed noise (±0.7)</td><td>26 M parameters; 3-seed rule; SWA</td><td>+45.9 val in budget</td></tr>
+<tr style="background:#FDEBE2"><td>Bridges, playgrounds (open)</td><td>next: class-conditioned, context-aware head</td><td>AP 5 and 14 on the holdout</td></tr>
+</table>
+<p style="font-size:32px;line-height:1.4;color:#14213D">Lesson: read the data first. Each choice answers one property of the data, and the holdout predicts a change’s sign better than its size.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 16 / 17</p>
+<aside>(~50 s) To pull it together, each challenge got a specific answer. Tiny objects: a stride-8 COCO detector trained end to end instead of an adapted ViT, which moved us from +7 to +36 at once. Hidden labels and repeated scenes: a holdout that mirrors val, with leak-free and fit diagnostics, and decisions on three seeds; the gains kept their sign on val. Radar statistics: SAR normalisation and physics-based augmentation. Two coupled tasks: cross-task decoding at inference. Budget and noise: a 26-million-parameter model, the three-seed rule and weight averaging. Still open are bridges and playgrounds: next we would condition the detection head on the predicted scene class, give the fine features more context, and mine look-alike structures as hard negatives. The main lesson: read the data first.</aside>
+</section>

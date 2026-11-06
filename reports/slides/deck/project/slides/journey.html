@@ -1,5 +1,5 @@
 <section id="journey" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
-<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">From adapted ViTs to a compact detector</h2>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Why these models? Five designs on the leaderboard</h2>
 <div style="display:flex;flex-direction:column;gap:14px">
 <div style="display:flex;gap:24px;align-items:center"><p style="font-size:32px;width:560px">DetailLoRA (TerraMind)</p><div style="width:93px;height:36px;background:#9AA7B8;border-radius:4px"></div><p style="font-size:32px;font-weight:600;color:#14213D">+4.6</p></div>
 <div style="display:flex;gap:24px;align-items:center"><p style="font-size:32px;width:560px">WideLoRA-SP (ViT LoRA)</p><div style="width:144px;height:36px;background:#9AA7B8;border-radius:4px"></div><p style="font-size:32px;font-weight:600;color:#14213D">+7.1</p></div>
@@ -12,6 +12,6 @@
 <div style="display:flex;gap:24px;align-items:center"><p style="font-size:32px;width:560px">best of 8 seeds</p><div style="width:932px;height:36px;background:#D95926;border-radius:4px"></div><p style="font-size:32px;font-weight:600;color:#14213D">+45.9</p></div>
 </div>
 <p style="font-size:24px;line-height:1.4;color:#6B7686">Val Δm, best upload of each design. Gray: adapted ViTs · blue: COCO two-stage detectors · orange: our YOLO26-L multi-task model. Course baselines: +4.4 (best in budget), +11.8 (full fine-tuning, over budget).</p>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 5 / 15</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 5 / 17</p>
 <aside>(~60 s) This is our path on the val leaderboard. Our first two designs followed the course baselines: adapters on a ViT or TerraMind, plus extra small-object branches. They plateaued at +5 to +7. The jump came from switching to a COCO-pretrained detector trained end to end: a Faster R-CNN with a stride-4 feature pyramid gave +18.5, and a cascade with longer training +36.8. That design also taught us that val rewards fitting known scenes. YOLO26-L matched it at 100 epochs with half the parameters, and then four steps took it to +45.9: SAR augmentation and longer training, a better SAR probability, cross-task decoding with weight averaging, and picking the best of eight seeds.</aside>
 </section>

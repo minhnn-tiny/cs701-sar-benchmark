@@ -1,20 +1,64 @@
 {
   "v": 4,
-  "createdOnFiles": {"v": 1, "at": "2026-11-06T09:21:30Z"},
-  "lists": "css",
-  "title": "CS701 Team 5: SAR Multi-Task Learning",
+  "attachments": {},
   "cover": "cover",
-  "order": ["cover", "task", "data", "holdout", "journey", "pipeline", "model", "augment", "decoding", "results", "ablations", "fitgen", "failures", "lessons", "thanks"],
-  "sections": {
-    "problem": {"description": "The task: one model that classifies a SAR image and detects its objects, within a parameter budget.", "start": "cover"},
-    "data": {"description": "What the data told us: tiny objects, repeated scenes, coupled tasks, and how we validate.", "start": "data"},
-    "method": {"description": "From adapted ViTs to a compact detector, and the three things we added.", "start": "journey"},
-    "results": {"description": "Leaderboard results, ablations and where the model fails.", "start": "results"},
-    "lessons": {"description": "What we learned and what remains.", "start": "lessons"}
+  "createdOnFiles": {
+    "at": "2026-11-06T09:21:30Z",
+    "v": 1
   },
+  "designSystems": [],
   "faces": {
-    "space-grotesk": {"family": "Space Grotesk", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"},
-    "inter": {"family": "Inter", "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"}
+    "inter": {
+      "family": "Inter",
+      "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    },
+    "space-grotesk": {
+      "family": "Space Grotesk",
+      "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+    }
   },
-  "designSystems": []
+  "lists": "css",
+  "order": [
+    "cover",
+    "task",
+    "data",
+    "holdout",
+    "journey",
+    "model",
+    "pipeline",
+    "prepost",
+    "training",
+    "augment",
+    "decoding",
+    "results",
+    "ablations",
+    "fitgen",
+    "failures",
+    "challenges",
+    "thanks"
+  ],
+  "sections": {
+    "data": {
+      "description": "Challenges: tiny objects, repeated scenes and coupled tasks, and how we validate.",
+      "start": "data"
+    },
+    "challenges": {
+      "description": "Challenges and how we met them, including the ones still open.",
+      "start": "challenges"
+    },
+    "method": {
+      "description": "Why these models, and how we pre-process, train and post-process.",
+      "start": "journey"
+    },
+    "problem": {
+      "description": "The task: one model that classifies a SAR image and detects its objects, within a parameter budget.",
+      "start": "cover"
+    },
+    "results": {
+      "before": null,
+      "description": "Leaderboard results, ablations and where the model fails.",
+      "start": "results"
+    }
+  },
+  "title": "CS701 Team 5: SAR Multi-Task Learning"
 }

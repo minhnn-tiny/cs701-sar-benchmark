@@ -1,26 +1,32 @@
-<section id="model" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
-<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Spend the budget on resolution, not adapters</h2>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
-<div style="display:flex;flex-direction:column;gap:16px;background:#EEF1F5;padding:40px;border-radius:12px">
-<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#14213D">Reference: ViT-B/16 + LoRA</h3>
-<div style="display:flex;gap:16px;align-items:baseline"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#14213D">21 M</p><p style="font-size:32px">trained, of 107 M</p></div>
-<ul style="font-size:32px;line-height:1.4">
-<li>one token map at stride 16</li>
-<li>detection neck and heads from scratch</li>
-<li>val mAP 26.1</li>
-</ul>
-</div>
-<div style="display:flex;flex-direction:column;gap:16px;background:#FDEBE2;padding:40px;border-radius:12px;border:3px solid #D95926">
-<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#14213D">Ours: YOLO26-L multi-task</h3>
-<div style="display:flex;gap:16px;align-items:baseline"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#14213D">26 M</p><p style="font-size:32px">trained, all of them</p></div>
-<ul style="font-size:32px;line-height:1.4">
-<li>features at strides 8, 16, 32</li>
-<li>COCO-pretrained neck and heads</li>
-<li>5.6 k-parameter classifier; val mAP 49.9</li>
-</ul>
-</div>
-</div>
-<p style="font-size:24px;line-height:1.4;color:#6B7686">Also tried, none better per GPU-hour: a stride-4 level, YOLO26-X (partly frozen), RT-DETR-L, ConvNeXt-B + Cascade. A classifier reading P3–P5 gained 0.6 F1 but cost 2.1 mAP, so the plain head stays.</p>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 7 / 15</p>
-<aside>(~55 s) Why YOLO26? The reference trains 21 million parameters, LoRA plus heads, on top of a frozen 86-million-parameter ViT that sees the image in 16-pixel tokens, and its detection neck and heads start from scratch. We spent a similar trainable budget on a detector that is small enough to train fully: YOLO26-L has features at stride 8, and its neck and heads were already trained for detection on COCO. The classifier is one linear layer on the deepest feature. We screened the alternatives at equal epochs: a stride-4 level, the larger YOLO26-X, RT-DETR and ConvNeXt with a cascade. None beat YOLO26-L per GPU-hour. Giving the classifier the high-resolution maps raised F1 slightly but cost two mAP points, so we protect the detector’s features.</aside>
+<section id="model" data-transition="fade" style="display:flex; flex-direction:column; gap:40px; padding:128px 128px 160px; background:#fbfbf8">
+  <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.15; color:#14213d">Why YOLO26-L? Resolution over adapters</h2>
+  <div style="display:grid; gap:32px; grid-template-columns:1fr 1fr">
+    <div style="display:flex; flex-direction:column; gap:16px; padding:40px; background:#eef1f5; border-radius:12px">
+      <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:40px; font-weight:600; color:#14213d">Reference: ViT-B/16 + LoRA</h3>
+      <div style="display:flex; flex-direction:row; gap:16px; align-items:baseline">
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#14213d">21 M</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:32px; color:#3d4a5c">trained, of 107 M</p>
+      </div>
+      <ul style="font-family:Inter, Arial, sans-serif; font-size:32px; line-height:1.4; color:#3d4a5c">
+        <li>one token map at stride 16</li>
+        <li>detection neck and heads from scratch</li>
+        <li>val mAP 26.1</li>
+      </ul>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px; padding:40px; background:#fdebe2; border:3px solid #d95926; border-radius:12px">
+      <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:40px; font-weight:600; color:#14213d">Ours: YOLO26-L multi-task</h3>
+      <div style="display:flex; flex-direction:row; gap:16px; align-items:baseline">
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; color:#14213d">26 M</p>
+        <p style="font-family:Inter, Arial, sans-serif; font-size:32px; color:#3d4a5c">trained, all of them</p>
+      </div>
+      <ul style="font-family:Inter, Arial, sans-serif; font-size:32px; line-height:1.4; color:#3d4a5c">
+        <li>features at strides 8, 16, 32</li>
+        <li>COCO-pretrained neck and heads</li>
+        <li>5.6 k-parameter classifier; val mAP 49.9</li>
+      </ul>
+    </div>
+  </div>
+  <p style="font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#6b7686">Also tried, none better per GPU-hour: a stride-4 level, YOLO26-X (partly frozen), RT-DETR-L, ConvNeXt-B + Cascade. A classifier reading P3–P5 gained 0.6 F1 but cost 2.1 mAP, so the plain head stays.</p>
+  <p style="position:absolute; bottom:64px; left:128px; width:1664px; font-family:Inter, Arial, sans-serif; font-size:24px; color:#6b7686">CS701 Team 5 · SAR multi-task learning · 6 / 17</p>
+  <aside>(~55 s) Why YOLO26? The reference trains 21 million parameters, LoRA plus heads, on top of a frozen 86-million-parameter ViT that sees the image in 16-pixel tokens, and its detection neck and heads start from scratch. We spent a similar trainable budget on a detector that is small enough to train fully: YOLO26-L has features at stride 8, and its neck and heads were already trained for detection on COCO. The classifier is one linear layer on the deepest feature. We screened the alternatives at equal epochs: a stride-4 level, the larger YOLO26-X, RT-DETR and ConvNeXt with a cascade. None beat YOLO26-L per GPU-hour. Giving the classifier the high-resolution maps raised F1 slightly but cost two mAP points, so we protect the detector’s features.</aside>
 </section>

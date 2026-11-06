@@ -27,6 +27,6 @@
 <p style="font-size:32px;font-weight:600;color:#14213D;background:#EEF1F5;padding:16px 24px;border-radius:999px">upload</p>
 </div>
 <p style="font-size:24px;color:#6B7686">In Δm, one mAP point is worth 1.9 and one F1 point 0.54: detection decides the score.</p>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 4 / 15</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 4 / 17</p>
 <aside>(~55 s) Val and test labels are hidden, so everything is decided on held-out training images, and how you hold out matters. An earlier design of ours built a leak-free holdout with no repeated scenes. On it the reference scores half its val mAP, and two candidate models swapped places compared with val. So we select on ND, a random 10 percent of train where two thirds of the images have a partner, like val. Leak-free and fit sets are scored alongside as diagnostics. Every decision is screened on one seed and decided on the mean of three; the winner is retrained on all of train and uploaded. Note that one mAP point is worth almost four F1 points in delta-m.</aside>
 </section>
