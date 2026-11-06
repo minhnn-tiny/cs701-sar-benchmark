@@ -37,6 +37,7 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
 | 1 Nov 2026 10:41 | 1 (val) | `s_iJVTFdcr0q` | `YASP350_s5_swa_f1_val.zip` | seed 5 + SWA (`runs/YASP350_s5_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +45.12 | 93.60 | 49.63 | 93.76 | 73.30 | no: below `s_49grnfrk1i` |
 | 1 Nov 2026 10:41 | 1 (val) | `s_49grnfrk1i` | `YASP350_s6_swa_f1_val.zip` | seed 6 + SWA (`runs/YASP350_s6_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | **+45.89** | 93.98 | 49.93 | 94.11 | 73.29 | **yes at 10:42** (the user's go-ahead to post our best), replacing `s_MpUnPGVrtE` (+45.37); 5th of 7 |
 | 1 Nov 2026 10:41 | 1 (val) | `s_nKkhWhJGoi` | `YASP350_s7_swa_f1_val.zip` | seed 7 + SWA (`runs/YASP350_s7_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +43.75 | 93.16 | 49.04 | 93.27 | 72.35 | no: below `s_49grnfrk1i` |
+| 2 Nov 2026 22:14 | **2 (test)** | `s_xws1ACOp81` | `YASP350_s6_swa_f1_test.zip` | the checkpoint of the posted val score `s_49grnfrk1i`, unchanged and not retrained: `runs/YASP350_s6_swa_avgbn/model.pt` (MD5 f486185ebb853702a9bf8ce52e165d95, written 1 Nov 09:31) | `o2m_nms0.8_a0.5_k100_t0_f1` | **+48.66** | 95.61 | 49.71 | 95.74 | 73.69 | **yes at 22:14** (Phase 2 entry; the TA's test bar is +3.8) |
 
 ## `s_DRkVHQAQAo` (YOLO26-L, 100 epochs)
 
@@ -390,3 +391,17 @@ Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm again
   (`YASP350_s6_swa_f1_test.zip`, `YASP350_swa_f1_test.zip`) are built by `predict.py … --split test` once Phase 2 opens
   (2 Nov 00:01) and `dataset/test/` is complete; the test path was rehearsed on the val images (zip identical to the
   uploaded val zip). The better of the two test scores gets posted (CLAUDE.md: it must beat the TA's +3.8).
+
+### 2 Nov 22:14: Phase 2 (test)
+
+- **Rule (the user, 2 Nov 22:10):** Phase 2 tests the checkpoint of the public val score, without retraining. The posted val
+  entry is `s_49grnfrk1i` (seed 6 + SWA), so only that checkpoint qualifies; seed 0 (`s_MpUnPGVrtE`, not posted) was
+  not uploaded, although its test zip (`YASP350_swa_f1_test.zip`) was built and passes the checks.
+- **Test data:** `test.tar.gz` and `sample_submission_test.zip` from the course's Hugging Face dataset
+  (`doem1997/cs701-sar-course-data`, as its card says), into an empty folder first; 2,066 regular files, all under
+  `test/`; unpacked into `dataset/` (2,065 images, ids 1–2065).
+- **Zip:** `runs/queue/phase2.sh` (`predict.py … --split test`), 206,500 boxes (100 per image), 2.7 MB, passes
+  `check_submission.py --split test`. Predicted class mix close to val's (wind turbine 19.0 / 18.2 %, harbor 6.1 / 8.2 %).
+- **Result:** Δm **+48.66** (macro-F1 95.61, mAP 49.71, AP50 73.69; test reference 93.99 / 25.41), posted; 1 of the 2
+  Phase 2 uploads used. Board at 22:14: team06 +71.57, team09 +71.40 (both mAP ~61), us 3rd of 3.
+
