@@ -1,0 +1,90 @@
+\section{Method}
+\label{sec:method}
+
+\begin{figure*}[t]
+  \centering
+  \input{figs/pipeline}
+  \vspace{-1mm}
+  \caption{\textbf{Our pipeline.} One YOLO26-L trunk feeds a 5.6\,k-parameter classification head and YOLO26's two
+  detection heads, trained jointly. Orange marks what we added or changed: SAR photometric augmentation in training,
+  cross-task decoding at inference (the detector refines the image class, the class re-ranks the boxes), and SWA after
+  training. Inference is one forward pass of one model.}
+  \label{fig:pipeline}
+\end{figure*}
+
+\Cref{fig:pipeline} shows the pipeline.
+We start with how we validate, since every later choice was made with it.
+
+\subsection{Validation that mirrors the leaderboard}
+\label{sec:protocol}
+Val and test labels are hidden, so decisions are made on held-out training images.
+An earlier design of ours built a leak-free holdout (LF, 940 images) that keeps near-duplicate groups whole and leaves
+their neighbours out of training.
+On LF the reference scores mAP 12.5 against 26.1 on val, and two candidate models swapped places between LF and val:
+val rewards something LF cannot see.
+We therefore select on \textbf{ND}, a stratified random 10\,\% (class\,$\times$\,image size) of the remaining training
+images: 805 images, 66.5\,\% with a partner in the 7{,}252-image local train, as val images have in train.
+LF (generalisation) and \textbf{FIT} (373 local-train images: fitting) are scored alongside.
+Local $\Delta_m$ uses the val reference (macro-F1 93.31, mAP 26.13):
+\begin{equation}
+  \Delta_m=\tfrac{100\%}{2}\Big[\tfrac{\mathrm{F1}-\mathrm{F1}_\text{ref}}{\mathrm{F1}_\text{ref}}
+  +\tfrac{\mathrm{mAP}-\mathrm{mAP}_\text{ref}}{\mathrm{mAP}_\text{ref}}\Big],
+  \label{eq:dm}
+\end{equation}
+so one mAP point is worth 1.9 $\Delta_m$ and one F1 point 0.54.
+A configuration is screened with one seed and decided on three, then retrained on all 9{,}392 images for submission.
+
+\subsection{Shared-trunk multi-task model}
+\label{sec:model}
+The trunk is YOLO26-L~\cite{jocher2026yolo26} with COCO weights~\cite{lin2014coco}: a CSP backbone ending in an
+attention block (C2PSA) at stride 32, and a neck giving P3--P5 at strides 8--32.
+All 26.19\,M parameters are trained; the reference trains 21.0\,M of a 107\,M model.
+The gray 512$\times$512 input (the baseline's geometry and SAR normalisation) is mapped to $[0,1]$ and repeated on
+three channels, as the COCO weights expect.
+\textbf{Detection:} YOLO26's one-to-many head (task-aligned assignment~\cite{feng2021tood}, NMS at inference) and
+NMS-free one-to-one head predict, at each of $N{=}5{,}376$ anchor points, a box $b_n$ and class scores
+$s_{n,c}\in[0,1]$; $\mathcal{L}_\text{det}$ is YOLO26's box and class loss on both heads, the one-to-many weight decaying
+from 0.8 to 0.1.
+\textbf{Classification:} $z=W\,\mathrm{LN}(\mathrm{GAP}(F_5))+b\in\mathbb{R}^9$ on the backbone's stride-32 feature
+$F_5$ (512 channels; 5{,}641 parameters), the reference's head design.
+The loss is $\mathcal{L}=\mathrm{CE}(z,y)+\mathcal{L}_\text{det}$.
+A head reading P3--P5 classified better (+0.6 F1) but its gradients cost 2.1 mAP, so we kept the plain one.
+
+\subsection{SAR photometric augmentation}
+\label{sec:aug}
+Besides flips, each training image $x\in[0,1]$ (amplitude) receives, each with probability $p{=}0.8$, extra speckle
+\begin{equation}
+  x\leftarrow x\sqrt{G},\quad G\sim\Gamma\big(L,\tfrac1L\big)\ \text{per pixel},\quad L\sim\mathcal{U}[4,16],
+  \label{eq:speckle}
+\end{equation}
+an $L$-look intensity noise of mean 1~\cite{argenti2013speckle}, and a gamma $x\leftarrow x^{\gamma}$ with
+$\log\gamma\sim\mathcal{U}[\log\tfrac23,\log\tfrac32]$.
+The first mimics a revisit of the scene, the second the different intensity mappings of the source datasets.
+Neither moves a pixel, so boxes stay exact and repeated scenes stay recognisable, unlike zoom and mosaic.
+
+\subsection{Cross-task decoding}
+\label{sec:decoding}
+Every box of an image has the image's class, so each head holds evidence for the other, which we use at inference
+with two scalars.
+\emph{Detector $\to$ class:} the strongest detection of class $c$ is evidence that the image is of class $c$,
+\begin{equation}
+  \hat z_c=\log\mathrm{softmax}(z)_c+\beta\log\max_n s_{n,c},\qquad \hat y=\arg\max_c \hat z_c.
+  \label{eq:fuse}
+\end{equation}
+\emph{Class $\to$ detector:} COCO AP ranks a class's boxes across all images, so boxes in an image unlikely to be of
+class $c$ should rank lower,
+\begin{equation}
+  s'_{n,c}=s_{n,c}\,\hat p_c^{\,\alpha},\qquad \hat p=\mathrm{softmax}(\hat z).
+  \label{eq:jd}
+\end{equation}
+Boxes come from the one-to-many head with per-class NMS at IoU 0.8; we keep the top 100 (box, class) pairs per image
+with no score floor, since low-scored boxes can only add recall.
+We chose $\beta{=}1$, $\alpha{=}0.5$ on ND (\cref{tab:decoding}).
+
+\subsection{Weight averaging}
+\label{sec:swa}
+Training keeps an EMA of the weights (decay 0.9998).
+SWA~\cite{izmailov2018swa} then continues from it for 12 epochs at a constant lr of $5{\times}10^{-5}$ and averages
+the 12 epoch-end weights, batch-norm statistics included.
+Averaging separately trained seeds (a model soup~\cite{wortsman2022soups}) instead collapses to $\Delta_m$ ${-}35$ to
+${-}47$ on ND: the seeds end in different basins.

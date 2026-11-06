@@ -1,0 +1,6 @@
+backbone config                                fwd GFLOP  fwd+bwd GFLOP  vs ref
+lora r16 qkv+proj (reference)                      215.1          466.6   1.000
+moelora (2 backbone passes)                        430.4          934.1   2.002
+WideLoRA r64 + small tensors                       232.6          523.3   1.121
+WideLoRA r32 + small tensors                       222.9          494.2   1.059
+full fine-tuning (reference, over budget)          213.2          639.3   1.370

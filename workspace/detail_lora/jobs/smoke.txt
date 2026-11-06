@@ -1,0 +1,2 @@
+# The smoke test: 64 images per split, 1 epoch, then a val submission zip (all 1,426 val images)
+.venv/bin/python workspace/detail_lora/train.py --limit 64 --epochs 1 --seed 0 --out workspace/detail_lora/runs/smoke > workspace/detail_lora/runs/smoke/train.out 2>&1 && .venv/bin/python workspace/detail_lora/predict.py workspace/detail_lora/runs/smoke/detaillora --split val > workspace/detail_lora/runs/smoke/predict.out 2>&1

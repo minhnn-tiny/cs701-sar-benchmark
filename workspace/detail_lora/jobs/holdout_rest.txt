@@ -1,0 +1,10 @@
+# The jobs of holdout.txt not yet started when the queue moved to gpu_run.sh (24 Oct 01:45): seed0, ref_seed0 and seed1 ran under the old queue.
+.venv/bin/python train.py --backbone vit --init pretrained --adapt lora --data dataset/holdout --seed 1 --out workspace/detail_lora/runs/ref_seed1 > workspace/detail_lora/runs/ref_seed1.out 2>&1
+.venv/bin/python workspace/detail_lora/train.py --seed 2 --out workspace/detail_lora/runs/seed2 > workspace/detail_lora/runs/seed2.out 2>&1
+.venv/bin/python train.py --backbone vit --init pretrained --adapt lora --data dataset/holdout --seed 2 --out workspace/detail_lora/runs/ref_seed2 > workspace/detail_lora/runs/ref_seed2.out 2>&1
+.venv/bin/python workspace/detail_lora/train.py --no-detail --reference-anchors --seed 0 --out workspace/detail_lora/runs/seed0 > workspace/detail_lora/runs/a1_seed0.out 2>&1
+.venv/bin/python train.py --backbone terramind --init pretrained --adapt moelora --data dataset/holdout --seed 0 --out workspace/detail_lora/runs/ref_seed0 > workspace/detail_lora/runs/tm_seed0.out 2>&1
+.venv/bin/python workspace/detail_lora/train.py --no-detail --reference-anchors --seed 1 --out workspace/detail_lora/runs/seed1 > workspace/detail_lora/runs/a1_seed1.out 2>&1
+.venv/bin/python train.py --backbone terramind --init pretrained --adapt moelora --data dataset/holdout --seed 1 --out workspace/detail_lora/runs/ref_seed1 > workspace/detail_lora/runs/tm_seed1.out 2>&1
+.venv/bin/python workspace/detail_lora/train.py --no-detail --reference-anchors --seed 2 --out workspace/detail_lora/runs/seed2 > workspace/detail_lora/runs/a1_seed2.out 2>&1
+.venv/bin/python train.py --backbone terramind --init pretrained --adapt moelora --data dataset/holdout --seed 2 --out workspace/detail_lora/runs/ref_seed2 > workspace/detail_lora/runs/tm_seed2.out 2>&1

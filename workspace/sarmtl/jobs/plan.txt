@@ -1,0 +1,37 @@
+# The approved run plan (docs/DESIGN.md §5), in priority order. Each line: <name> <command>, run from the repo root
+# by workspace/sarmtl/run.sh, each job through workspace/gpu_run.sh. Output: workspace/sarmtl/runs/queue/<name>.out.
+# 1 + 2 (required, interleaved): the local reference ViT + LoRA (root train.py) and the primary, seeds 0-2
+ref_s0   HF_HUB_OFFLINE=1 .venv/bin/python train.py --backbone vit --init pretrained --adapt lora --data dataset/holdout_sarmtl --seed 0 --out workspace/sarmtl/runs/ref_s0
+P_s0     HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/train.py --data dataset/holdout_sarmtl --seed 0 --out workspace/sarmtl/runs/P_s0
+# smoke test of evaluate.py (root train.py checkpoint path) before its real use at the end of the queue
+smoke_eval HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/smoke/ref/vit_pretrained_lora
+ref_s1   HF_HUB_OFFLINE=1 .venv/bin/python train.py --backbone vit --init pretrained --adapt lora --data dataset/holdout_sarmtl --seed 1 --out workspace/sarmtl/runs/ref_s1
+P_s1     HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/train.py --data dataset/holdout_sarmtl --seed 1 --out workspace/sarmtl/runs/P_s1
+ref_s2   HF_HUB_OFFLINE=1 .venv/bin/python train.py --backbone vit --init pretrained --adapt lora --data dataset/holdout_sarmtl --seed 2 --out workspace/sarmtl/runs/ref_s2
+P_s2     HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/train.py --data dataset/holdout_sarmtl --seed 2 --out workspace/sarmtl/runs/P_s2
+# 3 (required): the primary on all 9,392 train images, seed 0: the submission model if C* = primary (dataset/repro's
+# val/test are a sample of train, so its scores there are fit, not generalisation)
+Pfull_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/train.py --data dataset/repro --seed 0 --out workspace/sarmtl/runs/Pfull_s0
+# 4: the best in-budget baseline, TerraMind + MoE-LoRA (root train.py)
+tm_s0    HF_HUB_OFFLINE=1 .venv/bin/python train.py --backbone terramind --init pretrained --adapt moelora --data dataset/holdout_sarmtl --seed 0 --out workspace/sarmtl/runs/tm_s0
+tm_s1    HF_HUB_OFFLINE=1 .venv/bin/python train.py --backbone terramind --init pretrained --adapt moelora --data dataset/holdout_sarmtl --seed 1 --out workspace/sarmtl/runs/tm_s1
+tm_s2    HF_HUB_OFFLINE=1 .venv/bin/python train.py --backbone terramind --init pretrained --adapt moelora --data dataset/holdout_sarmtl --seed 2 --out workspace/sarmtl/runs/tm_s2
+# 5: ablation A1, WideLoRA alone (no SP), paired with the primary seed for seed
+A1_s0    HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/train.py --data dataset/holdout_sarmtl --no-sp --seed 0 --out workspace/sarmtl/runs/A1_s0
+A1_s1    HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/train.py --data dataset/holdout_sarmtl --no-sp --seed 1 --out workspace/sarmtl/runs/A1_s1
+# conditional run of DESIGN.md §5 ("only if C* != primary: C* on all of train"): the primary can no longer be
+# C* (JD failed its keep rule: +7.3 vs TerraMind + MoE-LoRA +9.4 with the reference decoding), and TerraMind
+# leads; queued before A1_s2 to overlap. If A1 overtakes it, A1 gets its own full-train run.
+tmfull_s0 HF_HUB_OFFLINE=1 .venv/bin/python train.py --backbone terramind --init pretrained --adapt moelora --data dataset/repro --seed 0 --out workspace/sarmtl/runs/tmfull_s0
+A1_s2    HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/train.py --data dataset/holdout_sarmtl --no-sp --seed 2 --out workspace/sarmtl/runs/A1_s2
+# JD scores (reference decoding, JD, JD-posterior; whole holdout and halves) for root train.py's checkpoints and the
+# primary: the JD keep rule (DESIGN.md §4, rule 3). Last in the queue, so the runs they read have finished.
+eval_ref_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/ref_s0/vit_pretrained_lora
+eval_ref_s1 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/ref_s1/vit_pretrained_lora
+eval_ref_s2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/ref_s2/vit_pretrained_lora
+eval_tm_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/tm_s0/terramind_pretrained_moelora
+eval_tm_s1 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/tm_s1/terramind_pretrained_moelora
+eval_tm_s2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/tm_s2/terramind_pretrained_moelora
+eval_P_s0 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/P_s0/vit_widelora_sp
+eval_P_s1 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/P_s1/vit_widelora_sp
+eval_P_s2 HF_HUB_OFFLINE=1 .venv/bin/python workspace/sarmtl/evaluate.py workspace/sarmtl/runs/P_s2/vit_widelora_sp

@@ -1,0 +1,3 @@
+vit + lora reference:   592.9 MiB saved for backward per image, x16 =  9.26 GiB; vs reference +0.00 GiB per batch of 16
+vit + lora D2       :   628.1 MiB saved for backward per image, x16 =  9.81 GiB; vs reference +0.55 GiB per batch of 16
+vit + lora D2-wide  :   645.9 MiB saved for backward per image, x16 = 10.09 GiB; vs reference +0.83 GiB per batch of 16

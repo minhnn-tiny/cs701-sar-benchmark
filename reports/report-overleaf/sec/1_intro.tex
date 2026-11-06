@@ -1,0 +1,38 @@
+\section{Introduction}
+\label{sec:intro}
+
+Synthetic aperture radar (SAR) images the ground day and night and through clouds.
+Its images are not photographs: a pixel records the echo of the radar's own pulse, so metal and corners shine as bright
+points, water and runways stay dark, and coherent imaging covers uniform areas with multiplicative
+speckle~\cite{argenti2013speckle}.
+Our task asks one model with one shared backbone for two outputs per image: its scene class (aircraft, airport,
+bridge, car, harbor, oil tank, playground, ship or wind turbine) and every object as a box carrying that class.
+The model must stay within 130\,M parameters, at most 40\,M trained, and is scored by $\Delta_m$, the mean relative
+gain in macro-F1 and COCO mAP over a ViT-B/16\,+\,LoRA reference~\cite{maninis2019attentive,vandenhende2021mtl}.
+
+We studied the data before choosing a method, and three properties set our objectives.
+\emph{Objects are tiny:} half of the 32{,}533 training boxes are smaller than one 16\,px ViT patch, and four classes
+have median boxes of 8--15\,px.
+A ViT-B/16 sees them through one stride-16 token map, and its LoRA variants lose 10--20\,\% mAP to full fine-tuning,
+which is over the budget.
+\emph{Scenes repeat:} the images come from four SAR datasets~\cite{li2024sardet,zhang2025rsar,wang2025m4sar,wei2020hrsid}
+that share scenes, and 66.5\,\% of a random 10\,\% of training images have a copy, overlapping crop or revisit in the
+rest; val scores behave as if val images do too.
+The leaderboard therefore rewards fitting training scenes as much as generalising, and a leak-free holdout ranks
+methods differently from val.
+\emph{The tasks are coupled:} every box has its image's class, so each head carries evidence for the other.
+
+Our objectives and contributions follow from these properties:
+\begin{itemize}[nosep,leftmargin=*]
+\item Spend the budget on resolution and detection design: a shared-trunk multi-task model on COCO-pretrained
+      YOLO26-L~\cite{jocher2026yolo26}, 26.2\,M parameters, all trained, with a 5.6\,k-parameter classifier
+      (\cref{sec:model}).
+\item Validate on a holdout that mirrors val, with leak-free and fitting diagnostics, and decide on three seeds over
+      more than 40 holdout runs (\cref{sec:protocol,sec:ablation}).
+\item Train with SAR physics, not generic geometry: speckle and gamma noise gain +2.3 to +2.9 $\Delta_m$, where zoom
+      and mosaic lose 4.6--5.4 (\cref{sec:aug}).
+\item Let the heads correct each other at inference without parameters: cross-task decoding gains
+      +0.61\,$\pm$\,0.15 $\Delta_m$ on nine of nine runs (\cref{sec:decoding}).
+\end{itemize}
+The final single model, with SWA~\cite{izmailov2018swa}, scores $\Delta_m$ +45.9 on val and +48.7 on test: over ten
+times the best in-budget baseline (+4.4 / +3.8) and above over-budget full fine-tuning (+11.8 / +13.5).

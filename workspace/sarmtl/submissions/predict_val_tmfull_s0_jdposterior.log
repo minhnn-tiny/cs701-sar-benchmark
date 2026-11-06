@@ -1,0 +1,16 @@
+2026-10-24 20:13:48 gpu_run: no GPU in (0 1 2) is healthy, has 8000 MiB free and is idle; waiting
+2026-10-24 21:38:12 gpu_run: GPU 1 (free 27944 MiB, util 0 %) -> uv run python workspace/sarmtl/predict.py workspace/sarmtl/runs/tmfull_s0/terramind_pretrained_moelora --split val --jd posterior --out workspace/sarmtl/submissions/submission_val_tmfull_s0_jdposterior.zip
+/home/nhatminh/workspace/cs701-sar-benchmark/.venv/lib/python3.12/site-packages/torch/__init__.py:1617: UserWarning: Please use the new API settings to control TF32 behavior, such as torch.backends.cudnn.conv.fp32_precision = 'tf32' or torch.backends.cuda.matmul.fp32_precision = 'ieee'. Old settings, e.g, torch.backends.cuda.matmul.allow_tf32 = True, torch.backends.cudnn.allow_tf32 = True, allowTF32CuDNN() and allowTF32CuBLAS() will be deprecated after Pytorch 2.9. Please see https://pytorch.org/docs/main/notes/cuda.html#tensorfloat-32-tf32-on-ampere-and-later-devices (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:80.)
+  _C._set_float32_matmul_precision(precision)
+1426 images, 12.8 ms per image (batch 16, data loading included), JD posterior -> workspace/sarmtl/submissions/submission_val_tmfull_s0_jdposterior.zip
+  images: 1426
+  classification rows: 1426
+  labels predicted per class: [148, 173, 142, 92, 114, 169, 171, 157, 260]
+  detections: 107060
+  detections per image (min / median / max): (4, 100.0, 100)
+  images without detections: 0
+  images with more than 100 detections (COCO scores the top 100): 0
+  detections of the image's predicted class: 83.7%
+  score range: (0.0010000744368880987, 0.9999873638153076)
+OK: the zip passes every check of check_submission.py
+2026-10-24 21:39:30 gpu_run: GPU 1 released (exit 0)

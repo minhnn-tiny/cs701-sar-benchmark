@@ -6,7 +6,7 @@ import pytest
 
 from sarbench.metrics import classification_metrics, detection_metrics
 
-ROOT = Path(__file__).resolve().parents[2] / 'dataset' / 'SARFact-Course-20K'
+ROOT = Path(__file__).resolve().parents[1] / 'dataset'
 
 
 def test_classification_metrics_by_hand():
@@ -19,7 +19,7 @@ def test_classification_metrics_by_hand():
 
 
 def test_detection_metrics_without_predictions_is_zero():
-    gt_json = ROOT / 'detection' / 'instances_val.json'
+    gt_json = ROOT / 'val' / 'instances.json'
     image_ids = [image['id'] for image in json.loads(gt_json.read_text())['images']]
     metrics = detection_metrics(gt_json, [], image_ids)
     assert metrics['mAP'] == metrics['AP50'] == metrics['AP75'] == 0

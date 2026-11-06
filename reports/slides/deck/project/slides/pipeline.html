@@ -1,0 +1,7 @@
+<section id="pipeline" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Our pipeline: one trunk, two heads, cross-task decoding</h2>
+<img src="/_blob/b24729c5c321f8d6f146304efc1ef699" alt="Pipeline: SAR image, preprocessing and SAR augmentation, a shared YOLO26-L trunk feeding a classification head and detection heads, cross-task decoding in both directions, and SWA after training; our additions in orange" style="width:1664px;height:581px;object-fit:contain">
+<p style="font-size:24px;color:#6B7686">Orange: what we added or changed. Inference is one forward pass of one model.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 6 / 15</p>
+<aside>(~50 s) Here is the whole model. A gray SAR image goes into a COCO-pretrained YOLO26-L trunk, all 26 million parameters trained. The trunk feeds YOLO26’s detection heads and a tiny classification head of 5,600 parameters on the deepest feature. The orange parts are ours: SAR photometric augmentation during training, cross-task decoding at inference, where the detector refines the class and the class re-ranks the boxes, and weight averaging after training. I will go through the model choice, the augmentation and the decoding in turn.</aside>
+</section>

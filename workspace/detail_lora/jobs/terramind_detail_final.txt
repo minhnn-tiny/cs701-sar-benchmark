@@ -1,0 +1,4 @@
+# TerraMind + MoE-LoRA + detail branch + small anchors (the best holdout config, README step 4b) on all of train
+# (dataset/repro: train = all 9,392 images; its val is a 5 % sample OF train, so its scores are fit, not
+# generalisation). For the submissions; see README step 6.
+HF_HUB_OFFLINE=1 .venv/bin/python workspace/detail_lora/train.py --backbone terramind --adapt moelora --no-augment --fusion none --data dataset/repro --seed 0 --out workspace/detail_lora/runs/full_seed0 > workspace/detail_lora/runs/tmd_full_seed0.out 2>&1

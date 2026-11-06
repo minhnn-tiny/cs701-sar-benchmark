@@ -1,0 +1,1 @@
+{"submission":{"id":"s_SkBg8gaMR1","phase":1,"created_at":"2026-11-01T02:41:17.007969Z","ok":true,"scores":{"delta_m":45.11572069540533,"macro_f1":93.7133962472918,"mAP":49.59647365642991,"accuracy":93.89901823281907,"AP50":72.90705249432271},"error":null,"size":1863838,"posted":false},"quota":{"phase":1,"limit":5,"used":2,"remaining":3,"resets_available":[]}}

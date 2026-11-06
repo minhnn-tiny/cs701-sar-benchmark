@@ -1,0 +1,11 @@
+<section id="thanks" data-transition="fade" style="background:#14213D;color:#F4F1EA;font-family:Inter, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<h1 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:96px;font-weight:600;line-height:1.05;color:#F4F1EA">Thank you. Questions?</h1>
+<div style="display:flex;gap:72px">
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#F08A5D">+45.9 / +48.7</p><p style="font-size:24px;color:#BFCAD8">Δm on val / test, one model</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#7FB0EE">26 M</p><p style="font-size:24px;color:#BFCAD8">parameters, all trained</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;color:#7FB0EE">2.5 ms</p><p style="font-size:24px;color:#BFCAD8">per image at batch 16</p></div>
+</div>
+<p style="font-size:32px;line-height:1.4;color:#BFCAD8">Tiny objects → a stride-8 detector · repeated scenes → a holdout that mirrors val · coupled tasks → cross-task decoding</p>
+<p style="font-size:24px;color:#BFCAD8">CS701 Team 5 · NGUYEN Nhat Minh · [other team members]</p>
+<aside>(~20 s, then questions) To sum up: one 26-million-parameter model, +45.9 on val and +48.7 on test, about ten times the best baseline inside the budget, at 2.5 milliseconds per image. Each design choice came from one property of the data. Thank you; we are happy to take questions. Likely questions: why not train on val (not allowed); why YOLO26 over a bigger backbone (screened: no gain per GPU-hour); how sure are the small gains (three seeds; the decoding won on nine of nine runs).</aside>
+</section>

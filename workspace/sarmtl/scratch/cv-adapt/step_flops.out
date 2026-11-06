@@ -1,0 +1,3 @@
+attention added analytically: 116.2 GFLOP/image
+lora : step  695.2 GFLOP/image, backbone  466.6 (67 %), rest (neck, RPN, RoI, cls head)  228.6
+wide : step  751.9 GFLOP/image, backbone  523.3 (70 %), rest (neck, RPN, RoI, cls head)  228.6

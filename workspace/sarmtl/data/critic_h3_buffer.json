@@ -1,0 +1,41 @@
+{
+ "source": "critic, REVIEW.md section 5 (H3), lead's decision 24 Oct 2026: move both lists to the buffer",
+ "strong": [
+  160,
+  467,
+  998,
+  2980,
+  3127,
+  4890,
+  5867,
+  6424,
+  6551,
+  6752,
+  7084,
+  7472,
+  7696
+ ],
+ "wind_turbine": [
+  14,
+  272,
+  430,
+  779,
+  1230,
+  1298,
+  1397,
+  1439,
+  2472,
+  3221,
+  4421,
+  5055,
+  5415,
+  5433,
+  5440,
+  6106,
+  6645,
+  7686,
+  7999,
+  8169
+ ],
+ "note": "strong: 10 harbor 256^2 strips (~20 % overlap, 205 px shift) and car 7226 partner 7084; wind_turbine: ambiguous partners (high-pass NCC 0.30-0.45, no identical pixels)"
+}

@@ -1,0 +1,67 @@
+32533 boxes in 9392 images
+sqrt(area) at the 512 input: percentiles 5/10/25/50/75/90/95/99 = 6.0 / 6.9 / 9.0 / 15.9 / 47.0 / 79.0 / 113.8 / 237.8
+  share of boxes with sqrt(area) <   4 px at 512:   0.1%   (in original pixels:   0.2%)
+  share of boxes with sqrt(area) <   8 px at 512:  18.4%   (in original pixels:  19.5%)
+  share of boxes with sqrt(area) <  12 px at 512:  40.1%   (in original pixels:  41.9%)
+  share of boxes with sqrt(area) <  16 px at 512:  50.5%   (in original pixels:  52.6%)
+  share of boxes with sqrt(area) <  32 px at 512:  62.4%   (in original pixels:  69.7%)
+  share of boxes with sqrt(area) <  64 px at 512:  85.0%   (in original pixels:  89.0%)
+  share of boxes with sqrt(area) < 112 px at 512:  94.9%   (in original pixels:  96.4%)
+COCO area groups (original pixels): small < 32^2: 69.7%, medium: 25.1%, large >= 96^2: 5.1%
+RoIAlign level of the GT boxes (proxy for proposals): stride 4: 94.9%, stride 8: 3.9%, stride 16: 1.2%, stride 32: 0.0%
+
+per class at 512: n, median sqrt(area), share < 16 px, < 8 px, median w/h ratio (long/short)
+  aircraft        2532    76.4    1.9%    0.2%  1.20  (p90 1.57)
+  airport          919   146.0    0.0%    0.0%  1.98  (p90 5.05)
+  bridge          3984     9.9   82.7%   22.8%  1.35  (p90 2.12)
+  car             4089    41.4    0.0%    0.0%  1.44  (p90 2.19)
+  harbor          2650    42.9    1.7%    0.0%  1.19  (p90 2.22)
+  oil_tank        5580    11.5   57.5%   20.3%  1.07  (p90 1.25)
+  playground      2610    14.8   64.6%    0.2%  1.42  (p90 1.66)
+  ship            1544    55.1    0.5%    0.0%  1.67  (p90 3.37)
+  wind_turbine    8625     8.3   94.2%   45.5%  1.09  (p90 1.25)
+
+== anchors ref: sizes ((8, 11), (16, 23), (32, 45), (64, 91), (128, 181)), ratios (0.5, 1.0, 2.0), 130944 anchors
+  best IoU: median 0.64; share of boxes whose best anchor IoU < 0.7: 71.3%, < 0.5: 10.5%, < 0.3 (bg): 0.6%
+  size bin (512 px) | boxes | best IoU p10/median | #anchors IoU>=0.7 (mean) | >=0.5 | >=0.3 | share best<0.5
+  [   0,    4) |    42 ( 0.1%) | 0.21/0.25 |   0.00 |   0.00 |   0.00 | 100.0%
+  [   4,    8) |  5935 (18.2%) | 0.39/0.54 |   0.10 |   1.21 |  11.26 | 40.3%
+  [   8,   12) |  7070 (21.7%) | 0.55/0.65 |   0.32 |   5.06 |  27.28 |  2.8%
+  [  12,   16) |  3368 (10.4%) | 0.59/0.67 |   0.40 |   5.71 |  40.41 |  0.7%
+  [  16,   24) |  2356 ( 7.2%) | 0.54/0.64 |   0.28 |   5.00 |  40.30 |  2.2%
+  [  24,   32) |  1517 ( 4.7%) | 0.58/0.69 |   0.48 |   5.29 |  37.40 |  1.8%
+  [  32,   64) |  7368 (22.6%) | 0.55/0.67 |   0.41 |   4.70 |  36.68 |  2.1%
+  [  64,  128) |  3517 (10.8%) | 0.53/0.65 |   0.30 |   4.48 |  35.56 |  5.9%
+  [ 128,  inf) |  1360 ( 4.2%) | 0.34/0.60 |   0.23 |   3.07 |  25.24 | 24.6%
+  level of the best anchor: stride 4: 47.2%, stride 8: 13.3%, stride 16: 20.3%, stride 32: 14.2%, stride 64: 5.1%
+  per class: median best IoU / share best < 0.5 / mean #anchors IoU >= 0.5:  aircraft 0.66/1%/5.0; airport 0.59/28%/2.8; bridge 0.63/10%/3.8; car 0.70/1%/4.8; harbor 0.65/8%/4.4; oil_tank 0.64/8%/4.7; playground 0.65/1%/5.1; ship 0.64/7%/4.0; wind_turbine 0.61/22%/3.4
+
+== anchors ref+s4: sizes ((5.7, 8, 11), (16, 23, 32), (32, 45, 64), (64, 91, 128), (128, 181, 256)), ratios (0.5, 1.0, 2.0), 196416 anchors
+  best IoU: median 0.67; share of boxes whose best anchor IoU < 0.7: 61.5%, < 0.5: 6.7%, < 0.3 (bg): 0.1%
+  size bin (512 px) | boxes | best IoU p10/median | #anchors IoU>=0.7 (mean) | >=0.5 | >=0.3 | share best<0.5
+  [   0,    4) |    42 ( 0.1%) | 0.25/0.35 |   0.00 |   0.00 |   2.21 | 100.0%
+  [   4,    8) |  5935 (18.2%) | 0.43/0.57 |   0.20 |   2.29 |  16.21 | 26.3%
+  [   8,   12) |  7070 (21.7%) | 0.55/0.65 |   0.32 |   5.14 |  30.65 |  2.8%
+  [  12,   16) |  3368 (10.4%) | 0.59/0.67 |   0.40 |   5.71 |  40.41 |  0.7%
+  [  16,   24) |  2356 ( 7.2%) | 0.54/0.64 |   0.28 |   5.19 |  48.94 |  2.2%
+  [  24,   32) |  1517 ( 4.7%) | 0.63/0.72 |   1.04 |  10.81 |  65.04 |  1.2%
+  [  32,   64) |  7368 (22.6%) | 0.62/0.71 |   0.82 |  10.64 |  84.45 |  1.1%
+  [  64,  128) |  3517 (10.8%) | 0.60/0.70 |   0.70 |  11.05 |  82.69 |  3.6%
+  [ 128,  inf) |  1360 ( 4.2%) | 0.56/0.69 |   0.60 |   8.90 |  68.67 |  4.5%
+  level of the best anchor: stride 4: 47.2%, stride 8: 21.0%, stride 16: 21.7%, stride 32: 6.9%, stride 64: 3.1%
+  per class: median best IoU / share best < 0.5 / mean #anchors IoU >= 0.5:  aircraft 0.70/0%/11.6; airport 0.67/16%/7.2; bridge 0.64/9%/4.6; car 0.72/0%/10.6; harbor 0.70/2%/9.8; oil_tank 0.68/7%/7.6; playground 0.65/1%/5.1; ship 0.69/4%/8.9; wind_turbine 0.63/13%/3.9
+
+== anchors ratios1:4: sizes ((8, 11), (16, 23), (32, 45), (64, 91), (128, 181)), ratios (0.25, 0.5, 1.0, 2.0, 4.0), 218240 anchors
+  best IoU: median 0.65; share of boxes whose best anchor IoU < 0.7: 70.7%, < 0.5: 9.8%, < 0.3 (bg): 0.6%
+  size bin (512 px) | boxes | best IoU p10/median | #anchors IoU>=0.7 (mean) | >=0.5 | >=0.3 | share best<0.5
+  [   0,    4) |    42 ( 0.1%) | 0.21/0.25 |   0.00 |   0.00 |   0.00 | 100.0%
+  [   4,    8) |  5935 (18.2%) | 0.39/0.54 |   0.10 |   1.22 |  15.87 | 40.3%
+  [   8,   12) |  7070 (21.7%) | 0.55/0.65 |   0.32 |   5.14 |  39.61 |  2.8%
+  [  12,   16) |  3368 (10.4%) | 0.59/0.67 |   0.40 |   5.85 |  54.74 |  0.1%
+  [  16,   24) |  2356 ( 7.2%) | 0.54/0.64 |   0.29 |   5.15 |  54.71 |  1.9%
+  [  24,   32) |  1517 ( 4.7%) | 0.59/0.69 |   0.52 |   6.00 |  52.39 |  0.4%
+  [  32,   64) |  7368 (22.6%) | 0.56/0.67 |   0.42 |   5.11 |  49.63 |  1.2%
+  [  64,  128) |  3517 (10.8%) | 0.54/0.65 |   0.32 |   4.78 |  47.95 |  3.3%
+  [ 128,  inf) |  1360 ( 4.2%) | 0.34/0.61 |   0.25 |   3.62 |  34.70 | 23.1%
+  level of the best anchor: stride 4: 47.3%, stride 8: 13.3%, stride 16: 20.2%, stride 32: 14.2%, stride 64: 5.0%
+  per class: median best IoU / share best < 0.5 / mean #anchors IoU >= 0.5:  aircraft 0.66/1%/5.1; airport 0.61/17%/3.7; bridge 0.64/9%/4.2; car 0.70/1%/5.4; harbor 0.65/8%/4.7; oil_tank 0.64/8%/4.7; playground 0.65/1%/5.2; ship 0.65/3%/4.9; wind_turbine 0.61/22%/3.4

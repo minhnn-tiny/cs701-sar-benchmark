@@ -1,0 +1,5 @@
+# TerraMind + MoE-LoRA + detail branch + small anchors, 3 seeds on the holdout. Exactly the TerraMind + MoE-LoRA
+# baseline (reference flips-only augmentation, torchvision scoring) plus the detail branch and small anchors.
+HF_HUB_OFFLINE=1 .venv/bin/python workspace/detail_lora/train.py --backbone terramind --adapt moelora --no-augment --fusion none --seed 0 --out workspace/detail_lora/runs/seed0 > workspace/detail_lora/runs/tmd_seed0.out 2>&1
+HF_HUB_OFFLINE=1 .venv/bin/python workspace/detail_lora/train.py --backbone terramind --adapt moelora --no-augment --fusion none --seed 1 --out workspace/detail_lora/runs/seed1 > workspace/detail_lora/runs/tmd_seed1.out 2>&1
+HF_HUB_OFFLINE=1 .venv/bin/python workspace/detail_lora/train.py --backbone terramind --adapt moelora --no-augment --fusion none --seed 2 --out workspace/detail_lora/runs/seed2 > workspace/detail_lora/runs/tmd_seed2.out 2>&1

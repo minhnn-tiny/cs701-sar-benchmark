@@ -1,0 +1,407 @@
+# Leaderboard submissions of MTDet (team `cs701-team05`)
+
+Leaderboard: https://web-production-c241e.up.railway.app. Scores in %; Δm against the leaderboard reference (val
+93.31 / 26.13). Each zip's server reply is in `<zip stem>.response.json`, and the reply to posting it is in
+`<zip stem>.post.json`.
+
+| uploaded (SGT) | phase | submission id | zip | model | decoding | Δm | macro-F1 | mAP | accuracy | AP50 | posted |
+|---|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| 26 Oct 2026 08:59 | 1 (val) | `s_DRkVHQAQAo` | `YA_s0_val.zip` | YOLO26-L multi-task, 100 epochs, all of train, seed 0, EMA weights (`runs/YA_s0`) | `o2m_nms0.7_a0_k100` | +35.81 | 92.06 | 45.19 | 92.29 | 70.08 | yes at 08:59, replacing r50fpn's `s_ngdhzNxVaK` (+18.45) |
+| 26 Oct 2026 15:24 | 1 (val) | `s_6bBQH7vFS2` | `YA150_val.zip` | YOLO26-L multi-task, 150 epochs, all of train, seed 0, EMA weights (`runs/YA150`) | `o2m_nms0.7_a0_k100` | +37.98 | 92.38 | 46.24 | 92.64 | 70.96 | yes at 15:24, replacing `s_DRkVHQAQAo` (+35.81) |
+| 27 Oct 2026 05:58 | 1 (val) | `s_iNmyE4oAin` | `YA250_val.zip` | YOLO26-L multi-task, 250 epochs, all of train, seed 0, EMA weights (`runs/YA250`) | `o2m_nms0.7_a0_k100` | +39.93 | 92.43 | 47.25 | 92.64 | 70.96 | yes at 05:59, replacing `s_6bBQH7vFS2` (+37.98) |
+| 27 Oct 2026 11:33 | 1 (val) | `s_aUZ9SopRu8` | `YA250_n8t0_val.zip` | the same `runs/YA250` model, decoded without the score floor | `o2m_nms0.8_a0_k100_t0` | +41.11 | 92.43 | 47.86 | 92.64 | 71.61 | yes at 11:34, replacing `s_iNmyE4oAin` (+39.93) |
+| 27 Oct 2026 13:49 | 1 (val) | `s_VNaV9r0uDV` | `YASA250_n8t0_val.zip` | YOLO26-L multi-task, 250 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA250`) | `o2m_nms0.8_a0_k100_t0` | +43.50 | 93.40 | 48.84 | 93.55 | 72.56 | yes at 13:49, replacing `s_aUZ9SopRu8` (+41.11) |
+| 28 Oct 2026 04:58 | 1 (val) | `s_dlz80pdFun` | `YASA350_val.zip` | YOLO26-L multi-task, 350 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA350`) | `o2m_nms0.8_a0_k100_t0` | +43.56 | 92.46 | 49.14 | 92.64 | 72.96 | yes at 04:58, replacing `s_VNaV9r0uDV` (+43.50) |
+| 28 Oct 2026 16:59 | 1 (val) | `s_KvBWV9Psqo` | `YASA450_val.zip` | YOLO26-L multi-task, 450 epochs, SAR speckle and gamma augmentation, all of train, seed 0, EMA weights (`runs/YASA450`) | `o2m_nms0.8_a0_k100_t0` | +44.11 | 92.97 | 49.28 | 93.20 | 72.85 | yes at 16:59, replacing `s_dlz80pdFun` (+43.56) |
+| 28 Oct 2026 21:17 | 1 (val) | `s_oK1S2mxVie` | `YASP350_val.zip` | YOLO26-L multi-task, 350 epochs, SAR augmentation at probability 0.8, all of train, seed 0, EMA weights (`runs/YASP350`) | `o2m_nms0.8_a0_k100_t0` | +44.95 | 93.59 | 49.54 | 93.83 | 72.29 | yes at 21:18 (the user's call), replacing `s_KvBWV9Psqo` (+44.11) |
+| 28 Oct 2026 21:27 | 1 (val) | `s_MktFiV49GZ` | `C_s0_val.zip` | ConvNeXt-B + Cascade R-CNN multi-task, 72 epochs, local train only (7,252 images), seed 0, final weights (`runs/C_s0`) | `posterior_d100_nms0.7` | +27.80 | 93.86 | 40.50 | 94.11 | 66.76 | no: below the posted +44.95 |
+| 29 Oct 2026 01:30 | 1 (val) | `s_mRMAxp4YUV` | `YASPB450_val.zip` | YOLO26-L multi-task, 450 epochs, SAR augmentation at probability 0.8, batch 32, all of train, seed 0, EMA weights (`runs/YASPB450`) | `o2m_nms0.8_a0_k100_t0` | +44.51 | 93.33 | 49.39 | 93.62 | 72.21 | no: below the posted +44.95 |
+| 29 Oct 2026 20:38 | 1 (val) | `s_2rzqVoMcnQ` | `YASP450B96_s1_val.zip` | YOLO26-L multi-task, 450 epochs, SAR at probability 0.8, batch 96, all of train, seed 1, EMA weights (`runs/YASP450B96_s1`) | `o2m_nms0.8_a0_k100_t0` | +43.99 | 93.69 | 49.02 | 93.90 | 71.94 | no: posting paused until the user's team decides the entry |
+| 29 Oct 2026 20:40 | 1 (val) | `s_x4BELnDxpX` | `YASP450B96_val.zip` | YOLO26-L multi-task, 450 epochs, SAR at probability 0.8, batch 96, all of train, seed 0, EMA weights (`runs/YASP450B96`) | `o2m_nms0.8_a0_k100_t0` | +44.60 | 92.90 | 49.55 | 93.13 | 72.41 | no: posting paused until the user's team decides the entry |
+| 30 Oct 2026 12:45 | 1 (val) | `s_mAWeqhctvq` | `YSP450B96_s1_val.zip` | YOLO26-L, SAR 0.8, 450 epochs, batch 96, seed 1, **local train only** (holdout split, 7,252 images; `runs/YSP450B96_s1`, holdout +49.40) | `o2m_nms0.8_a0_k100_t0` | +34.25 | 91.22 | 44.62 | 91.51 | 67.58 | no |
+| 30 Oct 2026 12:45 | 1 (val) | `s_5Eyj17RxID` | `YSA450_s2_val.zip` | YOLO26-L, SAR 0.5, 450 epochs, batch 16, seed 2, **local train only** (`runs/YSA450_s2`, holdout +49.25) | `o2m_nms0.8_a0_k100_t0` | +33.50 | 91.28 | 44.21 | 91.51 | 68.11 | no |
+| 31 Oct 2026 00:00 | 1 (val) | `s_8pmBB8jzom` | `YASP700B96_val.zip` | YOLO26-L, YASP350's recipe at batch 96, **700 epochs** (overfit), all of train, seed 0 (`runs/YASP700B96`) | `o2m_nms0.8_a0_k100_t0` | +42.90 | 93.11 | 48.61 | 93.20 | 71.00 | no: below the posted +44.95 |
+| 31 Oct 2026 03:43 | 1 (val) | `s_mtVKoVsEnn` | `YASP1000B96_val.zip` | YOLO26-L, YASP350's recipe at batch 96, **1000 epochs** (overfit), all of train, seed 0 (`runs/YASP1000B96`) | `o2m_nms0.8_a0_k100_t0` | +41.69 | 92.05 | 48.27 | 92.29 | 70.05 | no: below the posted +44.95 |
+| 31 Oct 2026 08:22 | 1 (val) | `s_re4Ay2NHUq` | `YASP450_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 0 (`runs/YASP450`) | `o2m_nms0.8_a0_k100_t0` | +43.89 | 93.18 | 49.10 | 93.34 | 71.95 | no: below the posted +44.95 |
+| 31 Oct 2026 08:22 | 1 (val) | `s_IMVEvJhDtc` | `YASP450_s1_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 1 (`runs/YASP450_s1`) | `o2m_nms0.8_a0_k100_t0` | +44.76 | 93.26 | 49.54 | 93.55 | 73.08 | no: below the posted +44.95 |
+| 31 Oct 2026 08:22 | 1 (val) | `s_g5lTEftD9X` | `YASP450_s2_val.zip` | YOLO26-L, **s_oK1S2mxVie's exact recipe** (SAR 0.8, batch 16), 450 epochs, all of train, seed 2 (`runs/YASP450_s2`) | `o2m_nms0.8_a0_k100_t0` | +43.74 | 93.23 | 49.02 | 93.41 | 71.79 | no: below the posted +44.95 |
+| 31 Oct 2026 22:14 | 1 (val) | `s_b1EUslCFJP` | `YAP2SP350_val.zip` | YOLO26-L-**P2** (stride-4 level), SAR 0.8, 350 epochs, batch 16, all of train (`runs/YAP2SP350`) | `o2m_nms0.8_a0_k100_t0` | +43.37 | 92.71 | 48.97 | 93.06 | 71.40 | no: below the posted +44.95 |
+| 31 Oct 2026 22:14 | 1 (val) | `s_5CJ7elXK9N` | `YAXSP350_val.zip` | YOLO26-**X** (58.8 M / 38.7 M trainable), SAR 0.8, 350 epochs, batch 16, all of train (`runs/YAXSP350`) | `o2m_nms0.8_a0_k100_t0` | +43.57 | 94.33 | 48.61 | 94.53 | 71.97 | no: below the posted +44.95 |
+| 1 Nov 2026 00:00 | 1 (val) | `s_3uTXQzyZlv` | `YASP350_f1_val.zip` | `runs/YASP350` (s_oK1S2mxVie's model), **new decoding**: the image class also from the detector's best box per class (β 1), box scores × fused p(class)^0.5 (EXPERIMENTS.md M1.8) | `o2m_nms0.8_a0.5_k100_t0_f1` | +45.23 | 93.55 | 49.70 | 93.69 | 72.52 | no: the next row beats it |
+| 1 Nov 2026 00:00 | 1 (val) | `s_MpUnPGVrtE` | `YASP350_swa_f1_val.zip` | `runs/YASP350` + **SWA**: 12 more epochs at lr 5e-5, the 12 epoch-end weights averaged (`runs/YASP350_swa_avgbn`, M1.10) | `o2m_nms0.8_a0.5_k100_t0_f1` | **+45.37** | 93.83 | 49.69 | 93.97 | 72.67 | yes at 10:40 (the user: "Post it"), replacing `s_oK1S2mxVie` (+44.95); replaced at 10:42 by `s_49grnfrk1i` |
+| 1 Nov 2026 00:01 | 1 (val) | `s_JB6MnITEDg` | `YACPSP350_f1_val.zip` | copy-paste model (`runs/YACPSP350`), new decoding | `o2m_nms0.8_a0.5_k100_t0_f1` | +44.38 | 93.21 | 49.35 | 93.34 | 73.01 | no: below the posted entry |
+| 1 Nov 2026 00:01 | 1 (val) | `s_Bj3J8doiLa` | `YASP350_s1_f1_val.zip` | seed 1 of s_oK1S2mxVie's recipe (`runs/YASP350_s1`), new decoding | `o2m_nms0.8_a0.5_k100_t0_f1` | +44.24 | 93.10 | 49.31 | 93.27 | 72.31 | no: below the posted entry |
+| 1 Nov 2026 08:51 | 1 (val) | `s_j2q49bgF7U` | `YASP350_s4_swa_f1_val.zip` | seed 4 of s_oK1S2mxVie's recipe + SWA (`runs/YASP350_s4_swa_avgbn`), the first of seeds 2–4 to finish | `o2m_nms0.8_a0.5_k100_t0_f1` | +44.62 | 93.52 | 49.39 | 93.62 | 72.62 | no: below `s_MpUnPGVrtE` |
+| 1 Nov 2026 10:41 | 1 (val) | `s_boRNFDKYf2` | `YASP350_s2_swa_f1_val.zip` | seed 2 + SWA (`runs/YASP350_s2_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +44.72 | 93.12 | 49.55 | 93.27 | 73.12 | no: below `s_49grnfrk1i` |
+| 1 Nov 2026 10:41 | 1 (val) | `s_SkBg8gaMR1` | `YASP350_s3_swa_f1_val.zip` | seed 3 + SWA (`runs/YASP350_s3_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +45.12 | 93.71 | 49.60 | 93.90 | 72.91 | no: below `s_49grnfrk1i` |
+| 1 Nov 2026 10:41 | 1 (val) | `s_iJVTFdcr0q` | `YASP350_s5_swa_f1_val.zip` | seed 5 + SWA (`runs/YASP350_s5_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +45.12 | 93.60 | 49.63 | 93.76 | 73.30 | no: below `s_49grnfrk1i` |
+| 1 Nov 2026 10:41 | 1 (val) | `s_49grnfrk1i` | `YASP350_s6_swa_f1_val.zip` | seed 6 + SWA (`runs/YASP350_s6_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | **+45.89** | 93.98 | 49.93 | 94.11 | 73.29 | **yes at 10:42** (the user's go-ahead to post our best), replacing `s_MpUnPGVrtE` (+45.37); 5th of 7 |
+| 1 Nov 2026 10:41 | 1 (val) | `s_nKkhWhJGoi` | `YASP350_s7_swa_f1_val.zip` | seed 7 + SWA (`runs/YASP350_s7_swa_avgbn`), s_oK1S2mxVie's recipe | `o2m_nms0.8_a0.5_k100_t0_f1` | +43.75 | 93.16 | 49.04 | 93.27 | 72.35 | no: below `s_49grnfrk1i` |
+| 2 Nov 2026 22:14 | **2 (test)** | `s_xws1ACOp81` | `YASP350_s6_swa_f1_test.zip` | the checkpoint of the posted val score `s_49grnfrk1i`, unchanged and not retrained: `runs/YASP350_s6_swa_avgbn/model.pt` (MD5 f486185ebb853702a9bf8ce52e165d95, written 1 Nov 09:31) | `o2m_nms0.8_a0.5_k100_t0_f1` | **+48.66** | 95.61 | 49.71 | 95.74 | 73.69 | **yes at 22:14** (Phase 2 entry; the TA's test bar is +3.8) |
+
+## `s_DRkVHQAQAo` (YOLO26-L, 100 epochs)
+
+- **Why this model:** an interim upload, made before the design's screens finish, to measure how ND transfers to val
+  (`jobs/plan.txt`).
+  - Its configuration, `Y_s0`, had the best ND Δm at the time: +36.48 as decoded here, from one seed.
+  - The 3-seed rule (CLAUDE.md) decides the design's final upload.
+- **Why this decoding:** M1.1 in `EXPERIMENTS.md`. On ND, the one-to-many head with per-class NMS 0.7 beat YOLO26's
+  native one-to-one decoding by 1.9 Δm (`Y_s0`) and 2.7 (`YP2_s0`).
+- **Projection vs result:**
+  - FitDet's rule, val ≈ ND + 2, projected +38.5.
+  - Got +35.81, which is ND − 0.67:
+    - mAP was 0.29 above ND's 44.90;
+    - macro-F1 was 2.28 below ND's 94.34.
+  - On ND, classification accuracy is 85.9 % on the 270 images with no near-duplicate partner in local train, against
+    97.7–99.1 % on the copies and crops (`analyze.py`). Val seems to have more of the former.
+- **Checks before upload:**
+  - `predict.py` and the upload helper each ran `check_submission.py`, and both passed.
+  - The zip is 0.57 MB and holds 37,715 detections, with a median of 9 per image, a maximum of 100 and every score
+    ≥ 0.001.
+  - Per class, the predicted label counts are within 8 images of the two r50fpn uploads.
+- **Posting rule:** +35.81 beats both the posted +18.45 and the TA's +4.4, so it was posted.
+- **Quota after it:** 1 of 26 Oct's 5 used, and both reset cards unused.
+- **Board at 09:00:** 5th of 5. Ahead:
+
+  | team | Δm | macro-F1 | mAP |
+  |---|---:|---:|---:|
+  | team09 | +41.66 | 95.29 | 47.35 |
+  | team02 | +40.64 | 94.16 | 47.13 |
+  | team04 | +39.12 | 95.89 | 45.86 |
+  | team03 | +38.51 | 95.11 | 45.76 |
+
+  The 5.86 Δm to team09 splits into about 4.1 from mAP and 1.7 from macro-F1.
+- **Commands:** the `YA_s0` and `YA_val` lines of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 100 --seed 0 --data dataset/repro --evals nd`;
+  - then `predict.py runs/YA_s0 --split val --decoding o2m_nms0.7_a0_k100`.
+
+## `s_6bBQH7vFS2` (YOLO26-L, 150 epochs)
+
+- **Why this model:** its configuration, `Y150_s0`, had the best ND Δm: +40.04 as decoded here, from one seed.
+  - 150 epochs beat 100 by +3.54 Δm on ND, and the paired unit bootstrap puts it at [+1.38, +5.39] (`EXPERIMENTS.md`).
+  - Like `s_DRkVHQAQAo`, it is an interim upload: the 3-seed rule decides the design's final one.
+- **Projection vs result:** ND +40.04 gave val +37.98, ND − 2.06 (`YA_s0`: ND − 0.67).
+  - Against `s_DRkVHQAQAo`: mAP 46.24, up 1.05; macro-F1 92.38, up 0.32.
+- **Checks before upload:**
+  - `predict.py` and the upload helper each ran `check_submission.py`, and both passed.
+  - The zip is 0.41 MB and holds 26,189 detections, with a median of 7 per image, a maximum of 100 and every score
+    ≥ 0.001; 8 images have none.
+- **Posting rule:** +37.98 beats both the posted +35.81 and the TA's +4.4, so it was posted.
+- **Quota after it:** 3 of 26 Oct's 5 used (`s_HZe1Hx0Bms` at 11:18, +20.24, is not MTDet's), and both reset cards unused.
+- **Board at 15:25:** 5th of 6. Ahead:
+
+  | team | Δm | macro-F1 | mAP |
+  |---|---:|---:|---:|
+  | team09 | +41.66 | 95.29 | 47.35 |
+  | team02 | +40.64 | 94.16 | 47.13 |
+  | team04 | +39.12 | 95.89 | 45.86 |
+  | team03 | +38.51 | 95.11 | 45.76 |
+
+  Our mAP is the third best, but our macro-F1 is the lowest of the five. The 3.68 Δm to team09 splits into about 2.1
+  from mAP (1.1 points) and 1.6 from macro-F1 (2.9 points).
+- **Commands:** the `YA150` and `YA150_val` lines of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 150 --seed 0 --data dataset/repro --evals nd`;
+  - then `predict.py runs/YA150 --split val --decoding o2m_nms0.7_a0_k100`.
+
+## `s_iNmyE4oAin` (YOLO26-L, 250 epochs)
+
+- **Why this model:** its configuration, `Y250_s0`, had the best ND Δm when it was queued: +43.23 as decoded here, from
+  one seed, +3.19 over `Y150_s0`. Interim, like the two before it: the 3-seed rule decides the design's final upload.
+- **Projection vs result:** ND +43.23 gave val +39.93, ND − 3.30 (`YA150`: ND − 2.06; `YA_s0`: ND − 0.67).
+  - Against `s_6bBQH7vFS2`: mAP 47.25, up 1.01 (ND projected +1.64); macro-F1 92.43, up 0.05 (ND: +0.08).
+  - Each longer schedule transfers less: val gains 61 % of ND's gain from 150 to 250 epochs, which fits the gain being
+    fitting of training scenes (FIT mAP 75.9 → 85.0).
+- **Checks before upload:**
+  - `predict.py` and the upload helper each ran `check_submission.py`, and both passed.
+  - The zip is 0.19 MB and holds 11,690 detections (`YA150`: 26,189), with a median of 4 per image, a maximum of 93 and
+    every score ≥ 0.001; 18 images have none. The 250-epoch model is more confident, so fewer boxes clear the 0.001
+    floor; ND was scored with the same decoding.
+- **Posting rule:** +39.93 beats both the posted +37.98 and the TA's +4.4, so it was posted.
+- **Quota after it:** 2 of 27 Oct's 5 used (FitDet's `s_3lHu6mo2fp` at 02:12, +36.82, is not MTDet's), and both reset
+  cards unused.
+- **Board at 05:59:** 3rd of 6. Ahead:
+
+  | team | Δm | macro-F1 | mAP |
+  |---|---:|---:|---:|
+  | team09 | +41.66 | 95.29 | 47.35 |
+  | team02 | +40.64 | 94.16 | 47.13 |
+
+  Our mAP is 0.10 below team09's, so the 1.73 Δm to it is almost all macro-F1: 2.86 points, about 1.5 Δm.
+- **Commands:** the `YA250` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 250 --seed 0 --data dataset/repro --evals nd`;
+  - then `predict.py runs/YA250 --split val --decoding o2m_nms0.7_a0_k100 --out submissions/YA250_val.zip`.
+
+## `s_aUZ9SopRu8` (YOLO26-L, 250 epochs, no score floor)
+
+- **Why:** the same model as `s_iNmyE4oAin`, decoded with the best decoding of the sweep by the mean ND Δm of the three
+  finished 250-epoch runs (`Y250_s0`, `Y250_s1`, `YSA250_s0`): `o2m_nms0.8_a0_k100_t0`, +44.12 against +43.27 for the
+  decoding of `s_iNmyE4oAin` (`EXPERIMENTS.md` M1.6). It keeps each image's 100 best boxes, however low their score,
+  with NMS at IoU 0.8; it beat the next best, `o2m_nms0.7_a0_k100_t0`, on all three runs (+0.14 to +0.19). The
+  decoding was chosen on ND only; val decided nothing but the posting.
+- **Projection vs result:** on the two plain 250-epoch runs, the decoding added ND +1.01 and +0.69 Δm (mAP +0.53 and
+  +0.37). On val it added +1.18 (mAP 47.25 → 47.86, +0.61; macro-F1 unchanged, since the classifier is untouched): the
+  full ND gain or more, as expected for a change of decoding rather than of training.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The zip
+  is 1.9 MB with exactly 100 detections per image (142,600) and scores down to 0.0; no image lacks detections.
+- **Posting rule:** +41.11 beats both the posted +39.93 and the TA's +4.4, so it was posted.
+- **Quota after it:** 4 of 27 Oct's 5 used (FitDet's `s_3lHu6mo2fp` at 02:12, `s_iNmyE4oAin` at 05:58, another
+  session's `s_YbqE0XcDYU` at 07:31, +37.90, not MTDet's, and this one); both reset cards unused.
+- **Board at 11:34:** 2nd of 6, behind team09 (+41.66, macro-F1 95.29, mAP 47.35). Our mAP is the board's best; the
+  0.55 Δm gap is macro-F1 (2.86 points).
+- **Commands:** after the `YA250` job (see `s_iNmyE4oAin`),
+  `workspace/gpu_run.sh --gpus 2 --min-free 8000 -- env HF_HUB_OFFLINE=1 .venv/bin/python workspace/mtdet/predict.py
+  workspace/mtdet/runs/YA250 --split val --decoding o2m_nms0.8_a0_k100_t0 --out workspace/mtdet/submissions/YA250_n8t0_val.zip`
+  (output: `runs/queue/YA250_n8t0.out`).
+
+## `s_VNaV9r0uDV` (YOLO26-L, 250 epochs, SAR augmentation)
+
+- **Why this model:** SAR speckle and gamma augmentation (`--sar-aug`) won its single-seed comparison at 150 and 250
+  epochs. At the submitted decoding, `YSA250_s0` scores ND +45.03 against `Y250_s0`'s +44.24. Interim, like the uploads
+  before it: seeds 1 and 2 of both configurations are still running, and the 3-seed rule decides the design's final
+  upload.
+  Confirmed at 21:08 on 27 Oct: the 3-seed means are +45.63 ± 0.71 (SAR) against +43.42 ± 0.72 (plain), with SAR
+  ahead on every seed, so this is the design's best configuration until round 3 (350 epochs) reports.
+- **Projection vs result:** ND gave SAR +0.79 on one seed; val gave +2.39 over `s_aUZ9SopRu8`, the same decoding
+  without SAR augmentation (macro-F1 92.43 → 93.40, mAP 47.86 → 48.84). The val gain is three times the ND gain, so
+  the seeds have to confirm it.
+- **Training:** epochs 1–138 ran before the 27 Oct reboot, and epochs 139–250 resumed from `last.pt` (same args; the
+  data order depends only on seed and epoch). 6.01 h wall, about 4.0 GPU h, since it shared its GPU for most of it.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.9 MB, with exactly 100 detections per image and scores down to 0.0.
+- **Posting rule:** +43.50 beats both the posted +41.11 and the TA's +4.4, so it was posted.
+- **Quota after it:** 5 of 27 Oct's 5 used; both reset cards unused.
+- **Board at 13:49:** **1st of 6**, ahead of team09 (+41.66, macro-F1 95.29, mAP 47.35). Our mAP leads by 1.49; our
+  macro-F1 trails theirs by 1.89.
+- **Commands:**
+  - Training: the `YASA250` line of `jobs/plan.txt`, resumed after the reboot by its `YASA250_r2` line:
+    `train.py --arch yolo26l --epochs 250 --seed 0 --sar-aug --data dataset/repro --evals nd`.
+  - The zip: the `YASA250_n8` line: `predict.py runs/YASA250 --split val --decoding o2m_nms0.8_a0_k100_t0`.
+
+## `s_dlz80pdFun` (YOLO26-L, 350 epochs, SAR augmentation)
+
+- **Why this model:** the design's best configuration by the 3-seed rule since 28 Oct 03:55. SAR augmentation at 350
+  epochs scored holdout +47.23 ± 0.79 against +45.63 ± 0.71 at 250 epochs, ahead on every seed.
+- **Projection vs result:** on val it added only +0.06 over `s_VNaV9r0uDV` (mAP 48.84 → 49.14, +0.30; macro-F1
+  93.40 → 92.46, −0.94), where the holdout gave +1.60 (mAP +0.79, F1 +0.17). Earlier schedules kept ~61 % of the
+  holdout gain on val; this one kept ~4 %.
+  - The F1 drop is the classifier of one all-train seed against another.
+  - The mAP gain shrinking says val rewards a longer schedule less from 350 epochs on.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.8 MB, with exactly 100 detections per image and scores down to 0.0. The job's decoding was confirmed from
+  `runs/queue/YASA350/cmd`.
+- **Posting rule:** +43.56 beats both the posted +43.50 and the TA's +4.4, so it was posted.
+- **Quota after it:** 1 of 28 Oct's 5 used; both reset cards unused.
+- **Board at 04:58:** **1st of 6**, ahead of team09 (+42.29, macro-F1 95.32, mAP 47.67, up from +41.66).
+- **Commands:** the `YASA350` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 350 --seed 0 --sar-aug --data dataset/repro --evals nd`;
+  - then `predict.py runs/YASA350 --split val --decoding o2m_nms0.8_a0_k100_t0`. It ran on GPU 0 beside tom's
+    job for its first hour, with the user's go-ahead.
+
+## `s_KvBWV9Psqo` (YOLO26-L, 450 epochs, SAR augmentation)
+
+- **Why this model:** the design's best configuration by the 3-seed rule since 28 Oct 13:04. SAR augmentation at 450
+  epochs scored holdout +48.19 ± 0.95 against +47.23 ± 0.79 at 350 epochs, ahead on every seed.
+- **Projection vs result:** val +0.55 over `s_dlz80pdFun` (mAP 49.14 → 49.28, +0.14; macro-F1 92.46 → 92.97, +0.51),
+  where the holdout gave +0.96 (mAP +0.57, F1 −0.28). Across the two longer schedules, val kept little of the
+  holdout's mAP gain. The F1 changes between all-train models are mostly seed noise in the classifier.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.8 MB, with exactly 100 detections per image and scores down to 0.0. The job's decoding was confirmed from
+  `runs/queue/YASA450/cmd`.
+- **Posting rule:** +44.11 beats both the posted +43.56 and the TA's +4.4, so it was posted.
+- **Quota after it:** 2 of 28 Oct's 5 used; both reset cards unused.
+- **Board at 16:59:** **2nd of 6**. team09 rose to +44.44 (macro-F1 95.81, mAP 48.65), 0.33 ahead. Our mAP is the
+  board's best; their macro-F1 leads by 2.84, about 1.5 Δm.
+- **Commands:** the `YASA450` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 450 --seed 0 --sar-aug --data dataset/repro --evals nd`;
+  - then `predict.py runs/YASA450 --split val --decoding o2m_nms0.8_a0_k100_t0`.
+
+## `s_oK1S2mxVie` (YOLO26-L, 350 epochs, SAR augmentation at probability 0.8)
+
+- **Why uploaded:** at the user's request, out of curiosity. Under the 3-seed rule this configuration was not a
+  candidate: SAR at 0.8 scored holdout +47.44 ± 0.07 at 350 epochs against +47.23 ± 0.79 at 0.5 (within noise), and
+  450 epochs at 0.5 (+48.19) is the holdout's best.
+- **Result:** val +44.95 (macro-F1 93.59, mAP 49.54). That is +1.39 over `s_dlz80pdFun`, the same schedule at 0.5
+  (F1 +1.13, mAP +0.40), and +0.84 over `s_KvBWV9Psqo` (450 epochs at 0.5). On val, stronger SAR augmentation helped
+  where the holdout saw nothing. Earlier, SAR at 0.5 also added slightly more on val (+2.39) than on the holdout
+  (+2.2). One model per configuration, so the gap mixes the effect with model-to-model noise.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.8 MB, with exactly 100 detections per image.
+- **Posting:** +44.95 beats both the posted +44.11 and the TA's +4.4. The posting rule was in tension with the
+  holdout selection rule, so I asked first; the user chose to post (21:18).
+- **Quota after it:** 3 of 28 Oct's 5 used; both reset cards unused.
+- **Board at 21:18:** **1st of 6**, ahead of team09 (+44.44, macro-F1 95.81, mAP 48.65) and team04 (+42.04).
+- **Commands:** the `YASP350` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 350 --seed 0 --sar-aug --sar-p 0.8 --data dataset/repro --evals nd`;
+  - then `predict.py runs/YASP350 --split val --decoding o2m_nms0.8_a0_k100_t0`.
+
+## `s_MktFiV49GZ` (ConvNeXt-B + Cascade R-CNN, 72 epochs, local train)
+
+- **Why uploaded:** at the user's request, to see the ConvNeXt-B architecture screen on val. It is the architecture
+  comparison's run, not a candidate. It was trained on the holdout's local train only (7,252 of 9,392 images); no
+  all-train ConvNeXt-B model exists. Its best holdout decoding (`posterior_d100_nms0.7`, holdout +38.73) was used.
+- **Result:** val +27.80. Macro-F1 93.86 is our best val F1 so far (YOLO26-L models: 92.46–93.59), but mAP is 40.50
+  against ~49.5. Holdout to val it lost 10.9 Δm, where the all-train YOLO models lost ~3–4. It never saw the 2,140
+  training images held out for ND, and val rewards fitting training scenes.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. 23,837
+  detections (median 7 per image, 28 images without any; this decoding keeps a 0.001 floor). Predicted on GPU 1 at
+  the user's request (`runs/queue/C_s0_val.out`).
+- **Posting:** not posted, since +27.80 is below the posted +44.95.
+- **Quota after it:** 4 of 28 Oct's 5 used; both reset cards unused.
+- **Command:** `predict.py runs/C_s0 --split val --decoding posterior_d100_nms0.7 --out submissions/C_s0_val.zip`.
+
+## `s_mRMAxp4YUV` (YOLO26-L, 450 epochs, SAR at probability 0.8, batch 32)
+
+- **Why uploaded:** at the user's request ("Please submit", 29 Oct 01:30). It follows up `s_oK1S2mxVie`: does the 0.8
+  setting gain more with 450 epochs? Its holdout seeds are held, so the 3-seed rule can't pick it.
+- **Result:** val +44.51 (macro-F1 93.33, mAP 49.39). That is −0.44 against `s_oK1S2mxVie` (0.8 at 350 epochs, batch 16)
+  and +0.40 against `s_KvBWV9Psqo` (0.5 at 450 epochs, batch 16). It mixes two changes, 450 epochs and batch 32, and
+  each configuration has one model.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.8 MB, with exactly 100 detections per image.
+- **Posting:** not posted, since +44.51 is below the posted +44.95.
+- **Quota after it:** 1 of 29 Oct's 5 used; both reset cards unused.
+- **Commands:** the `YASPB450` line of `jobs/plan.txt`:
+  - `train.py --arch yolo26l --epochs 450 --sar-aug --sar-p 0.8 --batch-size 32 --lr 7.07e-4 --backbone-lr 7.07e-4
+    --ema 0.9996 --seed 0 --data dataset/repro --evals nd`;
+  - then `predict.py runs/YASPB450 --split val --decoding o2m_nms0.8_a0_k100_t0`.
+
+## Posted entry changed outside this session (found 29 Oct 08:12)
+
+- At 21:18 on 28 Oct, `s_oK1S2mxVie` (YASP350, +44.95) was posted, and the API confirmed `posted: true`.
+- On 29 Oct at 08:12, `/api/me` showed `s_dlz80pdFun` (YASA350, +43.56) as the posted entry instead, putting the team
+  2nd behind team09 (+44.44). No post was made from this session after 21:18; the local `*.post.json` records end
+  there. The re-post came from the website or another holder of the team token.
+- At the user's request ("Submit the best model till now"), `s_oK1S2mxVie` was re-posted at 08:13 (no new upload, no
+  quota used): 1st of 6 again.
+- The watcher found `s_dlz80pdFun` posted again by 08:23, about 10 minutes after the re-post. Nothing on this server
+  touched the API: no process, no crontab, no new post record. The change came from the website or another holder
+  of the team token. At the user's choice, nothing more is posted until the user has checked with the team which
+  entry to keep (29 Oct 08:25).
+- 29 Oct 20:39: `/api/submissions` lists one more upload that this session didn't make: `s_GQXZNO3hhP` at 10:58 SGT
+  (val +31.68, macro-F1 90.47, mAP 43.48, 1.8 MB, not posted). Another holder of the team token is uploading as well
+  as posting; it used one of 29 Oct's 5 uploads. The posted entry was still `s_dlz80pdFun` at 20:39.
+
+## `s_2rzqVoMcnQ` (YOLO26-L, 450 epochs, SAR at 0.8, batch 96, seed 1)
+
+- **Why:** the second all-train model of the 3-seed rule's best configuration since 29 Oct 13:46 (SAR at 0.8, 450
+  epochs, batch 96: holdout +48.55 ± 0.76). It was trained with the user's go-ahead to measure seed-to-seed variation
+  on val and as a Phase 2 candidate. Seed 0 (`YASP450B96`) finishes ~21:25.
+- **Result:** val +43.99 (macro-F1 93.69, mAP 49.02): below `s_oK1S2mxVie` (+44.95) and `s_mRMAxp4YUV` (+44.51).
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.7 MB, with exactly 100 detections per image.
+- **Posting:** paused at the user's choice (29 Oct 08:25) until the team agrees on the entry; not posted.
+- **Quota after it:** 3 of 29 Oct's 5 used (two by this session, one by another token holder); both reset cards unused.
+
+## `s_x4BELnDxpX` (YOLO26-L, 450 epochs, SAR at 0.8, batch 96, seed 0)
+
+- **Why:** the all-train model of the 3-seed rule's best configuration since 29 Oct 13:46 (SAR at 0.8, 450 epochs,
+  batch 96: holdout +48.55 ± 0.76), trained at the user's go-ahead.
+- **Result:** val +44.60 (macro-F1 92.90, mAP 49.55, our best val mAP), the rule's pick and our second-best val
+  score after `s_oK1S2mxVie` (+44.95). Seed 1 of the same configuration (`s_2rzqVoMcnQ`) scored +43.99: two seeds of
+  one configuration differ by 0.61 on val.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. The
+  zip is 1.7 MB, with exactly 100 detections per image.
+- **Posting:** paused at the user's choice until the team agrees on the entry; not posted.
+- **Quota after it:** 4 of 29 Oct's 5 used (three by this session, one by another token holder); both reset cards
+  unused.
+
+## `s_mAWeqhctvq` and `s_5Eyj17RxID` (the two best holdout runs, trained on the holdout split)
+
+- **Why:** at the user's request, "the top 2 of the best models which haven't been submitted yet". By holdout Δm these
+  are `YSP450B96_s1` (+49.40) and `YSA450_s2` (+49.25). Both were trained on the holdout split's local train (7,252 of
+  the 9,392 train images), so neither is a candidate for the entry. Val zips were predicted on GPUs 0 and 2
+  (`runs/queue/<run>_val.out`).
+- **Result:** val +34.25 and +33.50, about 10 Δm below the all-train models of comparable configurations (+44.11 to
+  +44.95). Val strongly rewards having trained on the scenes the holdout held out, consistent with the near-duplicate
+  analysis and with ConvNeXt's local-train upload (`s_MktFiV49GZ`, −11 Δm from holdout to val).
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed.
+- **Posting:** not posted (posting paused; neither would beat the entries in question).
+- **Quota after them:** 3 of 30 Oct's 5 used (two by this session, one by another token holder).
+
+## 30 Oct: quota used by others; the team re-posted s_oK1S2mxVie (checked 23:10)
+
+- `/api/submissions` lists three more uploads this session didn't make: `s_fnr9moPw3e` (09:22 SGT, +43.54),
+  `s_gsjThIrwWo` (21:45, +44.14) and `s_o9qDTwlBVR` (21:46, +43.63). With this session's two (`s_mAWeqhctvq`,
+  `s_5Eyj17RxID`), 30 Oct's 5 uploads were used up.
+- The `YASP700B96` upload at 23:09 was refused (HTTP 429, "Daily limit reached"). It counted nothing. It is retried
+  just after 00:00 SGT with a fresh Idempotency-Key, not a reset card: reset cards only on the user's request.
+- The posted entry is `s_oK1S2mxVie` (+44.95) again, re-posted by the team. Board at 23:10: team09 +52.39, team02
+  +47.91, team08 +46.80, team07 +45.83, **cs701-team05 +44.95 (5th of 7)**, team04 +42.04, team03 +41.01.
+
+## `s_8pmBB8jzom` (YASP350's recipe at batch 96, 700 epochs: the overfit run)
+
+- **Why:** the user's request to overfit the best leaderboard model on the full training set at maximum memory
+  (batch 96). It fits its training images far more tightly: in-train check-set mAP 94.3 against ~88 for 350 epochs.
+- **Result:** val +42.90 (macro-F1 93.11, mAP 48.61). Against `s_x4BELnDxpX` (same recipe and batch, 450 epochs) it
+  is −1.70 (mAP −0.94); against `s_oK1S2mxVie` (batch 16, 350 epochs) −2.05. Fitting the training set harder,
+  from 450 to 700 epochs, lost on val: val's near-duplicates differ from their training partners by crops, revisits
+  and look-alikes, so memorising the exact images stops paying.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and both passed. First
+  refused at 23:09 (quota used up by other token holders), then uploaded at 00:00:39 with a fresh Idempotency-Key.
+- **Posting:** not posted (below the posted +44.95).
+- **Quota after it:** 1 of 31 Oct's 5 used; both reset cards unused.
+- **1000 epochs, `s_mtVKoVsEnn`:** val +41.69 (macro-F1 92.05, mAP 48.27; in-train mAP 95.6), lower again. At batch 96:
+  450 epochs +44.60 → 700 +42.90 → 1000 +41.69. Val falls steadily once the model is overfit past ~450 epochs. Quota
+  after it: 2 of 31 Oct's 5.
+
+## `s_re4Ay2NHUq`, `s_IMVEvJhDtc`, `s_g5lTEftD9X` (s_oK1S2mxVie's recipe, 450 epochs, seeds 0-2)
+
+- **Why:** the user's request (30 Oct 14:26): three models of the recommended configuration on GPU 1. That is
+  `s_oK1S2mxVie`'s exact recipe (SAR 0.8, batch 16, all of train), trained a step longer (450 epochs, ~264k updates
+  against its ~205k), on seeds 0-2.
+- **Result:** val +43.89, +44.76 and +43.74 (mean +44.13 ± 0.55). None beats `s_oK1S2mxVie` (+44.95). Seed 0 lost
+  1.06 against the same seed at 350 epochs. On val, the 0.8 recipe peaks around 350 epochs, though the holdout
+  still favoured 450 for SAR at 0.5. The three seeds spread over 1.0 on val, so +44.95 may itself be a lucky draw.
+- **Checks before upload:** `predict.py` and the upload helper each ran `check_submission.py`, and all three passed.
+- **Posting:** not posted (all below the posted +44.95).
+- **Quota after them:** 5 of 31 Oct's 5 used (all by this session); both reset cards unused.
+- **Board at 08:22:** team09 +52.39, team02 +47.91, team08 +46.80, team07 +45.83, **cs701-team05 +44.95 (5th of 7)**,
+  team04 +42.04.
+
+## Round 9 (31 Oct): `s_b1EUslCFJP` (P2), `s_5CJ7elXK9N` (YOLO26-X)
+
+- **Why:** the user's request for 3 settings that could raise Δm, judged on val directly. All use the best recipe
+  (SAR 0.8, 350 epochs, batch 16, all of train). The mAP gap is in thin and tiny objects (holdout AP: bridge ~5,
+  playground ~14).
+- **Result:** P2 +43.37 (mAP 48.97), X +43.57 (macro-F1 94.33, our best val F1; mAP 48.61). Neither beats
+  `s_oK1S2mxVie` (+44.95, mAP 49.54): the stride-4 level did not lift mAP, and X classifies better but detects worse.
+- **Quota:** after the user's reset card, 31 Oct's count stood at 3 of 5. These two used the last 2. The seed-1 model
+  (`YASP350_s1`) and the copy-paste model (`YACPSP350`) upload just after 00:00 SGT on 1 Nov.
+
+### 1 Nov 00:00: the new decoding and SWA (M1.8, M1.10)
+
+- **Why:** the user asked to think more comprehensively. On 9 holdout runs, the detector-informed class plus joint
+  decoding gained +0.61 ± 0.15 Δm (9/9); SWA added +0.22 on 2 holdout seeds.
+- **Result on val:** the decoding gave +0.28 on the same model (+44.95 → +45.23; mAP +0.16, F1 −0.04) and SWA +0.14 more
+  (**+45.37**, the team's best). Both smaller than on the holdout. Seed 1 (+44.24) and copy-paste (+44.38) with the new
+  decoding stay below seed 0, so seed 0 was a lucky draw (~1 Δm between seeds).
+- **Quota:** 4 of 1 Nov's 5 used. The two scheduled base-decoding uploads (seed 1, copy-paste) were replaced by these.
+- **Next:** seeds 2–7 of the recipe, each with SWA and the new decoding (`jobs/plan.txt` rounds 10–11), from ~08:30.
+- **08:51:** seed 4 (+SWA) scored +44.62 and used 1 Nov's last upload (5 of 5). Seeds 2 and 3 (zips ready) and 5–7
+  (~10:30) need the last reset card (`r_b5j2z4a6x2t43_05`), which only the user may decide to use.
+- **10:40–10:42 (the user: "Post it, and use the reset card for the seeds"):** posted `s_MpUnPGVrtE`, used the last
+  reset card (`r_b5j2z4a6x2t43_05`), uploaded seeds 2, 3, 5, 6, 7 (all with SWA and the new decoding). Seed 6 scored
+  **+45.89** and was posted in place of `s_MpUnPGVrtE` (CLAUDE.md: it beats the team's entry and the TA bar), 5th of 7.
+- **Seeds of the recipe on val, with SWA and the new decoding:** s0 +45.37, s2 +44.72, s3 +45.12, s4 +44.62, s5 +45.12,
+  s6 +45.89, s7 +43.75: mean +44.94 ± 0.68 (s1 +44.24 without SWA). The pick is the best of 7 on val, so expect it to
+  score lower on test.
+- **Quota:** 1 Nov 5 of 5 after the reset, no reset card left; Phase 1 closes 1 Nov 23:59 SGT.
+- **Phase 2 pair, confirmed by the user (1 Nov 11:00: "use seed 6 and seed 0"):** `runs/YASP350_s6_swa_avgbn` (+45.89)
+  and `runs/YASP350_swa_avgbn` (+45.37), the 2 best by val Δm, both with `o2m_nms0.8_a0.5_k100_t0_f1`. Their test zips
+  (`YASP350_s6_swa_f1_test.zip`, `YASP350_swa_f1_test.zip`) are built by `predict.py … --split test` once Phase 2 opens
+  (2 Nov 00:01) and `dataset/test/` is complete; the test path was rehearsed on the val images (zip identical to the
+  uploaded val zip). The better of the two test scores gets posted (CLAUDE.md: it must beat the TA's +3.8).
+
+### 2 Nov 22:14: Phase 2 (test)
+
+- **Rule (the user, 2 Nov 22:10):** Phase 2 tests the checkpoint of the public val score, without retraining. The posted val
+  entry is `s_49grnfrk1i` (seed 6 + SWA), so only that checkpoint qualifies; seed 0 (`s_MpUnPGVrtE`, not posted) was
+  not uploaded, although its test zip (`YASP350_swa_f1_test.zip`) was built and passes the checks.
+- **Test data:** `test.tar.gz` and `sample_submission_test.zip` from the course's Hugging Face dataset
+  (`doem1997/cs701-sar-course-data`, as its card says), into an empty folder first; 2,066 regular files, all under
+  `test/`; unpacked into `dataset/` (2,065 images, ids 1–2065).
+- **Zip:** `runs/queue/phase2.sh` (`predict.py … --split test`), 206,500 boxes (100 per image), 2.7 MB, passes
+  `check_submission.py --split test`. Predicted class mix close to val's (wind turbine 19.0 / 18.2 %, harbor 6.1 / 8.2 %).
+- **Result:** Δm **+48.66** (macro-F1 95.61, mAP 49.71, AP50 73.69; test reference 93.99 / 25.41), posted; 1 of the 2
+  Phase 2 uploads used. Board at 22:14: team06 +71.57, team09 +71.40 (both mAP ~61), us 3rd of 3.
+
