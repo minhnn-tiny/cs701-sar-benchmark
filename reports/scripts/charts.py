@@ -26,12 +26,12 @@ def style(ax):
     ax.tick_params(width=0.4, length=2)
 
 
-def per_class():
+def per_class(out=FIGS / 'per_class.pdf', size=(3.3, 2.0)):
     d = json.loads(Path('reports/scripts/per_class.json').read_text())
     names = list(d['nd'][0]['per_class_AP'])
     mean = {s: {c: 100 * st.mean(r['per_class_AP'][c] for r in d[s]) for c in names} for s in ('fit', 'nd', 'lf')}
     order = sorted(names, key=lambda c: mean['nd'][c])
-    fig, ax = plt.subplots(figsize=(3.3, 2.0))
+    fig, ax = plt.subplots(figsize=size)
     style(ax)
     for i, c in enumerate(order):
         lo, hi = min(mean[s][c] for s in mean), max(mean[s][c] for s in mean)
@@ -50,29 +50,29 @@ def per_class():
     ax.legend(loc='lower center', bbox_to_anchor=(0.42, 1.0), ncol=3, frameon=False, handletextpad=0.1,
               columnspacing=0.8, borderaxespad=0.2)
     fig.tight_layout(pad=0.3)
-    fig.savefig(FIGS / 'per_class.pdf')
+    fig.savefig(out)
 
 
 def lab(run, key):
     return json.loads((RUNS / run / 'decode_lab.json').read_text())[key]['delta_m']
 
 
-def epochs(key='base'):
+def epochs(key='base', out=None, size=(3.3, 1.75)):
     series = {  # (epochs, runs): plain = flips only; SAR 0.5 / 0.8 = SARAugment probability
         'plain': [(100, ['Y_s0']), (150, ['Y150_s0']), (250, ['Y250_s0', 'Y250_s1', 'Y250_s2'])],
         'SAR, p = 0.5': [(150, ['YSA150_s0']), (250, ['YSA250_s0', 'YSA250_s1', 'YSA250_s2']),
                          (350, ['YSA350_s0', 'YSA350_s1', 'YSA350_s2']), (450, ['YSA450_s0', 'YSA450_s1', 'YSA450_s2'])],
         'SAR, p = 0.8': [(250, ['YSP250_s0', 'YSP250_s1', 'YSP250_s2']), (350, ['YSP350_s0', 'YSP350_s1', 'YSP350_s2'])],
     }
-    fig, ax = plt.subplots(figsize=(3.3, 1.75))
+    fig, ax = plt.subplots(figsize=size)
     style(ax)
-    out = {}
+    summary = {}
     for (name, points), color, marker in zip(series.items(), (BLUE, ORANGE, AQUA), ('o', 'D', 's')):
         xs, ms, sds = [], [], []
         for e, runs in points:
             v = [lab(r, key) for r in runs]
             xs.append(e), ms.append(st.mean(v)), sds.append(st.stdev(v) if len(v) > 1 else 0)
-            out.setdefault(name, []).append((e, round(st.mean(v), 2), round(sds[-1], 2), len(v)))
+            summary.setdefault(name, []).append((e, round(st.mean(v), 2), round(sds[-1], 2), len(v)))
         ax.plot(xs, ms, color=color, lw=1.0, zorder=2)
         ax.errorbar(xs, ms, yerr=sds, fmt='none', ecolor=color, elinewidth=0.7, capsize=1.6, zorder=2)
         for x, m, (e, runs) in zip(xs, ms, points):
@@ -87,8 +87,8 @@ def epochs(key='base'):
     ax.text(0.02, 0.97, 'filled: mean $\\pm$ std of 3 seeds; hollow: 1 seed', transform=ax.transAxes, fontsize=5.5,
             va='top', color=INK2)
     fig.tight_layout(pad=0.3)
-    fig.savefig(FIGS / f'epochs_{key}.pdf')
-    return out
+    fig.savefig(out or FIGS / f'epochs_{key}.pdf')
+    return summary
 
 
 if __name__ == '__main__':

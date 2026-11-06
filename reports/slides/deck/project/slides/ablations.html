@@ -1,0 +1,19 @@
+<section id="ablations" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">What mattered on the holdout</h2>
+<div style="display:grid;grid-template-columns:960px 1fr;gap:64px;align-items:start">
+<img src="/_blob/1ca29b37f062b14febd8540bbef6a35e" alt="Line chart of holdout delta-m against training epochs: flips only rises from 37.2 at 100 epochs to 43.9 at 250; SAR augmentation at p 0.5 reaches 48.8 at 450 epochs; SAR at p 0.8 reaches 48.1 at 350 epochs" style="width:960px;height:533px;object-fit:contain">
+<table style="font-size:24px;color:#14213D">
+<tr><th style="width:68%;text-align:left">Change (holdout Δm)</th><th style="width:32%;text-align:right">effect</th></tr>
+<tr><td>SAR noise, 3 seeds, 250 ep.</td><td style="text-align:right">+2.3 to +2.9</td></tr>
+<tr><td>100 → 350 epochs, with SAR</td><td style="text-align:right">+37.2 → +48.1</td></tr>
+<tr><td>cross-task decoding, 9 runs</td><td style="text-align:right">+0.61</td></tr>
+<tr><td>SWA, 2 seeds</td><td style="text-align:right">+0.22</td></tr>
+<tr><td>batch 80–96 instead of 16</td><td style="text-align:right">−0.7</td></tr>
+<tr><td>no flips</td><td style="text-align:right">−2.0</td></tr>
+<tr><td>classifier on P3–P5</td><td style="text-align:right">−3.7</td></tr>
+<tr><td>mosaic / zoom, 150 ep.</td><td style="text-align:right">−4.6 / −5.4</td></tr>
+</table>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 11 / 15</p>
+<aside>(~50 s) More than 40 holdout runs, all re-scored with one decoding, and every decision on three seeds. The chart shows the two biggest levers. Training longer kept paying: from +37 at 100 epochs to +48 at 350 to 450, because the model keeps fitting the repeated scenes while it holds its generalisation. And SAR augmentation stays ahead at every length. On the right, the effects in one place: the decoding and averaging are small but consistent; large batches, removing flips, a richer classifier input, mosaic and zoom all hurt.</aside>
+</section>

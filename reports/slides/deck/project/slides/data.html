@@ -1,0 +1,22 @@
+<section id="data" data-transition="fade" style="background:#FBFBF8;color:#3D4A5C;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.15;color:#14213D">Three properties of the data set our goals</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:20px;background:#EEF1F5;padding:40px;border-radius:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:112px;font-weight:600;line-height:1.1;color:#1F5FAE">50 %</p>
+<p style="font-size:32px;line-height:1.4;color:#14213D">of boxes are smaller than one 16 px ViT patch: <b>objects are tiny</b></p>
+<p style="font-size:24px;line-height:1.4;color:#B4441A">→ spend the budget on resolution: a stride-8 detector, not an adapted stride-16 ViT</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px;background:#EEF1F5;padding:40px;border-radius:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:112px;font-weight:600;line-height:1.1;color:#1F5FAE">66.5 %</p>
+<p style="font-size:32px;line-height:1.4;color:#14213D">of held-out images have a copy, crop or revisit in train: <b>scenes repeat</b></p>
+<p style="font-size:24px;line-height:1.4;color:#B4441A">→ validate on a holdout that mirrors val; augment without moving pixels</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px;background:#EEF1F5;padding:40px;border-radius:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:112px;font-weight:600;line-height:1.1;color:#1F5FAE">100 %</p>
+<p style="font-size:32px;line-height:1.4;color:#14213D">of boxes carry their image’s class: <b>the tasks are coupled</b></p>
+<p style="font-size:24px;line-height:1.4;color:#B4441A">→ let the two heads correct each other at inference</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7686">CS701 Team 5 · SAR multi-task learning · 3 / 15</p>
+<aside>(~60 s) Before picking a model we studied the data, and three numbers set our goals. First, half of the 32,500 training boxes are smaller than a single 16-pixel ViT patch; wind turbines, bridges, oil tanks and playgrounds have median boxes of 8 to 15 pixels. So we wanted resolution, not a bigger adapter. Second, the images come from four public SAR datasets that share scenes: two thirds of a random holdout have a copy, an overlapping crop or a revisit in the rest of train, and val behaves the same way. So the leaderboard rewards fitting known scenes as much as generalising. Third, every box has its image’s class, so the two heads can help each other.</aside>
+</section>
