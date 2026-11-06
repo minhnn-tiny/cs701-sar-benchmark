@@ -1,0 +1,13 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+Reading the data before choosing a model paid off more than any single technique.
+Tiny objects called for a dense stride-8 detector rather than an adapted stride-16 encoder; repeated scenes called for a
+holdout that mirrors val and for augmentations that keep scene geometry; the shared class of an image and its boxes
+allowed a free cross-task decoding.
+The result is a 26\,M-parameter single model with $\Delta_m$ +45.9 on val and +48.7 on test, over ten times the best
+in-budget baseline, trained in under 10 GPU-hours.
+We also learned our protocol's limits: the holdout predicts the sign of a change better than its size, seed noise
+rivals most effects, and bridges and playgrounds, tiny objects in cluttered scenes with few repeats, remain unsolved.
+They, and the 11-point mAP gap to the best teams, are where future work should go, for instance with higher-resolution
+features guided by the classifier's scene evidence.

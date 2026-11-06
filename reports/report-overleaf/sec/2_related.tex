@@ -1,0 +1,40 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Multi-task learning.}
+Hard parameter sharing trains one trunk for all tasks, and loss weighting~\cite{kendall2018multi}, gradient
+normalisation~\cite{chen2018gradnorm} and gradient surgery~\cite{yu2020pcgrad} balance tasks whose losses differ in
+scale and speed.
+They assume the tasks compete.
+Ours mostly cooperate, and the classification loss falls to near zero within 60 epochs, so we gained more by coupling
+the heads at inference (\cref{sec:decoding}) than we could expect from re-weighting them.
+
+\paragraph{Parameter-efficient adaptation.}
+LoRA~\cite{hu2022lora} and its multi-task forms, task-specific modules (MTLoRA~\cite{agiza2024mtlora}) and mixtures of
+low-rank experts (MLoRE~\cite{yang2024mlore}), adapt a frozen encoder with about 1\,\% of its parameters; the course
+reference applies them to ViT-B/16~\cite{dosovitskiy2021vit} and TerraMind~\cite{jakubik2025terramind} with a ViTDet
+pyramid~\cite{li2022vitdet}.
+They are cheap and keep the pretrained features, but the features stay at stride 16 and frozen weights cap detection:
+our two LoRA designs reached val $\Delta_m$ +7.1 at most (\cref{sec:journey}).
+
+\paragraph{Object detectors.}
+Two-stage detectors with feature pyramids (Faster R-CNN~\cite{ren2015faster}, FPN~\cite{lin2017fpn}, Cascade
+R-CNN~\cite{cai2018cascade}) localise precisely but are heavy and slow to train.
+DETR~\cite{carion2020detr} drops anchors and NMS but converges slowly and is weak on small objects;
+RT-DETR~\cite{zhao2024rtdetr} makes it real-time.
+YOLOv10~\cite{wang2024yolov10} pairs a one-to-many head with an NMS-free one-to-one head, and YOLO26~\cite{jocher2026yolo26}
+keeps both, drops distribution focal loss, and adds progressive loss balancing and small-target-aware assignment.
+Dense stride-8 heads suit tiny objects, and COCO pretraining~\cite{lin2014coco} brings necks and heads that an
+image-level encoder lacks.
+
+\paragraph{SAR detection and augmentation.}
+The benchmarks behind our data~\cite{li2024sardet,zhang2025rsar,wang2025m4sar,wei2020hrsid} mostly fine-tune
+detectors pretrained on natural images; SARDet-100K studies the domain gap this leaves.
+SAR augmentation can follow the speckle model~\cite{argenti2013speckle}: an $L$-look intensity image is the
+reflectivity times Gamma noise of mean 1 and variance $1/L$.
+Generic augmentations such as mosaic~\cite{bochkovskiy2020yolov4} and copy-paste~\cite{ghiasi2021copypaste} add
+context but change the scene layout.
+
+\paragraph{Weight averaging.}
+SWA~\cite{izmailov2018swa} averages weights along one training trajectory and finds flatter optima; model
+soups~\cite{wortsman2022soups} average separately fine-tuned models, which works only when they share a basin.

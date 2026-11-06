@@ -1,7 +1,15 @@
 \begin{abstract}
-The ABSTRACT is to be in fully justified italicized text, at the top of the left-hand column, below the author and affiliation information.
-Use the word ``Abstract'' as the title, in 12-point Times, boldface type, centered relative to the column, initially capitalized.
-The abstract is to be in 10-point, single-spaced type.
-Leave two blank lines after the Abstract, then begin the main text.
-Look at previous \confName abstracts to get a feel for style and length.
+We build one model that classifies a synthetic aperture radar (SAR) image into one of nine scene classes and detects
+every object in it, within 130\,M parameters (40\,M trainable).
+Three properties of the data shaped the design.
+Half of the boxes are smaller than a 16-pixel ViT patch, so instead of adapting the reference ViT-B/16 with LoRA we
+fully fine-tune a COCO-pretrained YOLO26-L detector (26.2\,M parameters, stride-8 features) and attach a 5.6\,k-parameter
+classifier to its trunk.
+Two thirds of held-out training images have a near-duplicate in the rest of the training set, so we validate on a
+holdout that mirrors this and favour augmentations that keep scene geometry: SAR speckle and gamma noise gain +2.3 to
++2.9 $\Delta_m$ over three seeds, while zoom and mosaic lose about 5.
+All boxes of an image share its class, which a parameter-free cross-task decoding exploits: detector evidence refines
+the image class and the class re-ranks the boxes (+0.61\,$\pm$\,0.15 $\Delta_m$ over nine runs).
+With weight averaging, the final single model reaches $\Delta_m$ +45.9 on val and +48.7 on test, against +4.4 and +3.8
+for the best in-budget baseline, at 2.5\,ms per image.
 \end{abstract}
