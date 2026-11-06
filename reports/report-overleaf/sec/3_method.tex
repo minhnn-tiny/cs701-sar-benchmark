@@ -78,7 +78,8 @@ class $c$ should rank lower,
   \label{eq:jd}
 \end{equation}
 Boxes come from the one-to-many head with per-class NMS at IoU 0.8; we keep the top 100 (box, class) pairs per image
-with no score floor, since low-scored boxes can only add recall.
+with no score floor, since low-scored boxes can only add recall; boxes are then scaled back to each image's original
+size, and the submission is format-checked.
 We chose $\beta{=}1$, $\alpha{=}0.5$ on ND (\cref{tab:decoding}).
 
 \subsection{Weight averaging}

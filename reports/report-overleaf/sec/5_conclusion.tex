@@ -9,5 +9,6 @@ The result is a 26\,M-parameter single model with $\Delta_m$ +45.9 on val and +4
 in-budget baseline, trained in under 10 GPU-hours.
 We also learned our protocol's limits: the holdout predicts the sign of a change better than its size, seed noise
 rivals most effects, and bridges and playgrounds, tiny objects in cluttered scenes with few repeats, remain unsolved.
-They, and the 11-point mAP gap to the best teams, are where future work should go, for instance with higher-resolution
-features guided by the classifier's scene evidence.
+They, and the 11-point mAP gap to the best teams, are where we would go next: condition the detection head on the
+predicted scene class, so that it expects bridges in bridge scenes; give the stride-8 features more context, for
+example with attention; and mine look-alike structures that carry no box as hard negatives.

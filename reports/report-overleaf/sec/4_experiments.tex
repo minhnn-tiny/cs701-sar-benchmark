@@ -16,9 +16,11 @@ The final model trained in 8.96\,h (wall clock, its GPU shared with one other ru
 7.0\,GB; inference takes 2.45\,ms per image at batch 16 and 21.5\,ms at batch 1 (forward and decoding, 1.2\,GB).
 The whole project, five designs and the baseline runs included, occupied about 400 GPU-hours (union of busy intervals
 per GPU; the runs' own clocks sum to 591\,h).
-The final model uses only YOLO26-L's COCO weights; we also tried YOLO26-X, RT-DETR-L (COCO) and
-ConvNeXt-B~\cite{liu2022convnext} (ImageNet-22k), and earlier designs used ViT-B/16 (ImageNet-21k), TerraMind and a
-COCO Faster R-CNN. None was pretrained on SAR data.
+Pretrained weights, none trained on SAR data: the final model uses only YOLO26-L's COCO weights (Ultralytics' v8.4.0
+release); we also tried YOLO26-X and RT-DETR-L (same release) and ConvNeXt-B~\cite{liu2022convnext} (timm
+\nolinkurl{convnext_base.fb_in22k_ft_in1k}), and earlier designs used ViT-B/16 (timm
+\nolinkurl{vit_base_patch16_224.augreg_in21k}), TerraMind-1.0-base~\cite{jakubik2025terramind} (IBM/ESA) and
+torchvision's COCO Faster R-CNN R50-FPN v2.
 
 \subsection{Main results}
 \label{sec:main}
